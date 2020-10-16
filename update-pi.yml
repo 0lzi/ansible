@@ -1,4 +1,5 @@
 ---
+# Update all Raspberry Pi's in hosts file
 - hosts: pi
   become: true
   become_user: root

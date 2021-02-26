@@ -1,0 +1,7 @@
+- name: cleanup
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - '~/get-docker.sh'
+    - '~/docker.sh'

@@ -1,4 +1,4 @@
 # Ansible
 ansible playbooks
 
-- update-pi.yml
+- Set up Pi for Docker and Docker-compose

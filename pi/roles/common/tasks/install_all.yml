@@ -1,0 +1,52 @@
+
+- name: "Update Apt Cache"
+  apt: 
+    update_cache: yes
+  tags: installation
+
+- name: "Install Common packages"
+  apt:
+    pkg:
+    - python3-pip
+    - python3-venv
+    - git
+    - libffi-dev
+    - libssl-dev
+    - python3
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg-agent
+    - software-properties-common
+    state: latest
+  tags: installation, packages
+
+- name: " Get Docker"
+  get_url:
+    url: https://get.docker.com
+    dest: get-docker.sh
+
+- name: "Install Docker && add user to docker"
+  command: sh get-docker.sh && usermod -aG docker $USER
+  
+- name: "Python Docker-compose"
+  pip:
+    name: 
+      - docker-compose
+  tags: python
+
+- name: "Python Docker-compose"
+  pip: name=pip state=latest
+  tags: python
+    
+- name : Remove packages
+  apt:
+    pkg: 
+      - python-configparser
+      - docker
+      - docker-engine
+      - docker.io
+      - containerd
+      - runc
+    state: absent 
+    autoclean: yes

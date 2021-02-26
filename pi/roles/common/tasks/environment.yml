@@ -1,0 +1,17 @@
+- name: "Copy aliases"
+  copy: 
+    src: .bash_aliases 
+    dest: /home/pi/.bash_aliases
+    owner: pi
+    group: pi
+    mode: '0644'
+  tags: aliases
+
+- name: "Update Bashrc"
+  blockinfile:
+    dest: /home/pi/.bashrc
+    block: |
+     if [ -f ~/.bash_aliases ]; then
+     . ~/.bash_aliases
+     fi
+    backup: yes 

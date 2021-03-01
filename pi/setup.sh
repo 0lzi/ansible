@@ -6,7 +6,7 @@ sudo mv ./inventories/hosts /etc/ansible
 
 ansible-playbook -k -i inventories/hosts set_ssh_key.yml
 
-ansible-playbook -i inventory main.yml
+ansible-playbook -i inventories/hosts main.yml
 
 ansible-playbook -i inventory docker.yml
 

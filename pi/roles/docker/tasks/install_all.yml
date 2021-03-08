@@ -21,23 +21,29 @@
     state: latest
   tags: installation, packages
 
-- name: " Get Docker"
-  get_url:
-    url: https://get.docker.com
-    dest: get-docker.sh
+- name: "Get Docker"
+  command: curl -fsSL https://get.docker.com -o get-docker.sh
+
+#- name: " Get Docker"
+#  get_url:
+#    url: https://get.docker.com
+#    dest: .get-docker.sh
 
 - name: "Install Docker && add user to docker"
   command: sh get-docker.sh && usermod -aG docker $USER
   
 - name: "Python Docker-compose"
-  pip:
-    name: 
-      - docker-compose
-  tags: python
+  command: pip3 install docker-compose
 
-- name: "Python Docker-compose"
-  pip: name=pip state=latest
-  tags: python
+#- name: "Python Docker-compose"
+#  pip:
+#    name: 
+#      - docker-compose
+#  tags: python
+
+#- name: "Python Docker-compose"
+#  pip: name=pip state=latest
+#  tags: python
     
 - name : Remove packages
   apt:

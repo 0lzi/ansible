@@ -20,3 +20,5 @@
   notify:
     - update hostname
     - delete dhcp leases
+
+  # Add Network Share

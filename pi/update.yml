@@ -1,0 +1,12 @@
+---
+- hosts: pi
+  become: yes
+  tasks:
+  - name: "Apt Update"
+    apt: 
+      update_cache: yes
+  
+  - name: "Apt Upgrade"
+    apt: 
+      upgrade: yes
+  tags: installation

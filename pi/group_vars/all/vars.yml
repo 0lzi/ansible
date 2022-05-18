@@ -6,7 +6,7 @@ mac_address_mapping:
   "b8:27:eb:a4:21:0c":
     name: rpi-01
     ip: "192.168.1.16"
-  "b8:27:eb:3a:a4:8e":
+  "b8:27:eb:5d:ed:62":
     name: rpi-02
     ip: "192.168.1.19"
   "b8:27:eb:22:30:b2":
@@ -18,6 +18,6 @@ mac_address_mapping:
 
     # Nameservers to use in resolv.conf.
 dns_nameservers:
-  - "192.168.1.19"
+  - "192.168.1.21"
 
 pi_ip_gateway: "192.168.1.254"

@@ -18,6 +18,9 @@
     - curl
     - gnupg-agent
     - software-properties-common
+    - dnsutils
+    - screen
+    - docker
     state: latest
   tags: installation, packages
 

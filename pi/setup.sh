@@ -10,6 +10,8 @@ ansible-playbook -i inventories/hosts main.yml
 
 ansible-playbook -i inventory docker.yml
 
+ansible-playbook -k -i inventories/hosts update.yml
+
 ansible all -i inventories/hosts -m shell -a "sleep 1s; shutdown -r now" -b -B 60 -P 0
 
 ansible all -i inventories/hosts -m ping

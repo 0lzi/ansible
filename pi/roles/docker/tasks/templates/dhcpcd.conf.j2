@@ -6,10 +6,10 @@ static ip_address={{ pi_ip_address }}/24
 static routers={{ pi_ip_gateway }}
 static domain_name_servers={{ dns_nameservers | join(' ') }}
 
-interface wlan0
-static ip_address={{ pi_ip_address }}/24
-static routers={{ pi_ip_gateway }}
-static domain_name_servers={{ dns_nameservers | join(' ') }}
+#interface wlan0
+#static ip_address={{ pi_ip_address }}/24
+#static routers={{ pi_ip_gateway }}
+#static domain_name_servers={{ dns_nameservers | join(' ') }}
 
 # Allow users of this group to interact with dhcpcd via the control socket.
 #controlgroup wheel

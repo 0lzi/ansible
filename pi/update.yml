@@ -1,12 +1,25 @@
 ---
-- hosts: pi
+- hosts: all
   become: yes
   tasks:
-  - name: "Apt Update"
-    apt: 
-      update_cache: yes
-  
-  - name: "Apt Upgrade"
-    apt: 
-      upgrade: yes
-  tags: installation
+    - name: Update apt cache and make sure apps are installed & updated
+      apt:
+        name: "{{ item }}"
+        update_cache: yes
+      loop:
+          - python3-pip
+          - python3-venv
+          - git
+          - libffi-dev
+          - libssl-dev
+          - python3
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg-agent
+          - software-properties-common
+          - dnsutils
+          - docker
+          - screen
+
+

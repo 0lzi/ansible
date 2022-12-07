@@ -21,6 +21,6 @@
     - screen
 - [ ] set ip address on pi based on MAC address
 - [ ] create new user and disable pi user and root user login
-- [ ] set up sshkey 
+- [ ] set up sshkey and turn on passwordless login
 
 

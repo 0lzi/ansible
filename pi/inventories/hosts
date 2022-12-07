@@ -18,5 +18,3 @@ ansible_user=pi
 [docker:vars]
 ansible_user=pi
 
-[solo]
-pi2

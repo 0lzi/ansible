@@ -21,6 +21,7 @@
     - dnsutils
     - screen
     - docker
+    - htop
     state: latest
   tags: installation, packages
 

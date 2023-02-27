@@ -1,4 +1,130 @@
 ---
 #Run with ansible-playbook -i inventory main.yml
+- name: setup Docker pi
+  hosts: pi1
+  remote_user: pi
+  become: true
+  become_method: sudo
+  gather_facts: true
 
 
+  tasks:
+    - name: Update Apt Cache
+      ansible.builtin.apt:
+        update_cache: true
+
+#    - name: Install docker deps 
+#      apt:
+#        pkg:
+#        - ca-certificates
+#        - curl
+#        - gnupg
+#        - lsb-release
+#
+#    - name: add docker official gpg
+#      ansible.builtin.command: mkdir -m 0755 -p /etc/apt/keyrings
+#
+#    - name: get docker gpg
+#      ansible.builtin.shell: curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+#
+#    - name: setup docker repo 
+#      ansible.builtin.command: 
+#        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian
+#        $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    - name: Install Applications
+      apt:
+        pkg:
+        - python3-pip
+        - python3-venv
+        - git
+        - libffi-dev
+        - libssl-dev
+        - python3
+        - apt-transport-https
+        - gnupg-agent
+        - software-properties-common
+        - dnsutils
+        - screen
+        - htop
+        - docker-ce 
+        - docker-ce-cli
+        - containerd.io
+        - docker-buildx-plugin
+        - docker-compose-plugin
+        - nfs-common
+#        - nfs-kernel-server
+        state: latest
+      tags: installation, packages
+   
+    - name: Copy aliases
+      ansible.builtin.copy:
+        src: ./files/.bash_aliases
+        dest: /home/pi/.bash_aliases
+        owner: pi
+        group: pi
+        mode: '0644'
+      tags: aliases
+
+    - name: Copy SSH Config
+      ansible.builtin.copy:
+        src: .ssh_config
+        dest: /home/pi/.ssh/config
+        owner: pi
+        group: pi
+        mode: '0644'
+      tags: config
+
+    - name: Update Bashrc
+      ansible.builtin.blockinfile:
+        dest: /home/pi/.bashrc
+        block: |
+         if [ -f ~/.bash_aliases ]; then
+         . ~/.bash_aliases
+         fi
+        backup: true
+
+    - name: add pi user to docker
+      ansible.builtin.user:
+        name: pi
+        groups: docker,pi,adm,dialout,cdrom,sudo,audio,video,plugdev,games,users,input,render,netdev,gpio,i2c,spi
+        append: yes
+
+    - name: Start docker service
+      ansible.builtin.service:
+        name: docker
+        state: started
+
+    - name: Add a line to /etc/fstab
+      ansible.builtin.lineinfile:
+        path: /etc/fstab
+        line: "192.168.1.20:/media/usb-storage/docker  /home/pi/nfsdocker    nfs     defaults        0       0"
+        create: true
+
+    - name: Add a line to /etc/fstab
+      ansible.builtin.lineinfile:
+        path: /etc/fstab
+        line: "192.168.1.20:/media/usb-storage/docker-volumes  /home/pi/nfsdocker-volumes    nfs     defaults        0       0"
+        create: true
+
+    - name: Create nfsdocker DIR
+      ansible.builtin.file:
+        path: "/home/pi/nfsdocker"
+        state: directory
+        mode: '755'
+        owner: pi
+        group: pi
+
+    - name: Create nfsdocker-volumes DIR
+      ansible.builtin.file:
+        path: "/home/pi/nfsdocker-volumes"
+        state: directory
+        mode: '755'
+        owner: pi
+        group: pi
+
+    - name: Mount nfs
+      ansible.builtin.command: mount -a
+
+    - name: reboot 
+      ansible.builtin.reboot:

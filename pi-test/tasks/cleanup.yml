@@ -1,7 +1,0 @@
-- name: cleanup
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: absent
-  with_items:
-    - '~/get-docker.sh'
-    - '~/docker.sh'

@@ -2,7 +2,7 @@
 - hosts: all
   become: yes
   tasks:
-    - name: Change root password
+    - name: Change pi password
       user:
         name: pi
         update_password: always

@@ -34,3 +34,10 @@
     state: link
     owner: pi
     group: pi
+
+- name: Start service nfs-kernel-server
+  ansible.builtin.service:
+    name: nfs-kernel-server
+    state: started
+    enabled: true
+  

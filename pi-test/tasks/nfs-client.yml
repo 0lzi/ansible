@@ -23,6 +23,7 @@
     mode: '755'
     owner: pi
     group: pi
+
 - name: Create nfsdocker-volumes DIR
   ansible.builtin.file:
     path: "/home/pi/nfsdocker-volumes"
@@ -30,6 +31,12 @@
     mode: '755'
     owner: pi
     group: pi
+
+- name: Stop service nfs-kernel-server, if started
+  ansible.builtin.service:
+    name: nfs-kernel-server
+    state: stopped
+    enabled: false
     
 - name: Mount nfs
   ansible.builtin.command: mount -a

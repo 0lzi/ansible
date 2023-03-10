@@ -26,3 +26,5 @@
 
 - name: Install oh-my-bash 
   ansible.builtin.shell: bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh) --unattended"
+  become: false
+  ignore_errors: true

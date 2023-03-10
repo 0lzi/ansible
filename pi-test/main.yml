@@ -1,17 +1,19 @@
 ---
 #Run with ansible-playbook -i inventory main.yml
 - name: setup Docker pi
-  hosts: docker
+  hosts: pi
   remote_user: pi
   become: true
   become_method: sudo
   gather_facts: true
-
+  vars_files:
+    - ./vars/vars.yml
 
   pre_tasks:
     - name: Update Apt Cache
       ansible.builtin.apt:
         update_cache: true
+        cache_valid_time: 3600
 
 
   tasks:
@@ -20,24 +22,31 @@
     - include: tasks/environment.yml
     - include: tasks/user.yml
 
+    - name: reboot 
+      ansible.builtin.reboot:
+
 - name: setup nfs-server
   hosts: nfs-server
   remote_user: pi
   become: true
   become_method: sudo
   gather_facts: true
+  vars_files:
+    - ./vars/vars.yml
 
   tasks:
     - include: tasks/nfs-server.yml
 
     - name: reboot 
       ansible.builtin.reboot:
-      
+
 - name: setup nfs-clients
-  hosts: pi , !nfs-server
+  hosts: pi2
   become: true
   become_method: sudo
   gather_facts: true
+  vars_files:
+    - ./vars/vars.yml  
 
   tasks:
     - include: tasks/nfs-client.yml

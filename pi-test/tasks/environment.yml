@@ -16,9 +16,9 @@
     mode: '0644'
   tags: config
   
-- name: Update Bashrc
+- name: Set oh-my-bash theme
   ansible.builtin.lineinfile:
-    path: home/pi/.bashrc
+    path: /home/pi/.bashrc
     search_string: 'OSH_THEME='
     line: OSH_THEME="rr"
 

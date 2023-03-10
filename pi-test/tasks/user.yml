@@ -1,0 +1,5 @@
+- name: add pi user to docker
+  ansible.builtin.user:
+    name: pi
+    groups: docker
+    append: yes

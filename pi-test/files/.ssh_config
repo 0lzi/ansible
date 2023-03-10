@@ -1,0 +1,25 @@
+##SSH Pi  Config##
+
+Host pi1
+        HostName 192.168.1.16
+        Port 22
+        User pi
+        IdentityFile ~/.ssh/raspberry_rsa
+
+Host pi2
+        HostName 192.168.1.19
+        Port 22
+        User pi
+        IdentityFile ~/.ssh/raspberry_rsa
+
+Host pi3
+        HostName 192.168.1.20
+        Port 22
+        User pi
+        IdentityFile ~/.ssh/raspberry_rsa
+
+Host pi4
+        HostName 192.168.1.21
+        Port 22
+        User pi
+        IdentityFile ~/.ssh/raspberry_rsa

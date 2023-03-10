@@ -22,8 +22,8 @@
     - include: tasks/environment.yml
     - include: tasks/user.yml
 
-    - name: reboot 
-      ansible.builtin.reboot:
+#    - name: reboot 
+#      ansible.builtin.reboot:
 
 - name: setup nfs-server
   hosts: nfs-server
@@ -37,11 +37,8 @@
   tasks:
     - include: tasks/nfs-server.yml
 
-    - name: reboot 
-      ansible.builtin.reboot:
-
 - name: setup nfs-clients
-  hosts: pi2
+  hosts: pi, !nfs-server
   become: true
   become_method: sudo
   gather_facts: true
@@ -51,5 +48,5 @@
   tasks:
     - include: tasks/nfs-client.yml
 
-    - name: reboot 
-      ansible.builtin.reboot:
+#    - name: reboot 
+#      ansible.builtin.reboot:

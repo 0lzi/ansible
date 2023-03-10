@@ -10,3 +10,4 @@
 - [ ] set up sshkey and turn on passwordless login
 - [x] mount nfs folders
 
+Run `ansible-playbook -i "hostmane," main.yml`

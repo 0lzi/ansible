@@ -9,5 +9,10 @@
 - [ ] create new user and disable pi user and root user login
 - [ ] set up sshkey and turn on passwordless login
 - [x] mount nfs folders
+- [x] set up environment
 
 Run `ansible-playbook -i "hostmane," main.yml`
+
+First run when no ssh keys present
+
+Run `ansible-playbook -i "inventories/hosts" -kK main.yml`

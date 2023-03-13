@@ -1,5 +1,5 @@
 ---
-#Run with ansible-playbook -i inventory main.yml
+# Run with ansible-playbook -i inventory main.yml
 - name: Setup Docker pi
   hosts: pi
   remote_user: pi
@@ -17,16 +17,7 @@
   roles:
     - docker
 
-#  tasks:
-#    - include: tasks/packages.yml
-#    - include: tasks/docker.yml
-#    - include: tasks/environment.yml
-#    - include: tasks/user.yml
-
-#    - name: reboot 
-#      ansible.builtin.reboot:
-
-- name: setup nfs-server
+- name: Setup nfs-server
   hosts: nfs-server
   remote_user: pi
   become: true
@@ -34,12 +25,8 @@
   gather_facts: true
   vars_files:
     - ./vars/vars.yml
-  roles:
-    - nfs-server
-#  tasks:
-#    - include: tasks/nfs-server.yml
 
-- name: setup nfs-clients
+- name: Setup nfs-clients
   hosts: pi, !nfs-server
   become: true
   become_method: sudo
@@ -48,9 +35,3 @@
     - ./vars/vars.yml
   roles:
     - nfs-client
-
-#  tasks:
-#    - include: tasks/nfs-client.yml
-
-#    - name: reboot 
-#      ansible.builtin.reboot:

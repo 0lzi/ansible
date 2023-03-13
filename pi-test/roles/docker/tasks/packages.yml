@@ -1,0 +1,31 @@
+- name: Install Applications
+  ansible.builtin.apt:
+    pkg:
+    - python3-pip
+    - python3-venv
+    - git
+    - libffi-dev
+    - libssl-dev
+    - python3
+    - apt-transport-https
+    - gnupg-agent
+    - software-properties-common
+    - dnsutils
+    - screen
+    - htop
+    - nfs-common
+    - nfs-kernel-server
+    - fonts-powerline
+    state: latest
+  tags: installation, packages
+
+- name: Install oh-my-bash
+  ansible.builtin.shell: bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh) --unattended"
+  become: false
+  register: command_result
+  ignore_errors: true
+#  changed_when:
+#    - " 'You already have Oh My Bash installed' in command_result.stderr"
+  tags: bash
+ 
+# Run upgrade_oh_my_bash if oh-my-bash is installed

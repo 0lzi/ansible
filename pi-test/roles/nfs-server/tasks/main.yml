@@ -65,4 +65,3 @@
     name: nfs-kernel-server
     state: started
     enabled: true
-

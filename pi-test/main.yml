@@ -1,7 +1,7 @@
 ---
 # Run with ansible-playbook -i inventory main.yml
 - name: Setup Docker pi
-  hosts: pi
+  hosts: pi3
   remote_user: pi
   become: true
   become_method: sudo
@@ -27,7 +27,7 @@
     - ./vars/vars.yml
 
 - name: Setup nfs-clients
-  hosts: pi, !nfs-server
+  hosts: pi3 # , !nfs-server
   become: true
   become_method: sudo
   gather_facts: true

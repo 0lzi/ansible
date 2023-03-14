@@ -22,8 +22,8 @@
     search_string: 'OSH_THEME='
     line: OSH_THEME="rr"
 
-#- name: Set authorized keys from file
-#  ansible.posix.authorized_key:
-#    user: pi
-#    state: present
-#    key: "{{ lookup('file','ansible/pi-test/files/laptop.pub') }}"
+# - name: Set authorized keys from file
+#   ansible.posix.authorized_key:
+#     user: pi
+#     state: present
+#     key: "{{ lookup('file','ansible/pi-test/files/laptop.pub') }}"

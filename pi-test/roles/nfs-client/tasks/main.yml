@@ -44,23 +44,23 @@
     opts: defaults,noatime
     state: absent
 
-#- name: Add a line to /etc/fstab
-#  ansible.builtin.lineinfile:
-#    path: /etc/fstab
-#    line: "{{ nfs_server }}:/media/usb-storage/docker  /home/pi/nfsdocker    nfs     defaults        0       0"
-#    create: true
-#
-#- name: Add a line to /etc/fstab
-#  ansible.builtin.lineinfile:
-#    path: /etc/fstab
-#    line: "{{ nfs_server }}:/media/usb-storage/docker-volumes  /home/pi/nfsdocker-volumes    nfs     defaults        0       0"
-#    create: true
-#
-#- name: Add a line to /etc/fstab
-#  ansible.builtin.lineinfile:
-#    path: /etc/fstab
-#    line: "#{{ uuid }}  /media/usb-storage/     ext4 defaults   0       0"
-#    create: true
+# - name: Add a line to /etc/fstab
+#   ansible.builtin.lineinfile:
+#     path: /etc/fstab
+#     line: "{{ nfs_server }}:/media/usb-storage/docker  /home/pi/nfsdocker    nfs     defaults        0       0"
+#     create: true
 
-#- name: Mount nfs
-#  ansible.builtin.command: mount -a
+# - name: Add a line to /etc/fstab
+#   ansible.builtin.lineinfile:
+#     path: /etc/fstab
+#     line: "{{ nfs_server }}:/media/usb-storage/docker-volumes  /home/pi/nfsdocker-volumes    nfs     defaults        0       0"
+#     create: true
+
+# - name: Add a line to /etc/fstab
+#   ansible.builtin.lineinfile:
+#     path: /etc/fstab
+#     line: "#{{ uuid }}  /media/usb-storage/     ext4 defaults   0       0"
+#     create: true
+
+# - name: Mount nfs
+#   ansible.builtin.command: mount -a

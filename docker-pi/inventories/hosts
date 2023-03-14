@@ -1,0 +1,21 @@
+# Raspberry Pi's
+[nfs-server]
+pi1
+
+[docker]
+pi1
+pi2
+pi3
+pi4
+
+[pi]
+pi1
+pi2
+pi3
+pi4
+
+[pi:vars]
+ansible_user=pi
+
+[docker:vars]
+ansible_user=pi

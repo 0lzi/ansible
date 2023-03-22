@@ -1,0 +1,67 @@
+# - name: Add a line to /etc/fstab
+#   ansible.builtin.lineinfile:
+#    path: /etc/fstab
+#    line: "#{{ nfs_server }}:/media/usb-storage/docker  /home/pi/nfsdocker    nfs     defaults        0       0"
+#    create: true
+#
+# - name: Add a line to /etc/fstab
+#   ansible.builtin.lineinfile:
+#    path: /etc/fstab
+#    line: "#{{ nfs_server }}:/media/usb-storage/docker-volumes  /home/pi/nfsdocker-volumes    nfs     defaults        0       0"
+#    create: true
+
+# - name: Add a line to /etc/fstab
+#   ansible.builtin.lineinfile:
+#    path: /etc/fstab
+#    line: "{{ uuid }}  /media/usb-storage/     ext4 defaults   0       0"
+#    create: true
+
+- name: Mount an NFS volume
+  ansible.posix.mount:
+    src: "{{ nfs_server }}:/media/usb-storage/docker"
+    path: /home/pi/nfsdocker
+    opts: rw,sync,hard
+    state: absent
+    fstype: nfs
+
+- name: Mount an NFS volume
+  ansible.posix.mount:
+    src: "{{ nfs_server }}:/media/usb-storage/docker-volumes"
+    path: /home/pi/nfsdocker-volumes
+    opts: rw,sync,hard
+    state: absent
+    fstype: nfs
+
+- name: Mount up device by UUID
+  ansible.posix.mount:
+    path: /media/usb-storage
+    src: "{{ uuid }}"
+    fstype: ext4
+    opts: defaults,noatime
+    state: present
+
+
+# - name: Mount nfs drive
+#   ansible.builtin.command: mount -a
+
+- name: Create nfsdocker DIR
+  ansible.builtin.file:
+    src: "/media/usb-storage/docker"
+    dest: "/home/pi/nfsdocker"
+    state: link
+    owner: pi
+    group: pi
+
+- name: Create nfsdocker-volumes DIR
+  ansible.builtin.file:
+    src: "/media/usb-storage/docker-volumes"
+    dest: "/home/pi/nfsdocker-volumes"
+    state: link
+    owner: pi
+    group: pi
+
+- name: Start service nfs-kernel-server
+  ansible.builtin.service:
+    name: nfs-kernel-server
+    state: started
+    enabled: true

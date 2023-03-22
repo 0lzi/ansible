@@ -1,7 +1,0 @@
-- name: create directory 
-  file:
-    path: "{{ item }}"
-    state: directory
-  with_items:
-    - '~/docker'
-    - '~/docker-volumes'

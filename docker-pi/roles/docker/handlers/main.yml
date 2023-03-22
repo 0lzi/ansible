@@ -1,0 +1,2 @@
+- name: update hostname
+  command: "hostname {{ pi_hostname }}"

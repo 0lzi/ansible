@@ -1,7 +1,0 @@
----
-- hosts: docker
-  become: yes
-  vars_files:
-    - ./group_vars/all/vars.yml
-  roles:
-    - docker

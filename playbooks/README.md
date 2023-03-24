@@ -1,7 +1,8 @@
-## pi-user.yml
-Playbook to change pi password on raspberry Pi
+# Playbooks
 
-run 
 
-` ansible-playbook -i hosts pi-user.yml -k --extra-vars=newpassword=randompassword `
+### Adhoc commands
 
+*Reboot All Pi*
+
+`ansible all -i '192.168.1.16,192.168.1.19,192.168.1.20,192.168.1.21,' -m reboot -k -u pi -b`

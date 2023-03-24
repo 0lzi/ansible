@@ -1,0 +1,10 @@
+---
+- name: Change password
+  hosts: all
+  become: true
+  tasks:
+    - name: Change pi password
+      ansible.builtin.user:
+        name: pi
+        update_password: always
+        password: "{{ newpassword | password_hash('sha512') }}"

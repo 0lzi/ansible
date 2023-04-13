@@ -1,4 +1,4 @@
-## pi-user.yml
+## reset-pw.yml
 Playbook to change pi password on raspberry Pi
 
 run 

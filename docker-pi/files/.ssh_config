@@ -23,3 +23,8 @@ Host pi4
         Port 22
         User pi
         IdentityFile ~/.ssh/raspberry_rsa
+
+## GitHub
+Host github.com
+        User 0lzi
+        IdentityFile ~/.ssh/github

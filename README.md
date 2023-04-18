@@ -5,4 +5,5 @@ ansible playbooks
 - Playbooks - collection of random playbooks
     - [reset password](./playbooks/reset_password/)
     - [pihole](./playbooks/pihole/)
+    - [patching](./playbooks/patching/)
 

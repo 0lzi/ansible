@@ -1,7 +1,7 @@
 ---
 # Run with ansible-playbook -i inventory/hosts main.yml
 - name: Setup Docker pi
-  hosts: pi
+  hosts: all
   remote_user: pi
   become: true
   become_method: sudo

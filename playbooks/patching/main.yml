@@ -7,42 +7,75 @@
 #    ./vars/vars.yml
 
   pre_tasks:
-#    - name: Update Apt Cache
-#      ansible.builtin.apt:
-#        update_cache: true
-#        cache_valid_time: 3600
+    - name: Update Apt Cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
 
     - name: Get running containers
       community.docker.docker_host_info:
         containers: true
-      register: docker_info
+      register: pre_reboot
 
     - name: Show Number of running containers
       ansible.builtin.debug:
-        msg: "Hostname - {{ docker_info.host_info.Name }} has {{ docker_info.host_info.ContainersRunning }} Containers running"
-      register: docker_pre_reboot
-
-#    - name: Stop running containers
-#      community.docker.docker_container:
-#        name: "{{ item }}"
-#        state: stopped
-#      loop: "{{ docker_info.containers | map(attribute='Id') | list }}"
+        msg: "Hostname - {{ pre_reboot.host_info.Name }} has {{ pre_reboot.host_info.ContainersRunning }} Containers running"
 
   tasks:
-#    - name: Update all packages
-#      ansible.builtin.apt:
-#        name: "*"
-#        state: latest
-#
-#    - name: Reboot
-#      ansible.builtin.reboot:
+    - name: Update all packages
+      ansible.builtin.apt:
+        name: "*"
+        state: latest
 
+    - name: Stop running containers
+      community.docker.docker_container:
+        name: "{{ item }}"
+        state: stopped
+      loop: "{{ pre_reboot.containers | map(attribute='Id') | list }}"
+
+- name: Reboot nfs first
+  hosts: nfs-server
+  become: true
+
+  tasks:
+    - name: Check if reboot required
+      register: reboot_required_file
+      ansible.builtin.stat: path=/var/run/reboot-required get_md5=no
+
+    - name: Reboot the if kernel updated
+      ansible.builtin.reboot:
+        msg: "Reboot initiated by Ansible for kernel updates"
+      when: reboot_required_file.stat.exists
     - name: Get running containers
       community.docker.docker_host_info:
         containers: true
-      register: docker_info
+      register: post_reboot
 
     - name: Compare Pre - Post Containers
       ansible.builtin.debug:
-        msg: "Pre-reboot Containers {{ docker_info.host_info.ContainersRunning }} - Post-reboot Containers {{ docker_info.host_info.ContainersRunning }}"
-      failed_when: docker_info.host_info.ContainersRunning != docker_pre_reboot.host_info.ContainersRunning
+        msg: "Pre-reboot Containers {{ pre_reboot.host_info.ContainersRunning }} - Post-reboot Containers {{ post_reboot.host_info.ContainersRunning }}"
+      failed_when: pre_reboot.host_info.ContainersRunning != post_reboot.host_info.ContainersRunning
+
+- name: reboot nfs first
+  hosts: pi , !nfs-server
+  become: true
+
+  tasks:
+
+    - name: Check if reboot required
+      register: reboot_required_file
+      ansible.builtin.stat: path=/var/run/reboot-required get_md5=no
+
+    - name: Reboot the if kernel updated
+      ansible.builtin.reboot:
+        msg: "Reboot initiated by Ansible for kernel updates"
+      when: reboot_required_file.stat.exists
+    - name: Get running containers
+      community.docker.docker_host_info:
+        containers: true
+      register: post_reboot
+
+    - name: Compare Pre - Post Containers
+      ansible.builtin.debug:
+        msg: "Pre-reboot Containers {{ pre_reboot.host_info.ContainersRunning }} - Post-reboot Containers {{ post_reboot.host_info.ContainersRunning }}"
+      failed_when: pre_reboot.host_info.ContainersRunning != post_reboot.host_info.ContainersRunning

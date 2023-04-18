@@ -1,2 +1,9 @@
 [pi]
+pi1
+pi2
+pi3
+pi4
 pi-dev
+
+[nfs-server]
+pi1

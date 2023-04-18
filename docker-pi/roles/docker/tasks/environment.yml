@@ -7,6 +7,15 @@
     mode: '0644'
   tags: aliases
 
+- name: Check .ssh path
+  ansible.builtin.file:
+    dest: /home/pi/.ssh
+    owner: pi
+    group: pi
+    mode: '0700'
+    state: directory
+  tags: config
+
 - name: Copy SSH Config
   ansible.builtin.copy:
     src: .ssh_config

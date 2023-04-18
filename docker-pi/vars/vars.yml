@@ -6,6 +6,7 @@ pi1: 192.168.1.16
 pi2: 192.168.1.19
 pi3: 192.168.1.20
 pi4: 192.168.1.21
+pidev: 192.168.1.22
 
 mac_address_mapping:
  #' "b8:27:eb:7c:03:c1":
@@ -23,6 +24,9 @@ mac_address_mapping:
   "b8:27:eb:4b:6e:9d":
     name: rpi-04
     ip: "192.168.1.21"
+  "b8:27:eB:a0:e1:fc":
+    name: rpi-dev
+    ip: "192.168.1.22"
 
 dns_nameservers:
   - "192.168.1.20"

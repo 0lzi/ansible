@@ -51,17 +51,20 @@
         containers: true
       register: post_reboot
 
+    - name: Pause for Containers to come back up
+      ansible.builtin.pause:
+        minutes: 1
+
     - name: Compare Pre - Post Containers
       ansible.builtin.debug:
         msg: "Pre-reboot Containers {{ pre_reboot.host_info.ContainersRunning }} - Post-reboot Containers {{ post_reboot.host_info.ContainersRunning }}"
       failed_when: pre_reboot.host_info.ContainersRunning != post_reboot.host_info.ContainersRunning
 
-- name: reboot nfs first
+- name: Reboot Others
   hosts: pi , !nfs-server
   become: true
 
   tasks:
-
     - name: Check if reboot required
       register: reboot_required_file
       ansible.builtin.stat: path=/var/run/reboot-required get_md5=no
@@ -74,6 +77,10 @@
       community.docker.docker_host_info:
         containers: true
       register: post_reboot
+
+    - name: Pause for Containers to come back up
+      ansible.builtin.pause:
+        minutes: 1
 
     - name: Compare Pre - Post Containers
       ansible.builtin.debug:

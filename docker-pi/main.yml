@@ -25,6 +25,12 @@
   gather_facts: true
   vars_files:
     - ./vars/vars.yml
+  roles:
+    - nfs-server
+
+  tasks:
+    - name: Reboot nfs-server
+      ansible.builtin.reboot:
 
 - name: Setup nfs-clients
   hosts: pi , !nfs-server
@@ -35,3 +41,7 @@
     - ./vars/vars.yml
   roles:
     - nfs-client
+
+  tasks:
+    - name: Reboot nfs-clients
+      ansible.builtin.reboot:

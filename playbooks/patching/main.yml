@@ -1,0 +1,48 @@
+---
+- name: Patching Raspberry pi
+  hosts: all
+  become: true
+  gather_facts: true
+#  vars_files:
+#    ./vars/vars.yml
+
+  pre_tasks:
+#    - name: Update Apt Cache
+#      ansible.builtin.apt:
+#        update_cache: true
+#        cache_valid_time: 3600
+
+    - name: Get running containers
+      community.docker.docker_host_info:
+        containers: true
+      register: docker_info
+
+    - name: Show Number of running containers
+      ansible.builtin.debug:
+        msg: "Hostname - {{ docker_info.host_info.Name }} has {{ docker_info.host_info.ContainersRunning }} Containers running"
+      register: docker_pre_reboot
+
+#    - name: Stop running containers
+#      community.docker.docker_container:
+#        name: "{{ item }}"
+#        state: stopped
+#      loop: "{{ docker_info.containers | map(attribute='Id') | list }}"
+
+  tasks:
+#    - name: Update all packages
+#      ansible.builtin.apt:
+#        name: "*"
+#        state: latest
+#
+#    - name: Reboot
+#      ansible.builtin.reboot:
+
+    - name: Get running containers
+      community.docker.docker_host_info:
+        containers: true
+      register: docker_info
+
+    - name: Compare Pre - Post Containers
+      ansible.builtin.debug:
+        msg: "Pre-reboot Containers {{ docker_info.host_info.ContainersRunning }} - Post-reboot Containers {{ docker_info.host_info.ContainersRunning }}"
+      failed_when: docker_info.host_info.ContainersRunning != docker_pre_reboot.host_info.ContainersRunning

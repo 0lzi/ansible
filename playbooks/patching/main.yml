@@ -78,8 +78,10 @@
 
   tasks:
     - name: Check if reboot required
+      ansible.builtin.stat:
+        path: /var/run/reboot-required
+        get_md5: false
       register: reboot_required_file
-      ansible.builtin.stat: path=/var/run/reboot-required get_md5=no
 
     - name: Reboot the if kernel updated
       ansible.builtin.reboot:

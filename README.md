@@ -3,7 +3,8 @@ ansible playbooks
 
 - Set up Pi for Docker and Docker-compose
 - Playbooks - collection of random playbooks
-    - [reset password](./playbooks/reset_password/)
-    - [pihole](./playbooks/pihole/)
+    - [cloudflare](./playbooks/cloudflare/)
     - [patching](./playbooks/patching/)
+    - [pihole](./playbooks/pihole/)
+    - [reset password](./playbooks/reset_password/)
 

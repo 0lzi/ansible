@@ -7,4 +7,6 @@ ansible playbooks
     - [patching](./playbooks/patching/)
     - [pihole](./playbooks/pihole/)
     - [reset password](./playbooks/reset_password/)
+    - [restart_containers](./playbooks/restart_containers/)
+    - [update](./playbooks/update/)
 

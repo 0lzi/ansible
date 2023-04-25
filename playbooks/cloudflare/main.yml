@@ -1,0 +1,22 @@
+---
+- name: Add DNS record
+  hosts: localhost
+  #become: true
+  gather_facts: false
+  vars_files:
+    - ./vars/vars.yml
+  tasks:
+
+    - name: Create new record
+      community.general.cloudflare_dns:
+        zone: "{{ domain }}"
+        record: "{{ item }}"
+        type: A
+        value: "{{ public_ip }}"
+        account_email: "{{ account_email }}"
+        api_token: "{{ account_api_token }}"
+        ttl: 60
+        state: present
+        proxied: false
+      loop: "{{ dns_records }}"
+      register: record 

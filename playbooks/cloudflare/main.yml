@@ -7,7 +7,7 @@
     - ./vars/vars.yml
   tasks:
 
-    - name: Create new record
+    - name: Create new A record
       community.general.cloudflare_dns:
         zone: "{{ domain }}"
         record: "{{ item }}"

@@ -2,18 +2,4 @@ domain: "{{ lookup('file', './vars/domain.txt') }}"
 public_ip: "{{ lookup('file', './vars/ip.txt') }}"
 account_email: "{{ lookup('file', './vars/email.txt') }}"
 account_api_token: "{{ lookup('file', './vars/api.txt') }}"
-dns_records:
-  - dashboard
-  - fitness
-  - home 
-  - matrix
-  - mc
-  - mumble
-  - nextcloud
-  - notes
-  - portainer
-  - tehladz
-  - uptime
-  - wg
-  - wireguard
-  - www
+dns_records: "{{ lookup('file', './vars/records.txt') }}"

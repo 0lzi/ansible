@@ -1,7 +1,6 @@
 ---
 - name: Add DNS record
   hosts: localhost
-  #become: true
   gather_facts: false
   vars_files:
     - ./vars/vars.yml

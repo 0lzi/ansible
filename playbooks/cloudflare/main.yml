@@ -18,4 +18,4 @@
         state: present
         proxied: false
       loop: "{{ dns_records }}"
-      register: record 
+      register: record

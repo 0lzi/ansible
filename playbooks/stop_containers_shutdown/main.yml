@@ -1,0 +1,38 @@
+---
+- name: Stop all containers and shutdown
+  hosts: all
+  become: true
+  gather_facts: true
+#  vars_files:
+#    ./vars/vars.yml
+
+  tasks:
+    - name: Get running containers
+      community.docker.docker_host_info:
+        containers: true
+      register: pre_restart
+
+    - name: Show Number of running containers
+      ansible.builtin.debug:
+        msg: "Hostname - {{ pre_restart.host_info.Name }} has {{ pre_restart.host_info.ContainersRunning }} Containers running"
+
+    - name: Stop running containers
+      community.docker.docker_container:
+        name: "{{ item }}"
+        state: stopped
+        restart: false
+      loop: "{{ pre_restart.containers | map(attribute='Id') | list }}"
+
+    - name: Get running containers
+      community.docker.docker_host_info:
+        containers: true
+      register: post_restart
+
+    - name: Compare Pre - Post Containers
+      ansible.builtin.debug:
+        msg: "Pre-reboot Containers {{ pre_restart.host_info.ContainersRunning }} - Post-reboot Containers {{ post_restart.host_info.ContainersRunning }}"
+
+
+    - name: Shutdown Raspberry pi's
+      community.general.shutdown:
+        msg: "Shutdown by Ansible"

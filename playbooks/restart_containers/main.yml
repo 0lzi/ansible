@@ -1,5 +1,5 @@
 ---
-- name: Patching Raspberry pi
+- name: Restart Containers on Raspberry pi's
   hosts: all
   become: true
   gather_facts: true
@@ -28,7 +28,8 @@
         containers: true
       register: post_restart
 
-    - name: Compare Pre - Post Containers
-      ansible.builtin.debug:
-        msg: "Pre-reboot Containers {{ pre_restart.host_info.ContainersRunning }} - Post-reboot Containers {{ post_restart.host_info.ContainersRunning }}"
-      failed_when: pre_restart.host_info.ContainersRunning != post_restart.host_info.ContainersRunning
+    - name: Shutdown Pi
+      ansible.builtin.reboot:
+        msg: "Reboot By Ansible "
+      when: reboot_required_file.stat.exists
+

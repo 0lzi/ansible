@@ -1,5 +1,5 @@
 ---
-- name: Restart Containers on Raspberry pi's
+- name: Restart Containers
   hosts: all
   become: true
   gather_facts: true
@@ -12,15 +12,15 @@
         containers: true
       register: pre_restart
 
-    - name: Show Number of running containers
+    - name: Show Number of containers running
       ansible.builtin.debug:
-        msg: "Hostname - {{ pre_restart.host_info.Name }} has {{ pre_restart.host_info.ContainersRunning }} Containers running"
+        msg: "Hostname - {{ pre_restart.host_info.Name }} has {{ pre_restart.host_info.ContainersRunning }} Containers "
 
-    - name: Restart running containers
+    - name: Restart containers
       community.docker.docker_container:
         name: "{{ item }}"
         state: started
-        restart: false
+        restart: true
       loop: "{{ pre_restart.containers | map(attribute='Id') | list }}"
 
     - name: Get running containers
@@ -28,8 +28,7 @@
         containers: true
       register: post_restart
 
-    - name: Shutdown Pi
-      ansible.builtin.reboot:
-        msg: "Reboot By Ansible "
-      when: reboot_required_file.stat.exists
-
+    - name: Compare Pre - Post Containers
+      ansible.builtin.debug:
+        msg: "Pre-reboot Containers {{ pre_restart.host_info.ContainersRunning }} - Post-reboot Containers {{ post_restart.host_info.ContainersRunning }}"
+      failed_when: pre_restart.host_info.ContainersRunning != post_restart.host_info.ContainersRunning

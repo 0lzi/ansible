@@ -1,0 +1,17 @@
+---
+- name: Get Containers on Raspberry pi's
+  hosts: all
+  become: true
+  gather_facts: true
+#  vars_files:
+#    ./vars/vars.yml
+
+  tasks:
+    - name: Get running containers
+      community.docker.docker_host_info:
+        containers: true
+      register: pre_restart
+
+    - name: Show Number of running containers
+      ansible.builtin.debug:
+        msg: "Hostname - {{ pre_restart.host_info.Name }} has {{ pre_restart.host_info.ContainersRunning }} Containers running"

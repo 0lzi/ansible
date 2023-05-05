@@ -16,6 +16,7 @@
       - nfs-common
       - nfs-kernel-server
       - fonts-powerline
+      - lsof
   tags: installation, packages
 
 # Check if Oh My Bash is installed

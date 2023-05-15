@@ -12,8 +12,8 @@
 - name: Include user tasks
   ansible.builtin.include_tasks: user.yml
 
-# - name: Include user tasks
+# - name: Include network tasks
 #   ansible.builtin.include_tasks: network.yml
 #
-# - name: Include user tasks
+# - name: Include ssh tasks
 #   ansible.builtin.include_tasks: set_ssh_key.yml

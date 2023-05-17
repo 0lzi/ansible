@@ -1,5 +1,4 @@
 ---
-
 - name: restart pihole docker
   shell: docker exec -t pihole pihole restartdns
   when: running_as_container

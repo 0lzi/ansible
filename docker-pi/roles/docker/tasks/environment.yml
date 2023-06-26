@@ -31,6 +31,16 @@
     search_string: 'OSH_THEME='
     line: OSH_THEME="rr"
 
+#- name: Add custom aliases
+#  ansible.builtin.lineinfile:
+#    path: /home/pi/.bashrc
+#    search_string: 'aliases=('
+#    line: |
+#      aliases=(
+#      general
+#      custom
+#      )
+#
 # - name: Set authorized keys from file
 #   ansible.posix.authorized_key:
 #     user: pi

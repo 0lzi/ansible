@@ -22,11 +22,11 @@
 
 #  Cant get to work yet
 
-- name: One way to avoid apt_key once it is removed from your distro
+- name: Add sign key avoiding apt_key
   block:
     - name: Add Signing Key
       ansible.builtin.get_url:
-        url: https://download.docker.com/linux/debian/gpg
+        url: https://download.docker.com/{{ ansible_system | lower }}/{{ ansible_distribution | lower }}/gpg
         dest: /etc/apt/trusted.gpg.d/docker.asc # Needs the asc extension
         mode: '0644'
         force: true

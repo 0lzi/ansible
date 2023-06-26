@@ -8,8 +8,6 @@
 # /srv/nfs4        gss/krb5i(rw,sync,fsid=0,crossmnt,no_subtree_check)
 # /srv/nfs4/homes  gss/krb5i(rw,sync,no_subtree_check)
 #
-#/media/usb-storage/rpi-01       192.168.1.16(rw,sync,no_subtree_check,no_root_squash)
-#/media/usb-storage/rpi-02       192.168.1.19(rw,sync,no_subtree_check,no_root_squash)
-#/media/usb-storage/rpi-04       192.168.1.21(rw,sync,no_subtree_check,no_root_squash)
-/media/usb-storage/docker       192.168.1.0/24 (rw,sync,no_subtree_check,no_root_squash) 
-/media/usb-storage/docker-volumes       192.168.1.0/24 (rw,sync,no_subtree_check,no_root_squash) 
+/media/usb-storage/     192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)
+/media/usb-storage/docker       192.168.1.19(rw,sync,no_subtree_check,no_root_squash) 192.168.1.20(rw,sync,no_subtree_check,no_root_squash) 192.168.1.21(rw,sync,no_subtree_check,no_root_squash)
+/media/usb-storage/docker-volumes       192.168.1.19(rw,sync,no_subtree_check,no_root_squash) 192.168.1.20(rw,sync,no_subtree_check,no_root_squash) 192.168.1.21(rw,sync,no_subtree_check,no_root_squash)df -h

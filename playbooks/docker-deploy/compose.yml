@@ -1,0 +1,100 @@
+---
+- name: Deploy containers to Pi Hosts using existing compose files.
+  hosts: all
+  become: false
+  remote_user: pi
+  gather_facts: true
+  vars_files:
+    - vars/vars.yml
+
+  tasks:
+    - name: Deploy Swag
+      community.docker.docker_compose:
+        project_name: swag
+        files: docker-compose.yml
+        project_src: /home/pi/nfsdocker/swag
+        state: present
+      when: inventory_hostname in groups['pi1']
+
+    - name: Deploy Wireguard
+      community.docker.docker_compose:
+        project_name: wireguard
+        files: docker-compose.yml
+        project_src: /home/pi/nfsdocker/wireguard
+        state: present
+      when: inventory_hostname in groups['pi1']
+
+    - name: Deploy Pihole1
+      community.docker.docker_compose:
+        project_name: pihole
+        files: docker-compose.yml
+        project_src: /home/pi/nfsdocker/pihole
+        profiles: pihole
+        state: present
+      when: inventory_hostname in groups['pi4']
+
+    - name: Deploy Pihole2
+      community.docker.docker_compose:
+        project_name: pihole
+        files: docker-compose.yml
+        project_src: /home/pi/nfsdocker/pihole
+        profiles: pihole2
+        state: present
+      when: inventory_hostname in groups['pi3']
+
+    - name: Deploy Portainer
+      community.docker.docker_compose:
+        project_name: portainer
+        files: docker-compose.yml
+        project_src: /home/pi/nfsdocker/portainer
+        state: present
+      when: inventory_hostname in groups['pi1']
+
+    - name: Deploy Portainer agents
+      community.docker.docker_compose:
+        project_name: portainer_agent
+        files: agent1.yml
+        project_src: /home/pi/nfsdocker/portainer
+        state: present
+      when: inventory_hostname in groups['pi1']
+
+    - name: Deploy Portainer agents
+      community.docker.docker_compose:
+        project_name: portainer_agent
+        files: agent2.yml
+        project_src: /home/pi/nfsdocker/portainer
+        state: present
+      when: inventory_hostname in groups['pi2']
+
+    - name: Deploy Portainer agents
+      community.docker.docker_compose:
+        project_name: portainer_agent
+        files: agent3.yml
+        project_src: /home/pi/nfsdocker/portainer
+        state: present
+      when: inventory_hostname in groups['pi3']
+
+    - name: Deploy Nextcloud
+      community.docker.docker_compose:
+        project_name: nextcloud
+        files: docker-compose.yml
+        project_src: /home/pi/nfsdocker/nextcloud
+        state: present
+      when: inventory_hostname in groups['pi3']
+
+    - name: Deploy Fitness blog
+      community.docker.docker_compose:
+        project_name: fitness-blog
+        files: fitness-blog.yml
+        project_src: /home/pi/nfsdocker/ghost
+        state: present
+      when: inventory_hostname in groups['pi2']
+
+    - name: Deploy uptime kuma
+      community.docker.docker_compose:
+        project_name: uptime-kuma
+        files: docker-compose.yml
+        project_src: /home/pi/nfsdocker/uptime-kuma
+        state: present
+      when: inventory_hostname in groups['pi4']
+

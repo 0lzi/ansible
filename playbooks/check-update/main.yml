@@ -1,0 +1,20 @@
+- name: check last update centos
+  hosts: all 
+  become: true
+  become_user: centos
+  gather_facts: false
+
+  tasks:
+    - name: check last update
+      shell: "rpm -qa --last  | grep kernel | head -1 | awk '{print $2,$3,$4,$5,$6}'"
+      register: result
+      when: ansible_os_family == 'CentOS'
+
+    - name: Add lines to CSV
+      lineinfile:
+        path: result.csv
+        line: "{{ inventory_hostname }},{{ result.stdout }}"
+      loop: "{{ ansible_play_hosts }}"
+      run_once: true
+      delegate_to: localhost
+      become: false

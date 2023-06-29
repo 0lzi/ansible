@@ -40,9 +40,8 @@
     opts: defaults,noatime
     state: present
 
-
-# - name: Mount nfs drive
-#   ansible.builtin.command: mount -a
+- name: Mount nfs drive
+  ansible.builtin.command: mount -a
 
 - name: Create nfsdocker DIR
   ansible.builtin.file:

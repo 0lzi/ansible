@@ -2,6 +2,11 @@
 [nfs-server]
 pi1
 
+[nfs-clients]
+pi2
+pi3
+pi4
+
 [docker]
 pi1
 pi2

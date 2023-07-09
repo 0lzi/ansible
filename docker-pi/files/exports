@@ -10,4 +10,4 @@
 #
 /media/usb-storage/     192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)
 /media/usb-storage/docker       192.168.1.19(rw,sync,no_subtree_check,no_root_squash) 192.168.1.20(rw,sync,no_subtree_check,no_root_squash) 192.168.1.21(rw,sync,no_subtree_check,no_root_squash)
-/media/usb-storage/docker-volumes       192.168.1.19(rw,sync,no_subtree_check,no_root_squash) 192.168.1.20(rw,sync,no_subtree_check,no_root_squash) 192.168.1.21(rw,sync,no_subtree_check,no_root_squash)df -h
+/media/usb-storage/docker-volumes       192.168.1.19(rw,sync,no_subtree_check,no_root_squash) 192.168.1.20(rw,sync,no_subtree_check,no_root_squash) 192.168.1.21(rw,sync,no_subtree_check,no_root_squash)

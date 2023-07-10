@@ -1,11 +1,11 @@
-- name: check last update centos
+- name: Check last update centos
   hosts: all 
   become: true
   become_user: centos
   gather_facts: false
 
   tasks:
-    - name: check last update
+    - name: Check last update
       shell: "rpm -qa --last  | grep kernel | head -1 | awk '{print $2,$3,$4,$5,$6}'"
       register: result
       when: ansible_os_family == 'CentOS'

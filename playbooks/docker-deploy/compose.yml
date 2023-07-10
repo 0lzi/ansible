@@ -1,5 +1,5 @@
 ---
-- name: Deploy containers to Pi Hosts using existing compose files.
+- name: Deploy containers to Pi Hosts using existing compose files
   hosts: all
   become: false
   remote_user: pi

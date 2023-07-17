@@ -31,18 +31,34 @@
     search_string: 'OSH_THEME='
     line: OSH_THEME="rr"
 
-#- name: Add custom aliases
-#  ansible.builtin.lineinfile:
-#    path: /home/pi/.bashrc
-#    search_string: 'aliases=('
-#    line: |
-#      aliases=(
-#      general
-#      custom
-#      )
+- name: Add custom aliases
+  ansible.builtin.blockinfile:
+    path: /home/pi/.bashrc
+    insertafter: 'aliases=('
+    block: |
+      general
+      custom
+      )
 #
 # - name: Set authorized keys from file
 #   ansible.posix.authorized_key:
 #     user: pi
 #     state: present
 #     key: "{{ lookup('file','ansible/pi-test/files/laptop.pub') }}"
+
+- name: Set boot Options
+  ansible.builtin.lineinfile:
+    path: /boot/cmdline.txt
+    search_string: 'rootwait'
+    line: 'rootwait fsck.mode=force'
+
+
+- name: Disable onboard wifi
+  ansible.builtin.blockinfile:
+    path: /boot/config.txt
+    insertafter: '[all]'
+    marker: "<!-- {mark} Ansible Managed Block -->"
+    block: | 
+      gpu_mem=16
+      dtoverlay=disable-wifi
+      dtoverlay=disable-bt

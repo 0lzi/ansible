@@ -19,6 +19,12 @@
       - lsof
   tags: installation, packages
 
+- name: Install pip Applications
+  ansible.builtin.pip:
+    name:
+      - docker
+      - PyYAML
+      - 
 # Check if Oh My Bash is installed
 - name: Check OMB is installed
   ansible.builtin.stat:

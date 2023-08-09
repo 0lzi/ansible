@@ -24,13 +24,13 @@
     state: absent
     fstype: nfs
 
-- name: Mount an NFS volume
-  ansible.posix.mount:
-    src: "{{ nfs_server }}:/media/usb-storage/docker-volumes"
-    path: /home/pi/nfsdocker-volumes
-    opts: rw,sync,hard
-    state: absent
-    fstype: nfs
+#- name: Mount an NFS volume
+#  ansible.posix.mount:
+#    src: "{{ nfs_server }}:/media/usb-storage/docker-volumes"
+#    path: /home/pi/nfsdocker-volumes
+#    opts: rw,sync,hard
+#    state: absent
+#    fstype: nfs
 
 - name: Create NFS Drive mount point
   ansible.builtin.file: 
@@ -57,16 +57,19 @@
     owner: pi
     group: pi
 
-- name: Create nfsdocker-volumes DIR
-  ansible.builtin.file:
-    src: "/media/usb-storage/docker-volumes"
-    dest: "/home/pi/nfsdocker-volumes"
-    state: link
-    owner: pi
-    group: pi
+#- name: Create nfsdocker-volumes DIR
+#  ansible.builtin.file:
+#    src: "/media/usb-storage/docker-volumes"
+#    dest: "/home/pi/nfsdocker-volumes"
+#    state: link
+#    owner: pi
+#    group: pi
 
 - name: Start service nfs-kernel-server
   ansible.builtin.service:
     name: nfs-kernel-server
-    state: started
+    state: reloaded
     enabled: true
+
+- name: Re-export the share
+  command: exportfs -rav

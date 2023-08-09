@@ -9,11 +9,11 @@
 # /srv/nfs4/homes  gss/krb5i(rw,sync,no_subtree_check)
 #
 
-{% for clients in nsf-clients %}
+{% for clients in nfs_clients %}
 /media/usb-storage/docker  {{ clients }}(rw,sync,no_subtree_check,no_root_squash) 
 {% endfor %}
 
-{% for clients in nsf-clients %}
-/media/usb-storage/docker-vilumes  {{ clients }}(rw,sync,no_subtree_check,no_root_squash) 
-{% endfor %}
+# {% for clients in nfs_clients %}
+# /media/usb-storage/docker-volumes  {{ clients }}(rw,sync,no_subtree_check,no_root_squash) 
+# {% endfor %}
 

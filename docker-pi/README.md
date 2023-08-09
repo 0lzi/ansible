@@ -11,7 +11,7 @@
 - [x] mount nfs folders
 - [x] set up environment
 
-Run `ansible-playbook -i "hostnane," main.yml`
+Run `ansible-playbook -i "hostname," main.yml`
 
 First run when no ssh keys present
 

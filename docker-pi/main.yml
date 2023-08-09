@@ -28,9 +28,9 @@
   roles:
     - nfs-server
 
-  tasks:
-    - name: Reboot nfs-server
-      ansible.builtin.reboot:
+#  tasks:
+#    - name: Reboot nfs-server
+#      ansible.builtin.reboot:
 
 - name: Setup nfs-clients
   hosts: pi , !nfs-server
@@ -42,6 +42,6 @@
   roles:
     - nfs-client
 
-  tasks:
-    - name: Reboot nfs-clients
-      ansible.builtin.reboot:
+#  tasks:
+#    - name: Reboot nfs-clients
+#      ansible.builtin.reboot:

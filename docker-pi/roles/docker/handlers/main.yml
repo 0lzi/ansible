@@ -1,2 +1,2 @@
-- name: update hostname
-  command: "hostname {{ pi_hostname }}"
+- name: Update hostname
+  ansible.builtin.command: "hostname {{ pi_hostname }}"

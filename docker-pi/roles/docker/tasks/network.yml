@@ -16,5 +16,6 @@
     - { template: hostname.j2, dest: /etc/hostname }
     - { template: resolv.conf.j2, dest: /etc/resolv.conf }
     - { template: dhcpcd.conf.j2, dest: /etc/dhcpcd.conf }
+    - { template: interface.j2, dest: /etc/network/interfaces }
   notify:
     - update hostname

@@ -57,13 +57,13 @@
     owner: pi
     group: pi
 
-#- name: Create nfsdocker-volumes DIR
-#  ansible.builtin.file:
-#    src: "/media/usb-storage/docker-volumes"
-#    dest: "/home/pi/nfsdocker-volumes"
-#    state: link
-#    owner: pi
-#    group: pi
+- name: Create nfsdocker-volumes DIR
+  ansible.builtin.file:
+    src: "/media/usb-storage/docker-volumes"
+    dest: "/home/pi/nfsdocker-volumes"
+    state: link
+    owner: pi
+    group: pi
 
 - name: Start service nfs-kernel-server
   ansible.builtin.service:

@@ -7,6 +7,7 @@
     pi_hostname: "{{ mac_address_mapping[pi_mac_address].name }}"
     pi_ip_address: "{{ mac_address_mapping[pi_mac_address].ip }}"
 
+# For Debian 11 Raspbery PiOs
 - name: Set up networking-related files.
   ansible.builtin.template:
     src: "templates/{{ item.template }}"
@@ -16,6 +17,21 @@
     - { template: hostname.j2, dest: /etc/hostname }
     - { template: resolv.conf.j2, dest: /etc/resolv.conf }
     - { template: dhcpcd.conf.j2, dest: /etc/dhcpcd.conf }
+  notify:
+    - update hostname
+  when: ansible_distribution_major_version == "11"
+
+# For Debian 12 Raspbery PiOs
+- name: Set up networking-related files.
+  ansible.builtin.template:
+    src: "templates/{{ item.template }}"
+    dest: "{{ item.dest }}"
+    mode: "0644"
+  with_items:
+    - { template: hostname.j2, dest: /etc/hostname }
+    - { template: resolv.conf.j2, dest: /etc/resolv.conf }
     - { template: interface.j2, dest: /etc/network/interfaces }
   notify:
     - update hostname
+  when: ansible_distribution_major_version == "12"
+

@@ -11,7 +11,7 @@
     - name: Run playbook
       condition: event.payload.message == "update pi"
       action:
-        run_playbook:
+        run_job_template:
           name: Demo Playbook Template
           organization: Default
           inventory: 2

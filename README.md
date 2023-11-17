@@ -1,5 +1,6 @@
 # Ansible
-ansible playbooks
+
+## Ansible playbooks
 
 - Set up Pi for Docker and Docker-compose
 - Playbooks - collection of random playbooks
@@ -10,3 +11,9 @@ ansible playbooks
     - [restart_containers](./playbooks/restart_containers/)
     - [update](./playbooks/update/)
 
+
+## Ansible rulebooks
+
+Rulebooks for EDA
+
+- [ ] [demo](./ruleboooks/demo.yml)

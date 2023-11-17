@@ -20,7 +20,8 @@
 #    $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 
-#  Cant get to work yet
+# Look to change below for :
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/deb822_repository_module.html
 
 - name: Add sign key avoiding apt_key
   block:

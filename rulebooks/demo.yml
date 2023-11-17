@@ -14,3 +14,4 @@
         run_playbook:
           name: Demo Playbook Template
           organization: Default
+          inventory: Pi

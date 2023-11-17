@@ -8,9 +8,9 @@
         port: 5000
 
   rules:
-    - name: Run Demo Job Template
-      condition: event.payload.message == "Hello EDA"
+    - name: Run playbook
+      condition: event.payload.message == "update pi"
       action:
-        run_job_template:
-          name: Demo Job Template
+        run_playbook:
+          name: Demo Playbook Template
           organization: Default

@@ -12,5 +12,5 @@
       condition: event.payload.message == "update pi"
       action:
         run_job_template:
-          name: Demo Playbook Template
+          name: Update Pi
           organization: Default

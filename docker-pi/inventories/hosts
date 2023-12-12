@@ -29,6 +29,11 @@ pi6
 pi5
 pi6
 
+[gluster]
+pi2
+pi3
+pi4
+
 
 [pi:vars]
 ansible_user=pi

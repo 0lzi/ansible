@@ -58,3 +58,9 @@ ha_node2: rpi-06
 ha_clustername: pi_cluster
 
 vip_address: 192.168.1.25
+
+# Gluster VAR
+gluster_peers:
+  - rpi-02
+  - rpi-03
+  - rpi-04

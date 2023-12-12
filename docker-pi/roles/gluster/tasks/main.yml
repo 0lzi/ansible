@@ -1,0 +1,82 @@
+- name: Install gluster server
+  ansible.builtin.apt:
+    pkg: gluster-server
+    state: present
+
+- name: Ensure gluster is Started and enabled
+  ansible.builtin.systemd_service:
+    name: glusterd
+    state: started
+    enabled: true
+
+- name: Probe peers
+  gluster.gluster.gluster_peer:
+    state: present
+    nodes: "{{ item }}"
+  loop: "{{ gluster_peers }}"
+
+- name: Create directory
+  ansible.builtin.file:
+    dest: /glusterfs/data
+    mode: '0777'
+    owner: root
+    group: root
+    state: directory
+
+- name: Create gluster volume
+  gluster.gluster.gluster_volume:
+    state: present
+    name: swag
+    bricks: /gluster/brick1/swag
+    cluster: "{{ item }}"
+  loop: "{{ gluster_peers }}"
+  run_once: true
+
+- name: Start gluster volume
+  gluster.gluster.gluster_volume:
+    state: started
+    name: data
+
+- name: Mount gluster volume
+  ansible.posix.mount:
+    src: "localhost:data"
+    path: /glusterfs/data
+    opts: defaults,_netdev
+    state: mounted
+    fstype: glusterfs
+
+- name: Test Mount
+  ansible.builtin.copy:
+    src: files/test.txt
+    dest: /glusterfs/data
+    owner: pi
+    group: pi
+    mode: '0644'
+  when: "'pi3' in inventory_hostname"
+
+- name: Check file exists on node2
+  ansible.builtin.stat:
+    path: '/home/pi/nfsdocker-volume/swag/test.txt'
+  register: file_exists
+  when: "'pi4' in inventory_hostname"
+
+- name: Show debug
+  ansible.builtin.debug:
+    msg: "File exists"
+  when: file_exists.stat.exists
+
+# Alt method
+- name: Read File on other node
+  ansible.builtin.debug:
+    msg: "{{ lookup('ansible.builtin.file', '/glusterfs/data/test.txt') }}"
+  register: filetest
+  delegate_to: pi4
+
+- name: Check file
+  ansible.builtin.debug:
+    var: filetest
+
+- name: Cleanup test file
+  ansible.builtin.file:
+    dest: '/glusterfs/data/test.txt'
+    state: absent

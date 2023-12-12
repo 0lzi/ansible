@@ -6,14 +6,16 @@ pi1
 pi2
 pi3
 pi4
-
+pi5
+pi6
 
 [docker]
 pi1
 pi2
 pi3
 pi4
-
+pi5
+pi6
 
 [pi]
 pi1
@@ -22,6 +24,11 @@ pi3
 pi4
 pi5
 pi6
+
+[dev]
+pi5
+pi6
+
 
 [pi:vars]
 ansible_user=pi

@@ -50,6 +50,7 @@
       - docker-compose-plugin
     update_cache: true
 
+# Sort to be a handler ---
 - name: Start docker service
   ansible.builtin.service:
     name: docker

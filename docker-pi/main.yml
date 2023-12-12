@@ -45,3 +45,13 @@
 #  tasks:
 #    - name: Reboot nfs-clients
 #      ansible.builtin.reboot:
+
+- name: Setup HA Pi Cluster
+  hosts: dev
+  become: true
+  become_method: sudo
+  gather_facts: true
+  vars_files: 
+    - ./vars/vars.yml
+  roles:
+    - ha

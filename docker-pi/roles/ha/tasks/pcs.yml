@@ -1,0 +1,50 @@
+- name: Install HA packages
+  ansible.builtin.apt:
+    pkg: 
+      - corosync
+      - pcs
+      - pacemaker
+    state: present
+
+
+- name: Create random password
+  ansible.builtin.set_fact:
+    hauserpass: "{{ lookup('ansible.builtin.password', '/dev/null', seed=ansible_date_time.time) }}"
+
+- name: Change hacluster user password
+  ansible.builtin.user:
+    name: hacluster
+    update_password: always
+    password: "{{ hauserpass | password_hash('sha512') }}"
+
+- name: Enable & Start pcsd service
+  ansible.builtin.systemd_service:
+    name: pcsd
+    state: started
+    enabled: true
+
+- name: Auth nodes
+  ansible.builtin.expect: 
+    command: pcs host auth {{ hanode1 }} {{ hanode2 }}
+    responses: 
+      Questions:
+        - hacluster
+        - "{{ hauserpass }}"
+
+- name: Set up cluster
+  ansible.builtin.shell: pcs setup {{ clustername }} {{ hanode1 }} {{ hanode2 }} --force
+
+- name: Enable cluster
+  ansible.builtin.shell: pcs cluster enable --all
+
+- name: Start cluster
+  ansible.builtin.shell: pcs start --all
+
+- name: Create VIP
+  ansible.builtin.shell: pcs resource create floating_ip ocf:heartbeat:IPaddr2 ip={{ vip_address }} cidr_netmask=24 nic=eth0 op monitor interval=60s
+
+- name: Disable stonith
+  ansible.builtin.shell: pcs property set stonith-enabled=false
+
+- name: Allow resource to run anywhere
+  ansible.builtin.shell: pcs property set symmetric-cluster=true

@@ -1,0 +1,8 @@
+---
+# Tasks file for PCS
+- name: PCS
+  ansible.builtin.include_tasks: pcs.yml
+
+# Tasks file for fluster
+- name: Gluster
+  ansible.builtin.include_tasks: gluster.yml

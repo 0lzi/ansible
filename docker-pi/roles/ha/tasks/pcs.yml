@@ -9,13 +9,13 @@
 
 - name: Create random password
   ansible.builtin.set_fact:
-    hauserpass: "{{ lookup('ansible.builtin.password', '/dev/null', seed=ansible_date_time.time) }}"
+    ha_userpass: "{{ lookup('ansible.builtin.password', '/dev/null', seed=ansible_date_time.time) }}"
 
 - name: Change hacluster user password
   ansible.builtin.user:
     name: hacluster
     update_password: always
-    password: "{{ hauserpass | password_hash('sha512') }}"
+    password: "{{ ha_userpass | password_hash('sha512') }}"
 
 - name: Enable & Start pcsd service
   ansible.builtin.systemd_service:
@@ -25,14 +25,14 @@
 
 - name: Auth nodes
   ansible.builtin.expect: 
-    command: pcs host auth {{ hanode1 }} {{ hanode2 }}
+    command: pcs host auth {{ ha_node1 }} {{ ha_node2 }}
     responses: 
       Questions:
         - hacluster
-        - "{{ hauserpass }}"
+        - "{{ ha_userpass }}"
 
 - name: Set up cluster
-  ansible.builtin.shell: pcs setup {{ clustername }} {{ hanode1 }} {{ hanode2 }} --force
+  ansible.builtin.shell: pcs setup {{ ha_clustername }} {{ ha_node1 }} {{ ha_node2 }} --force
 
 - name: Enable cluster
   ansible.builtin.shell: pcs cluster enable --all

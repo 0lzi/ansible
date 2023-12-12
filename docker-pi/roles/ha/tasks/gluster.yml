@@ -19,10 +19,10 @@
 - name: Create directory
   ansible.builtin.file:
     dest: /gluster/brick1
-    directory: true
     mode: '0750'
     owner: root
     group: root
+    state: directory
 
 - name: Create gluster volume
   gluster.gluster.gluster_volume:

@@ -43,11 +43,13 @@ dns_nameservers:
 
 pi_ip_gateway: "192.168.1.254"
 
-ha-clients:
+ha_clients:
   - pi5
   - pi6
 
-ha-node1: rpi-05
-ha-node2: rpi-06
+ha_node1: rpi-05
+ha_node2: rpi-06
 
-clustername: pi_cluster
+ha_clustername: pi_cluster
+
+vip_address: 192.168.1.25

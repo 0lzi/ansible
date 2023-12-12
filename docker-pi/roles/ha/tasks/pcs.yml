@@ -1,11 +1,10 @@
 - name: Install HA packages
   ansible.builtin.apt:
-    pkg: 
+    pkg:
       - corosync
       - pcs
       - pacemaker
     state: present
-
 
 - name: Create random password
   ansible.builtin.set_fact:
@@ -24,7 +23,7 @@
     enabled: true
 
 - name: Auth nodes
-  ansible.builtin.expect: 
+  ansible.builtin.expect:
     command: pcs host auth {{ ha_node1 }} {{ ha_node2 }}
     responses: 
       Questions:

@@ -51,7 +51,7 @@
   become: true
   become_method: sudo
   gather_facts: true
-  vars_files: 
+  vars_files:
     - ./vars/vars.yml
   roles:
     - ha

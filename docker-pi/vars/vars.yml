@@ -1,5 +1,5 @@
+# NFS Vars
 nfs_server : 192.168.1.16
-
 nfs_clients:
   - 192.168.1.19
   - 192.168.1.20
@@ -7,14 +7,18 @@ nfs_clients:
   - 192.168.1.22
   - 192.168.1.23
 
+# Disk
 uuid: UUID=936df009-dd6f-4172-b785-cbedee0ad00d
 
+# Can remove when update play to use inventory_hostname
 pi1: 192.168.1.16
 pi2: 192.168.1.19
 pi3: 192.168.1.20
 pi4: 192.168.1.21
 pi5: 192.168.1.22
 pi6: 192.168.1.23
+
+# Networking bits
 
 mac_address_mapping:
  #' "b8:27:eb:7c:03:c1":
@@ -43,6 +47,7 @@ dns_nameservers:
 
 pi_ip_gateway: "192.168.1.254"
 
+# HA vars
 ha_clients:
   - pi5
   - pi6

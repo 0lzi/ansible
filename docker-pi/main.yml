@@ -17,30 +17,30 @@
   roles:
     - docker
 
-- name: Setup nfs-server
-  hosts: nfs-server
-  remote_user: pi
-  become: true
-  become_method: sudo
-  gather_facts: true
-  vars_files:
-    - ./vars/vars.yml
-  roles:
-    - nfs-server
+#- name: Setup nfs-server
+#  hosts: nfs-server
+#  remote_user: pi
+#  become: true
+#  become_method: sudo
+#  gather_facts: true
+#  vars_files:
+#    - ./vars/vars.yml
+#  roles:
+#    - nfs-server
 
 #  tasks:
 #    - name: Reboot nfs-server
 #      ansible.builtin.reboot:
 
-- name: Setup nfs-clients
-  hosts: pi , !nfs-server
-  become: true
-  become_method: sudo
-  gather_facts: true
-  vars_files:
-    - ./vars/vars.yml
-  roles:
-    - nfs-client
+#- name: Setup nfs-clients
+#  hosts: pi , !nfs-server
+#  become: true
+#  become_method: sudo
+#  gather_facts: true
+#  vars_files:
+#    - ./vars/vars.yml
+#  roles:
+#    - nfs-client
 
 #  tasks:
 #    - name: Reboot nfs-clients

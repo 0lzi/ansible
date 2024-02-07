@@ -3,6 +3,6 @@
 - name: PCS
   ansible.builtin.include_tasks: pcs.yml
 
-# Tasks file for fluster
+# Tasks file for Gluster
 - name: Gluster
   ansible.builtin.include_tasks: gluster.yml

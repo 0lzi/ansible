@@ -13,8 +13,8 @@
   gluster.gluster.gluster_peer:
     state: present
     nodes:
-      - "{{ hanode1 }}"
-      - "{{ hanode2 }}"
+      - "{{ gluster_peers }}"
+
 
 - name: Create directory
   ansible.builtin.file:
@@ -30,8 +30,7 @@
     name: swag
     bricks: /gluster/brick1/swag
     cluster:
-      - "{{ hanode1 }}"
-      - "{{ hanode2 }}"
+      - "{{ gluster_peers }}"
   run_once: true
 
 - name: Start gluster volume

@@ -6,9 +6,19 @@
       - pacemaker
     state: present
 
+- name: Update hosts file
+  ansible.builtin.template:
+    src: ../templates/hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: '0644'
+
 - name: Create random password
   ansible.builtin.set_fact:
     ha_userpass: "{{ lookup('ansible.builtin.password', '/dev/null', seed=ansible_date_time.time) }}"
+    delegate_to: localhost
+    run_once: true
 
 - name: Change hacluster user password
   ansible.builtin.user:
@@ -29,21 +39,43 @@
       Questions:
         - hacluster
         - "{{ ha_userpass }}"
+  delegate_to: node1
+  run_once: true
+
 
 - name: Set up cluster
   ansible.builtin.shell: pcs setup {{ ha_clustername }} {{ ha_node1 }} {{ ha_node2 }} --force
+  delegate_to: node1
+  run_once: true
+
 
 - name: Enable cluster
   ansible.builtin.shell: pcs cluster enable --all
+  delegate_to: node1
+  run_once: true
+
 
 - name: Start cluster
   ansible.builtin.shell: pcs start --all
+  delegate_to: node1
+  run_once: true
+
 
 - name: Create VIP
   ansible.builtin.shell: pcs resource create floating_ip ocf:heartbeat:IPaddr2 ip={{ vip_address }} cidr_netmask=24 nic=eth0 op monitor interval=60s
+  delegate_to: node1
+  run_once: true
+
 
 - name: Disable stonith
   ansible.builtin.shell: pcs property set stonith-enabled=false
+  delegate_to: node1
+  run_once: true
+
 
 - name: Allow resource to run anywhere
   ansible.builtin.shell: pcs property set symmetric-cluster=true
+  delegate_to: node1
+  run_once: true
+
+

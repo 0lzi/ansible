@@ -1,0 +1,12 @@
+[proxmox]
+pve[1:3].lab
+
+[dev]
+dev-ubnt-[1:3].lab
+
+[prod]
+prod-deb-[1:3].lab
+
+[docker-hosts:children]
+dev
+

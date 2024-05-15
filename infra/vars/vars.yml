@@ -1,0 +1,26 @@
+aptpackages:
+  - htop
+  - sshpass
+  - python3-pip
+  - powerline
+  - fonts-powerline
+  - python3-venv
+  - tree
+  - git
+  - lsof
+  - apt-transport-https
+  - wget
+  - gpg
+  - curl
+  - openssh-server
+  - dconf-editor
+  - tmux
+  - jq
+  - screen
+  - fzf
+  - build-essential
+  - ripgrep
+  - yubikey-manager
+
+
+key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO0H/Ljg4QTkUNnTnhVo2ksb91xaIvWelSEL/jxjfAOK oliverkelly@ct-lt-02642

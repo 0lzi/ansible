@@ -1,0 +1,41 @@
+# WORK IN PROGRESS 
+- name: Add sign key avoiding apt_key
+  block:
+    - name: Add Signing Key
+      ansible.builtin.get_url:
+        url: https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg
+        dest: /etc/apt/trusted.gpg.d/proxmox-release-bookworm.acs  # Needs the asc extension
+        mode: '0644'
+        force: true
+
+    - name: Add Proxmox Dep source
+      ansible.builtin.apt_repository:
+        repo: >
+          deb [arch=amd64] http://download.proxmox.com/debian/pve bookworm pve-no-subscription
+        state: present
+
+- name: Update full
+  apt:
+    upgrade: full
+    update_cache: true
+
+- name: Install Proxmox VE Kernel
+  apt:
+    package: proxmox-default-kernel
+    state: present
+
+- name: reboot
+  reboot:
+
+- name: Get debian kernel versions
+  shell: dpkg --list | grep linux-image | awk '{print $2}
+  register: kernel
+    
+- name: set kernelversion
+  set_fact:
+    kernel_ver: "{{ kernel.stdout }}"
+
+- name: Remove Debian Kernel
+  apt:
+    package: {{ kernel_ver }}
+    state: absent

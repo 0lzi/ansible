@@ -1,0 +1,14 @@
+---
+# Run with ansible-playbook -i inventory/hosts main.yml
+- name: Create VMs
+  hosts: pve
+  remote_user: "{{ user }}"
+  become: true
+  become_method: sudo
+  gather_facts: true
+  vars_files:
+    - ./vars/vars.yml
+    - ./vars/vms.yml
+
+  roles:
+    - vm

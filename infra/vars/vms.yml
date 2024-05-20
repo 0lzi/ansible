@@ -1,0 +1,13 @@
+vms:
+  - name: docker-1
+    node: pve1
+    cpu: 1
+    memory: 3072
+    disk:
+      - name: scsi0
+        storage: local-lvm
+        size: 10
+        format: qcow2
+    tags:
+      - linux
+      - dev

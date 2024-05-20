@@ -21,6 +21,7 @@ aptpackages:
   - build-essential
   - ripgrep
   - yubikey-manager
+  - qemu-guest-agent
 
 
 key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO0H/Ljg4QTkUNnTnhVo2ksb91xaIvWelSEL/jxjfAOK oliverkelly@ct-lt-02642

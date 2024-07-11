@@ -8,4 +8,14 @@ docker-hosts
 
 [docker-hosts]
 docker-1.lab
-pi-hole.lab
+pi-hole-[1:2].lab
+
+[k8s:children]
+k8s-master
+k8s-worker
+
+[k8s-master]
+k8s-master-[1:3].lab
+
+[k8s-worker]
+k8s-worker-[1:3].lab

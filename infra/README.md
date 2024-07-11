@@ -21,10 +21,10 @@ Run `pipenv install` then `pipenv shell` before running the ansible playbooks.
 ```yml
 main.yml - Installs base packages and sets up users
 docker-host.yml - Does the same as main.yml + installs docker
-pve-vms.yml - Creates VMs based on what is in ./vars/vars.yml
+pve-vms.yml - Creates VMs based on what is in ./vars/vars.yml <- Looking to swap out for Terraform
 ```
 
 ## Inventory
 
 - docker-1
-- pi-hole
+- pi-hole-[1-2]

@@ -10,4 +10,64 @@ vms:
         format: qcow2
     tags:
       - linux
+      - prod
+  - name: pi-hole-1
+    node: pve1
+    cpu: 1
+    memory: 512
+    disk:
+      - name: scsi0
+        storage: local-lvm
+        size: 10
+        format: qcow2
+    tags:
+      - linux
+      - prod
+  - name: pi-hole-2
+    node: pve2
+    cpu: 1
+    memory: 512
+    disk:
+      - name: scsi0
+        storage: local-lvm
+        size: 10
+        format: qcow2
+    tags:
+      - linux
+      - prod
+  - name: k8s-master-1
+    node: pve1
+    cpu: 2
+    memory: 2048
+    disk:
+      - name: scsi0
+        storage: local-lvm
+        size: 10
+        format: qcow2
+    tags:
+      - linux
+      - dev
+  - name: k8s-master-2
+    node: pve1
+    cpu: 2
+    memory: 2048
+    disk:
+      - name: scsi0
+        storage: local-lvm
+        size: 10
+        format: qcow2
+    tags:
+      - linux
+      - dev
+  - name: k8s-master-3
+    node: pve1
+    cpu: 2
+    memory: 2048
+    disk:
+      - name: scsi0
+        storage: local-lvm
+        size: 10
+        format: qcow2
+    tags:
+      - linux
       - dev

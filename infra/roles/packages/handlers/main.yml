@@ -1,3 +1,10 @@
+- name: Start open-iscsi
+  ansible.builtin.service:
+    name: open-iscsi
+    state: started
+    enabled: true
+  listen: "start open-iscsi"
+
 - name: Start qeumu service
   ansible.builtin.service:
     name: qemu-guest-agent

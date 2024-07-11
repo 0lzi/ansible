@@ -1,0 +1,27 @@
+aptpackages:
+  - htop
+  - sshpass
+  - python3-pip
+  - powerline
+  - fonts-powerline
+  - python3-venv
+  - tree
+  - git
+  - lsof
+  - apt-transport-https
+  - wget
+  - gpg
+  - curl
+  - openssh-server
+  - dconf-editor
+  - tmux
+  - jq
+  - screen
+  - fzf
+  - build-essential
+  - ripgrep
+  - yubikey-manager
+  - qemu-guest-agent
+  - open-iscsi
+  - nfs-common
+  - iscsiadm

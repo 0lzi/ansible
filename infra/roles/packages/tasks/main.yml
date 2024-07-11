@@ -2,7 +2,9 @@
   ansible.builtin.package:
     name: "{{ aptpackages }}"
     state: present
-  notify: "start qemu-guest-agent"
+  notify: 
+    - "start qemu-guest-agent"
+    - "start open-iscsi"
 
 # Check if Oh My Bash is installed
 - name: Check OMB is installed

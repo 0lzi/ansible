@@ -1,0 +1,47 @@
+---
+- name: Configure m1 Openstack
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - auth.yml
+    - domains.yml
+    - projects.yml
+    - users.yml
+    - networks.yml
+    - subnets.yml
+    - keys.yml
+    - flavours.yml
+    - quotas.yml
+
+  tasks:
+    - name: Create Domains
+      include_tasks: os-domains.yml
+      tags: domains
+
+    - name: Create Projects
+      include_tasks: os-projects.yml
+      tags: projects
+
+    - name: Create Users
+      include_tasks: os-users.yml
+      tags: users
+
+    - name: Create Networks
+      include_tasks: os-networks.yml
+      tags: networks
+
+    - name: Create Subnets
+      include_tasks: os-subnets.yml
+      tags: subnets
+
+    - name: Create Keypairs
+      include_tasks: os-keypairs.yml
+      tags: keypairs
+
+    - name: Create Flavours
+      include_tasks: os-flavours.yml
+      tags: flavours
+
+    - name: Set Quotas
+      include_tasks: os-quotas.yml
+      tags: quotas

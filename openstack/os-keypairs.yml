@@ -1,0 +1,15 @@
+- name: Create keys
+  openstack.cloud.keypair:
+    cloud:
+      auth:
+        auth_url: "{{ auth_url }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        project_name: "{{ project_name }}"
+        project_domain_name: Default
+        user_domain_name: Default
+      region_name: "{{ region_name }}"
+    state: "{{ item.state }}"
+    name: "{{ item.name }}"
+    public_key: "{{ item.key }}"
+  with_items: "{{ keys }}"

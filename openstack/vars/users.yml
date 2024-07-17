@@ -1,0 +1,6 @@
+users:
+  - name: demo
+    state: present
+    email: 'demo@demo1.com'
+    domain: home
+    project: demo

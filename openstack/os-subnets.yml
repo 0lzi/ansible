@@ -1,0 +1,19 @@
+- name: Create subnets
+  openstack.cloud.subnet:
+    cloud:
+      auth:
+        auth_url: "{{ auth_url }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        project_name: "{{ project_name }}"
+        project_domain_name: Default
+        user_domain_name: Default
+      region_name: "{{ region_name }}"
+    state: "{{ item.state }}"
+    name: "{{ item.name }}"
+    network_name: "{{ item.net_name }}"
+    cidr: "{{ item.cidr }}"
+    dns_nameservers: "{{ item.nameservers}}"
+    enable_dhcp: "{{ item.dhcp }}"
+    gateway_ip: "{{ item.gateway }}"
+  with_items: "{{ subnets }}"

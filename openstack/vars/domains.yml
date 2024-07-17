@@ -1,0 +1,5 @@
+domains:
+  - name: home
+    state: present
+    is_enabled: true
+    description: foo

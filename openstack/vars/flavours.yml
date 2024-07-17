@@ -1,0 +1,43 @@
+flavours:
+  - name: m1.tiny
+    state: present
+    ram: 512
+    vcpus: 1
+    disk: 10
+    is_public: true
+  - name: m1.small
+    state: present
+    ram: 1024
+    vcpus: 1
+    disk: 10
+    is_public: true
+  - name: m1.med
+    state: present
+    ram: 2046
+    vcpus: 2
+    disk: 10
+    is_public: true
+  - name: m1.large
+    state: present
+    ram: 4096
+    vcpus: 4
+    disk: 10
+    is_public: true
+  - name: m1.xlarge
+    state: present
+    ram: 16384
+    vcpus: 8
+    disk: 10
+    is_public: true
+  - name: c1.tiny
+    state: present
+    ram: 1024
+    vcpus: 1
+    disk: 10
+    is_public: true
+  - name: c1.small
+    state: present
+    ram: 1024
+    vcpus: 2
+    disk: 10
+    is_public: true

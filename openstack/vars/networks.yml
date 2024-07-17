@@ -1,0 +1,26 @@
+networks:
+  - name: demo_net1
+    state: present
+    admin_state: true
+    external: true
+    provider_network_type: vlan
+    pysnet_type: provider 
+    vlan: 10
+    shared: true
+  - name: Admin
+    state: present
+    admin_state: true
+    external: true
+    provider_network_type: vlan
+    pysnet_type: provider 
+    vlan: 2
+    shared: true
+  - name: Guest
+    state: present
+    admin_state: true
+    external: true
+    provider_network_type: vlan
+    pysnet_type: provider 
+    vlan: 3
+    shared: true
+

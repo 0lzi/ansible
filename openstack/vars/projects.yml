@@ -1,0 +1,6 @@
+projects:
+  - name: demo
+    state: present
+    description: 'demo-project'
+    domain: home
+    enabled: True

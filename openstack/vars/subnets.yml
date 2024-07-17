@@ -1,0 +1,27 @@
+subnets:
+  - name: demo
+    state: present
+    net_name: demo_net1
+    cidr: '192.168.10.0/24'
+    gateway: '192.168.33.254'
+    nameservers: '192.168.10.254'
+    dhcp: false
+  - name: admin_subnet
+    state: present
+    net_name: Admin
+    cidr: '192.168.2.0/24'
+    gateway: '192.168.2.254'
+    nameservers: '8.8.8.8'
+    dhcp: false
+    allocaton_pool_start: '192.168.2.10'
+    allocaton_pool_end: '192.168.2.20'
+  - name: guest_subnet
+    state: present
+    net_name: Guest
+    cidr: '192.168.3.0/24'
+    gateway: '192.168.3.254'
+    nameservers: '8.8.8.8'
+    dhcp: false
+    allocaton_pool_start: '192.168.3.10'
+    allocaton_pool_end: '192.168.3.20'
+

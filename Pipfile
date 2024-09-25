@@ -4,6 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+ansible = "*"
+ansible-lint = "*"
+proxmoxer = "*"
+requests = "*"
+openstacksdk = "*"
 
 [dev-packages]
 

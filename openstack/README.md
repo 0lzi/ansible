@@ -4,7 +4,7 @@ This is a set of dummy tasks/vars to configure OpenStack deployment after its be
 
 ### Set up
 
-Create python virtual env `pipenv install && pipenv shell`
+Go to root of repo and create python virtual env `pipenv install && pipenv shell`
 
 Then run `ansible-galaxy install -r requirements.yml`
 

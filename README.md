@@ -13,7 +13,7 @@
     - [reset password](./playbooks/reset_password/)
     - [restart_containers](./playbooks/restart_containers/)
     - [update](./playbooks/update/)
-
+    - [workstation-config](https://github.com/0lzi/workstation-config)
 
 ## Ansible rulebooks
 

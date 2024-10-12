@@ -9,4 +9,5 @@ docker-hosts
 [docker-hosts]
 docker-1.lab
 pi-hole-[1:2].lab
+lancache.lab
 

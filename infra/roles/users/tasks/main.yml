@@ -8,7 +8,9 @@
 - name: Add SSH key for {{ user }}
   authorized_key:
     user: "{{ user }}"
-    key: "{{ key }}"
+    state: present
+    key: "{{ item }}"
+  with_items: "{{ keys }}"
 
 # - name: "Kill any processes for {{ user }}"
 #   shell: "pkill -KILL -U {{ unwanted_user }} 2>/dev/null"

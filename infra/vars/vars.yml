@@ -25,4 +25,6 @@ aptpackages:
   - open-iscsi
 
 
-key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO0H/Ljg4QTkUNnTnhVo2ksb91xaIvWelSEL/jxjfAOK oliverkelly@ct-lt-02642
+keys: 
+  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO0H/Ljg4QTkUNnTnhVo2ksb91xaIvWelSEL/jxjfAOK oliverkelly@ct-lt-02642
+  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHbTW+h27gxALZQ+KXVU1IbR3I9EAEQRD8DVADGxmsrO oli@desktop

@@ -6,3 +6,8 @@ pi1
 pi2
 pi3
 pi4
+
+[prod]
+pi-hole-1.lab
+pi-hole-2.lab
+docker-1.lab

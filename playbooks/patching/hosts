@@ -7,3 +7,8 @@ pi4
 
 [nfs-server]
 pi1
+
+[prod]
+pi-hole-1.lab
+pi-hole-2.lab
+docker-1.lab

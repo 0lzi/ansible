@@ -1,5 +1,5 @@
 ---
-- name: Patching Raspberry pi
+- name: Patching
   hosts: all
   become: true
   gather_facts: true

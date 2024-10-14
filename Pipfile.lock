@@ -18,12 +18,12 @@
     "default": {
         "ansible": {
             "hashes": [
-                "sha256:5c12048831a6690fc865dfe03dc8ab61c3ba08b5d01b249a16b247ad99a60bc0",
-                "sha256:cb386e75214bc5420b5ab412bfb64fb196c20559738e0f091892852aa5f5c177"
+                "sha256:1d10bddba58f1edd0fe0b8e0387e0fafc519535066bb3c919c33b6ea3ec32a0f",
+                "sha256:ba2045031a7d60c203b6e5fe1f8eaddd53ae076f7ada910e636494384135face"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.10'",
-            "version": "==10.4.0"
+            "version": "==10.5.0"
         },
         "ansible-compat": {
             "hashes": [
@@ -35,11 +35,11 @@
         },
         "ansible-core": {
             "hashes": [
-                "sha256:44a1f30076796536ba2455cad18d36e62870f04e632e3ca2ebe970d7beacf24d",
-                "sha256:a36c9ab8e84d5d51f9fffe389d6ac7e81c8d0df6af8c12429ddbb71e8d69b21e"
+                "sha256:10f165b475cf2bc8d886e532cadb32c52ee6a533649793101d3166bca9bd3ea3",
+                "sha256:ae7f51fd13dc9d57c9bcd43ef23f9c255ca8f18f4b5c0011a4f9b724d92c5a8e"
             ],
             "markers": "python_version >= '3.10'",
-            "version": "==2.17.4"
+            "version": "==2.17.5"
         },
         "ansible-lint": {
             "hashes": [
@@ -721,11 +721,11 @@
         },
         "rich": {
             "hashes": [
-                "sha256:1760a3c0848469b97b558fc61c85233e3dafb69c7a071b4d60c38099d3cd4c06",
-                "sha256:8260cda28e3db6bf04d2d1ef4dbc03ba80a824c88b0e7668a0f23126a424844a"
+                "sha256:51a2c62057461aaf7152b4d611168f93a9fc73068f8ded2790f29fe2b5366d0c",
+                "sha256:8c82a3d3f8dcfe9e734771313e606b39d8247bb6b826e196f4914b333b743cf1"
             ],
-            "markers": "python_full_version >= '3.7.0'",
-            "version": "==13.8.1"
+            "markers": "python_full_version >= '3.8.0'",
+            "version": "==13.9.2"
         },
         "rpds-py": {
             "hashes": [
@@ -930,7 +930,7 @@
                 "sha256:e72f0de09bba6a04e0de70937b0cf06e55f36f37b3deb422dfaf854b867b840a"
             ],
             "markers": "python_version >= '3.12'",
-            "version": "==9.0"
+            "version": "==10.0"
         },
         "yamllint": {
             "hashes": [

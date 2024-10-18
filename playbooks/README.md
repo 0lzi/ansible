@@ -1,5 +1,18 @@
 # Playbooks
 
+- check-update/
+- cloudflare/
+- docker-deploy/
+- get_running_containers/
+- openstack/
+- patching/
+- pihole/
+- reset_password/
+- restart_containers/
+- start_all_containers/
+- stop_containers_shutdown/
+- template/
+- update/
 
 ### Adhoc commands
 

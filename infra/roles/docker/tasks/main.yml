@@ -1,5 +1,0 @@
----
-- name: Include docker tasks
-  ansible.builtin.include_tasks: docker.yml
-
-

@@ -1,0 +1,5 @@
+- name: Create VMs
+  ansible.builtin.include_tasks: createvm.yml
+  loop: "{{ vms }}"
+  loop_control:
+    loop_var: vm_item

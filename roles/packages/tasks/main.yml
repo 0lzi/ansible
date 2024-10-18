@@ -1,0 +1,22 @@
+- name: Install packages
+  ansible.builtin.package:
+    name: "{{ aptpackages }}"
+    state: present
+  notify:
+    - "start qemu-guest-agent"
+    - "start open-iscsi"
+
+# Check if Oh My Bash is installed
+- name: Check OMB is installed
+  ansible.builtin.stat:
+    path: /home/pi/.oh-my-bash
+  register: omb_installed
+
+- name: Install oh-my-bash
+  ansible.builtin.shell: bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh) --unattended"
+  become: false
+  when: not omb_installed.stat.exists
+  register: omb_result
+  changed_when: omh_result.rc !=0
+  ignore_errors: true
+  tags: bash

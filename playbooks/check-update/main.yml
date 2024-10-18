@@ -6,12 +6,18 @@
 
   tasks:
     - name: Check last update
-      shell: "rpm -qa --last  | grep kernel | head -1 | awk '{print $2,$3,$4,$5,$6}'"
+      ansible.builtin.shell:
+        cmd: |
+          set -o pipefail
+          "rpm -qa --last  | grep kernel | head -1 |
+          awk '{print $2,$3,$4,$5,$6}'"
+        executable: /bin/bash
       register: result
+      changed_when: false
       when: ansible_os_family == 'CentOS'
 
-    - name: Add lines to CSV
-      lineinfile:
+    - name: Add lines to CSV # noqa: run-once[task]
+      ansible.builtin.lineinfile:
         path: result.csv
         line: "{{ inventory_hostname }},{{ result.stdout }}"
       loop: "{{ ansible_play_hosts }}"

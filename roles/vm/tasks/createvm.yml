@@ -1,0 +1,24 @@
+- name: >
+    Clone VM with only source VM name.
+    The VM source is 8000.
+    The target VM name is {{ vm_item.name }}
+  community.general.proxmox_kvm:
+    api_user: "{{ user }}@pam"
+    api_token_id: API
+    api_token_secret: "{{ api_secret }}"
+    api_host: "{{ inventory_hostname }}"
+    vmid: 8000
+    clone: ubuntu-cloud
+    full: true
+    autostart: true
+    name: "{{ vm_item.name }}"
+    node: "{{ vm_item.node }}"
+    cpu: "{{ vm_item.cpu }}"
+    vcpus: "{{ vm_item.vcpu }}"
+    memory: "{{ vm_item.memory }}"
+    storage: local-lvm
+    # scsi:
+    #   scsi0: "{{ disk_item.storage }}; size={{ disk_item.size }}"
+    format: qcow2
+    timeout: 500
+    state: present

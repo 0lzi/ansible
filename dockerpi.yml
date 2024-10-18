@@ -1,0 +1,47 @@
+---
+# Run with ansible-playbook -i inventory/hosts main.yml
+- name: Setup Docker pi
+  hosts: all
+  remote_user: pi
+  become: true
+  become_method: sudo
+  gather_facts: true
+  vars_files:
+    - ./vars/pi-vars.yml
+
+  pre_tasks:
+    - name: Update Apt Cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+  roles:
+    - docker-pi
+
+- name: Setup nfs-server
+  hosts: nfs-server
+  remote_user: pi
+  become: true
+  become_method: sudo
+  gather_facts: true
+  vars_files:
+    - ./vars/pi-vars.yml
+  roles:
+    - nfs-server-pi
+
+#  tasks:
+#    - name: Reboot nfs-server
+#      ansible.builtin.reboot:
+
+- name: Setup nfs-clients
+  hosts: pi , !nfs-server
+  become: true
+  become_method: sudo
+  gather_facts: true
+  vars_files:
+    - ./vars/pi-vars.yml
+  roles:
+    - nfs-client-pi
+
+#  tasks:
+#    - name: Reboot nfs-clients
+#      ansible.builtin.reboot:

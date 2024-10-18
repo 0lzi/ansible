@@ -1,2 +1,0 @@
-- name: Update hostname
-  ansible.builtin.command: "hostname {{ pi_hostname }}"

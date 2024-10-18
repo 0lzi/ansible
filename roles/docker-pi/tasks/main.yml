@@ -1,0 +1,19 @@
+---
+# tasks file for roles/common
+- name: Include packages
+  ansible.builtin.include_tasks: packages.yml
+
+- name: Include docker tasks
+  ansible.builtin.include_tasks: docker.yml
+
+- name: Include environment tasks
+  ansible.builtin.include_tasks: environment.yml
+
+- name: Include user tasks
+  ansible.builtin.include_tasks: user.yml
+
+- name: Include network tasks
+  ansible.builtin.include_tasks: network.yml
+
+- name: Include ssh tasks
+  ansible.builtin.include_tasks: set_ssh_key.yml

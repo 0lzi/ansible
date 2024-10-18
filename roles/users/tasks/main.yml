@@ -6,7 +6,7 @@
     shell: /bin/bash
 
 - name: Add SSH key for {{ user }}
-  authorized_key:
+  ansible.posix.authorized_key:
     user: "{{ user }}"
     state: present
     key: "{{ item }}"
@@ -18,15 +18,15 @@
 #   changed_when: "kill_result.rc == 0"
 #   failed_when: "false"
 #
-# - name: remove {{ unwanted_user }} 
+# - name: remove {{ unwanted_user }}
 #   ansible.builtin.user:
 #     name: "{{ unwanted_user }}"
 #     state: absent
 - name: Add user to passwordless sudo
-  copy:
+  ansible.builtin.copy:
     content: "oli ALL=(ALL:ALL) NOPASSWD:ALL"
     dest: "/etc/sudoers.d/{{ user }}"
     owner: root
     group: root
-    mode: 0444
+    mode: "0444"
     validate: "visudo -cf %s"

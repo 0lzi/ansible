@@ -2,7 +2,7 @@
   ansible.builtin.package:
     name: "{{ aptpackages }}"
     state: present
-  notify: 
+  notify:
     - "start qemu-guest-agent"
     - "start open-iscsi"
 

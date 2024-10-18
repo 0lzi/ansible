@@ -1,4 +1,4 @@
-# WORK IN PROGRESS 
+# WORK IN PROGRESS
 - name: Add sign key avoiding apt_key
   block:
     - name: Add Signing Key
@@ -15,27 +15,27 @@
         state: present
 
 - name: Update full
-  apt:
+  ansible.builtin.apt:
     upgrade: full
     update_cache: true
 
 - name: Install Proxmox VE Kernel
-  apt:
+  ansible.builtin.apt:
     package: proxmox-default-kernel
     state: present
 
-- name: reboot
-  reboot:
+- name: Reboot
+  ansible.builtin.reboot:
 
 - name: Get debian kernel versions
-  shell: dpkg --list | grep linux-image | awk '{print $2}
+  ansible.builtin.shell: dpkg --list | grep linux-image | awk '{print $2}
   register: kernel
-    
-- name: set kernelversion
-  set_fact:
+
+- name: Set kernelversion
+  ansible.builtin.set_fact:
     kernel_ver: "{{ kernel.stdout }}"
 
 - name: Remove Debian Kernel
-  apt:
-    package: {{ kernel_ver }}
+  ansible.builtin.apt:
+    package: "{{ kernel_ver }}"
     state: absent

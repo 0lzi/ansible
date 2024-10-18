@@ -13,7 +13,7 @@
     autostart: true
     name: "{{ vm_item.name }}"
     node: "{{ vm_item.node }}"
-    cpu: "{{vm_item.cpu }}"
+    cpu: "{{ vm_item.cpu }}"
     vcpus: "{{ vm_item.vcpu }}"
     memory: "{{ vm_item.memory }}"
     storage: local-lvm

@@ -1,0 +1,66 @@
+---
+- name: Set up lancache dir
+  ansible.builtin.file:
+    path: /srv/lancache
+    state: directory
+    mode: '0755'
+    owner:
+    group:
+
+- name: Set up Docker network
+  community.docker.docker_network:
+    name: lancache
+    driver: macvlan
+    driver_options:
+      parent: ens18
+
+- name: Deploy lancache DNS
+  community.docker.docker_container:
+    name: dns
+    image: "lancachenet/lancache-dns:latest"
+    network_mode: lancache
+    networks:
+      - name: lancache
+    env:
+      USE_GENERIC_CACHE: "true"
+      LANCACHE_IP: "{{ ansible_default_ipv4.address }}"
+      DNS_BIND_IP: "{{ ansible_default_ipv4.address }}"
+      UPSTREAM_DNS: "{{ pihole }}"
+      CACHE_ROOT: "/srv/lancache"
+      CACHE_DISK_SIZE: "2000g"
+      MIN_FREE_DISK: "10g"
+      CACHE_INDEX_SIZE: "500m"
+      CACHE_MAX_AGE: "3650d"
+      TZ: "Europe/London"
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+    restart_policy: unless-stopped
+
+- name: Deploy lancache Monolithic
+  community.docker.docker_container:
+    name: dns
+    image: "lancachenet/monolithic:latest"
+    network_mode: lancache
+    networks:
+      - name: lancache
+    env:
+      USE_GENERIC_CACHE: "true"
+      LANCACHE_IP: "{{ ansible_default_ipv4.address }}"
+      DNS_BIND_IP: "{{ ansible_default_ipv4.address }}"
+      UPSTREAM_DNS: "{{ pihole }}"
+      CACHE_ROOT: "/srv/lancache"
+      CACHE_DISK_SIZE: "2000g"
+      MIN_FREE_DISK: "10g"
+      CACHE_INDEX_SIZE: "500m"
+      CACHE_MAX_AGE: "3650d"
+      TZ: "Europe/London"
+    ports:
+      - "80:80/tcp"
+      - "443:443/tcp"
+    volumes:
+      - /srv/lancache/cache:/data/cache
+      - /srv/lancache/logs:/data/logs
+    restart_policy: unless-stopped
+
+

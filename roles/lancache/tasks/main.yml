@@ -39,7 +39,7 @@
 
 - name: Deploy lancache Monolithic
   community.docker.docker_container:
-    name: dns
+    name: monolithic
     image: "lancachenet/monolithic:latest"
     network_mode: lancache
     networks:

@@ -10,15 +10,33 @@
 - name: Set up Docker network
   community.docker.docker_network:
     name: lancache
-    driver: macvlan
-    driver_options:
-      parent: ens18
+
+- name: Disable systemd-resolved DNSStubListener
+  ansible.builtin.blockinfile:
+    path: "/etc/systemd/resolved.conf"
+    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+    block: |
+      DNSStubListener=no
+
+- name: Remove old resolve.conf
+  ansible.builtin.file:
+    path: "/etc/resolv.conf"
+    state: absent
+
+- name: Symlink new resolv.conf
+  ansible.builtin.file:
+    src: "/var/run/systemd/resolve/resolv.conf"
+    dest: "/etc/resolv.conf"
+    state: link
+    owner: root
+    group: root
+  notify: 
+    - systemd-resolved
 
 - name: Deploy lancache DNS
   community.docker.docker_container:
     name: dns
     image: "lancachenet/lancache-dns:latest"
-    network_mode: lancache
     networks:
       - name: lancache
     env:
@@ -33,15 +51,14 @@
       CACHE_MAX_AGE: "3650d"
       TZ: "Europe/London"
     ports:
-      - "53:53/udp"
-      - "53:53/tcp"
+      - "{{ ansible_default_ipv4.address }}:53:53/udp"
+      - "{{ ansible_default_ipv4.address }}:53:53/tcp"
     restart_policy: unless-stopped
 
 - name: Deploy lancache Monolithic
   community.docker.docker_container:
     name: monolithic
     image: "lancachenet/monolithic:latest"
-    network_mode: lancache
     networks:
       - name: lancache
     env:

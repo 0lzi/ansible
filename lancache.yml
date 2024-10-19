@@ -1,0 +1,19 @@
+---
+# Run with ansible-playbook -i inventory/hosts main.yml
+- name: Setup Lancache
+  hosts: lancache
+  remote_user: "{{ user }}"
+  become: true
+  become_method: sudo
+  gather_facts: true
+  vars_files:
+    - ./vars/vars.yml
+
+  pre_tasks:
+    - name: Update Apt Cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+  roles:
+    - users
+    - lancache

@@ -31,3 +31,15 @@
     name: epicprefill.service
     state: stopped
     enabled: false
+
+- name: battlenet-timer
+  ansible.builtin.systemd_service:
+    name: battlenetprefill.timer
+    enabled: false
+    state: stopped
+
+- name: battlenet-service
+  ansible.builtin.systemd_service:
+    name: battlenetprefill.service
+    state: stopped
+    enabled: false

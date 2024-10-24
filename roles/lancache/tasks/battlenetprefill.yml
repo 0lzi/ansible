@@ -1,0 +1,38 @@
+---
+- name: Set up BattleNetPrefill
+  ansible.builtin.file:
+    path: /srv/BattleNetPrefill
+    state: directory
+    mode: '0755'
+
+- name: Download BattleNetPrefill updater
+  ansible.builtin.get_url:
+    url: "{{ battlenetprefill_url }}"
+    dest: /srv/BattleNetPrefill/update.sh
+    mode: '0755'
+
+- name: Run update.sh
+  ansible.builtin.shell:
+    cmd: set -o pipefail && ./update.sh
+    executable: /bin/bash
+    chdir: /srv/BattleNetPrefill
+  register: update_script
+  changed_when: false
+
+- name: Create systemd timer for BattleNetPrefill
+  ansible.builtin.template:
+    src: battlenetprefill.timer
+    dest: /etc/systemd/system/battlenetprefill.timer
+  changed_when: true
+  notify:
+    - systemd-daemon
+    - battlenet-timer
+
+- name: Create systemd timer for BattleNetPrefill
+  ansible.builtin.template:
+    src: battlenetprefill.service
+    dest: /etc/systemd/system/battlenetprefill.service
+  changed_when: true
+  notify:
+    - systemd-daemon
+    - battlenet-service

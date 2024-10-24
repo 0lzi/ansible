@@ -1,0 +1,14 @@
+[Unit]
+Description=SteamPrefill run daily
+Requires=epicprefill.service
+
+[Timer]
+# Runs every day at 3am (local time)
+OnCalendar=*-*-* 3:00:00
+
+# Set to true so we can store when the timer last triggered on disk.
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+

@@ -1,10 +1,10 @@
 [Unit]
-Description=EpicPrefill run daily
+Description=BattleNetPrefill run daily
 Requires=epicprefill.service
 
 [Timer]
-# Runs every day at 3am (local time)
-OnCalendar=*-*-* 3:00:00
+# Runs every day at 2am (local time)
+OnCalendar=*-*-* 2:00:00
 
 # Set to true so we can store when the timer last triggered on disk.
 Persistent=true

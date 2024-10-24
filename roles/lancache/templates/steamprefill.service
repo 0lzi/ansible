@@ -1,0 +1,22 @@
+[Unit]
+Description=SteamPrefill
+After=remote-fs.target
+Wants=remote-fs.target
+
+[Service]
+# Replace with your username
+User=root
+
+# Set this to the directory where SteamPrefill is installed.
+# Example : /home/tim/SteamPrefill
+WorkingDirectory=/srv/SteamPrefill
+
+# This should be the full path to SteamPrefill, as well as any additional option flags
+# Example: /home/tim/SteamPrefill/SteamPrefill prefill --no-ansi
+ExecStart= /srv/SteamPrefill/SteamPrefill prefill --no-ansi
+
+Type=oneshot
+Nice=19
+
+[Install]
+WantedBy=multi-user.target

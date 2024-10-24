@@ -1,11 +1,52 @@
 ---
+- name: Install prequisite packages
+  ansible.builtin.apt:
+    name: "{{ lancache_pkgs }}"
+    state: present
+
 - name: Set up lancache dir
   ansible.builtin.file:
     path: /srv/lancache
     state: directory
     mode: '0755'
-    owner:
-    group:
+
+- name: Set up SteamPrefill
+  ansible.builtin.file:
+    path: /srv/SteamPrefill
+    state: directory
+    mode: '0755'
+
+- name: Download SteamPrefill updater
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/tpill90/steam-lancache-prefill/master/scripts/update.sh"
+    dest: /srv/SteamPrefill/update.sh
+    mode: '0755'
+
+- name: Run update.sh
+  ansible.builtin.shell:
+    cmd: set -o pipefail && ./update.sh
+    executable: /bin/bash
+    chdir: /srv/SteamPrefill
+  register: update_script
+  changed_when: false
+
+- name: Create systemd timer for SteamPrefill
+  ansible.builtin.template:
+    src: steamprefill.timer
+    dest: /etc/systemd/system/steamprefill.timer
+  changed_when: true
+  notify:
+    - systemd-daemon
+    - systemd-timer
+
+- name: Create systemd timer for SteamPrefill
+  ansible.builtin.template:
+    src: steamprefill.service
+    dest: /etc/systemd/system/steamprefill.service
+  changed_when: true
+  notify:
+    - systemd-daemon
+    - systemd-service
 
 - name: Set up Docker network
   community.docker.docker_network:

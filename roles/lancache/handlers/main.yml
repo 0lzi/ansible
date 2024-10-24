@@ -3,3 +3,19 @@
   ansible.builtin.systemd_service:
     state: restarted
     name: systemd-resolved
+
+- name: systemd-daemon
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+- name: systemd-timer
+  ansible.builtin.systemd_service:
+    name: steamprefill.timer
+    enabled: true
+    state: started
+
+- name: systemd-service
+  ansible.builtin.systemd_service:
+    name: steamprefill.service
+    state: started
+    enabled: true

@@ -1,0 +1,5 @@
+lancache_pkgs:
+  - curl
+  - jq
+  - unzip
+  - wget

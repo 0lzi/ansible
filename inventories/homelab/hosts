@@ -1,3 +1,10 @@
+[all]
+pve
+dev
+prod
+lancache
+
+
 [pve]
 pve[1:3].0lzi.com ansible_user=root
 

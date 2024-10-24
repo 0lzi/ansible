@@ -6,15 +6,15 @@
 
 - name: Setup SteamPrefill
   ansible.builtin.include_tasks: steamprefill.yml
-  when: steamprefill == true
+  when: steamprefill
 
 - name: Setup EpicPrefill
   ansible.builtin.include_tasks: epicprefill.yml
-  when: epicprefill == true
+  when: epicprefill
 
 - name: Setup BattleNetPrefill
   ansible.builtin.include_tasks: battlenetprefill.yml
-  when: battlenetprefill == true
+  when: battlenetprefill
 
 - name: Setup Lancache
   ansible.builtin.include_tasks: lancache.yml

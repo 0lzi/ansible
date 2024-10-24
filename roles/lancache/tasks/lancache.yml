@@ -28,8 +28,8 @@
     state: link
     owner: root
     group: root
-  notify: 
-    - systemd-resolved
+  notify:
+    - Systemd-resolved
 
 - name: Deploy lancache DNS
   community.docker.docker_container:
@@ -77,4 +77,3 @@
       - /srv/lancache/cache:/data/cache
       - /srv/lancache/logs:/data/logs
     restart_policy: unless-stopped
-

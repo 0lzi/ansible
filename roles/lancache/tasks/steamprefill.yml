@@ -7,7 +7,7 @@
 
 - name: Download SteamPrefill updater
   ansible.builtin.get_url:
-    url: "{{ steamprefill_url }}"
+    url: "{{ lancache_steamprefill_url }}"
     dest: /srv/SteamPrefill/update.sh
     mode: '0755'
 
@@ -23,16 +23,18 @@
   ansible.builtin.template:
     src: steamprefill.timer
     dest: /etc/systemd/system/steamprefill.timer
+    mode: '0644'
   changed_when: true
   notify:
-    - systemd-daemon
-    - steam-timer
+    - Systemd-daemon
+    - Steam-timer
 
 - name: Create systemd timer for SteamPrefill
   ansible.builtin.template:
     src: steamprefill.service
     dest: /etc/systemd/system/steamprefill.service
+    mode: '0644'
   changed_when: true
   notify:
-    - systemd-daemon
-    - steam-service
+    - Systemd-daemon
+    - Steam-service

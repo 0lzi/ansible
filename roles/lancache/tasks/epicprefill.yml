@@ -7,7 +7,7 @@
 
 - name: Download EpicPrefill updater
   ansible.builtin.get_url:
-    url: "{{ epicprefill_url }}"
+    url: "{{ lancache_epicprefill_url }}"
     dest: /srv/EpicPrefill/update.sh
     mode: '0755'
 
@@ -23,16 +23,18 @@
   ansible.builtin.template:
     src: epicprefill.timer
     dest: /etc/systemd/system/epicprefill.timer
+    mode: '0644'
   changed_when: true
   notify:
-    - systemd-daemon
-    - epic-timer
+    - Systemd-daemon
+    - Epic-timer
 
 - name: Create systemd timer for EpicPrefill
   ansible.builtin.template:
     src: epicprefill.service
     dest: /etc/systemd/system/epicprefill.service
+    mode: '0644'
   changed_when: true
   notify:
-    - systemd-daemon
-    - epic-service
+    - Systemd-daemon
+    - Epic-service

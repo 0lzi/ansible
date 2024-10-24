@@ -4,7 +4,6 @@ lancache_pkgs:
   - unzip
   - wget
 
-steamprefill_url: "https://raw.githubusercontent.com/tpill90/steam-lancache-prefill/master/scripts/update.sh"
-epicprefill_url: "https://raw.githubusercontent.com/tpill90/epic-lancache-prefill/master/scripts/update.sh"
-battlenetprefill_url: "https://raw.githubusercontent.com/tpill90/battlenet-lancache-prefill/master/scripts/update.sh"
-
+lancache_steamprefill_url: "https://raw.githubusercontent.com/tpill90/steam-lancache-prefill/master/scripts/update.sh"
+lancache_epicprefill_url: "https://raw.githubusercontent.com/tpill90/epic-lancache-prefill/master/scripts/update.sh"
+lancache_battlenetprefill_url: "https://raw.githubusercontent.com/tpill90/battlenet-lancache-prefill/master/scripts/update.sh"

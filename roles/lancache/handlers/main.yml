@@ -1,44 +1,44 @@
 ---
-- name: systemd-resolved
+- name: Systemd-resolved
   ansible.builtin.systemd_service:
     state: restarted
     name: systemd-resolved
 
-- name: systemd-daemon
+- name: Systemd-daemon
   ansible.builtin.systemd_service:
     daemon_reload: true
 
-- name: steam-timer
+- name: Steam-timer
   ansible.builtin.systemd_service:
     name: steamprefill.timer
     enabled: true
     state: started
 
-- name: steam-service
+- name: Steam-service
   ansible.builtin.systemd_service:
     name: steamprefill.service
     state: stopped
     enabled: true
 
-- name: epic-timer
+- name: Epic-timer
   ansible.builtin.systemd_service:
     name: epicprefill.timer
     enabled: false
     state: stopped
 
-- name: epic-service
+- name: Epic-service
   ansible.builtin.systemd_service:
     name: epicprefill.service
     state: stopped
     enabled: false
 
-- name: battlenet-timer
+- name: Battlenet-timer
   ansible.builtin.systemd_service:
     name: battlenetprefill.timer
     enabled: false
     state: stopped
 
-- name: battlenet-service
+- name: Battlenet-service
   ansible.builtin.systemd_service:
     name: battlenetprefill.service
     state: stopped

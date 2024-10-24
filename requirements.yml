@@ -1,7 +1,6 @@
 ---
 collections:
-  - name: ansible.posix
-  - name: openstack.cloud
-  - name: community.docker
-  - name: community.general
-  - name: community.general.cloudflare_dns
+  - ansible.posix
+  - openstack.cloud
+  - community.docker
+  - community.general

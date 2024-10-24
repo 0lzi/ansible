@@ -7,7 +7,7 @@
 
 - name: Download BattleNetPrefill updater
   ansible.builtin.get_url:
-    url: "{{ battlenetprefill_url }}"
+    url: "{{ lancache_battlenetprefill_url }}"
     dest: /srv/BattleNetPrefill/update.sh
     mode: '0755'
 
@@ -23,16 +23,18 @@
   ansible.builtin.template:
     src: battlenetprefill.timer
     dest: /etc/systemd/system/battlenetprefill.timer
+    mode: '0644'
   changed_when: true
   notify:
-    - systemd-daemon
-    - battlenet-timer
+    - Systemd-daemon
+    - Battlenet-timer
 
 - name: Create systemd timer for BattleNetPrefill
   ansible.builtin.template:
     src: battlenetprefill.service
     dest: /etc/systemd/system/battlenetprefill.service
+    mode: '0644'
   changed_when: true
   notify:
-    - systemd-daemon
-    - battlenet-service
+    - Systemd-daemon
+    - Battlenet-service

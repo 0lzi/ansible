@@ -1,0 +1,38 @@
+---
+- name: Set up EpicPrefill
+  ansible.builtin.file:
+    path: /srv/EpicPrefill
+    state: directory
+    mode: '0755'
+
+- name: Download EpicPrefill updater
+  ansible.builtin.get_url:
+    url: "{{ epicprefill_url }}"
+    dest: /srv/EpicPrefill/update.sh
+    mode: '0755'
+
+- name: Run update.sh
+  ansible.builtin.shell:
+    cmd: set -o pipefail && ./update.sh
+    executable: /bin/bash
+    chdir: /srv/EpicPrefill
+  register: update_script
+  changed_when: false
+
+- name: Create systemd timer for EpicPrefill
+  ansible.builtin.template:
+    src: epicprefill.timer
+    dest: /etc/systemd/system/epicprefill.timer
+  changed_when: true
+  notify:
+    - systemd-daemon
+    - epic-timer
+
+- name: Create systemd timer for EpicPrefill
+  ansible.builtin.template:
+    src: epicprefill.service
+    dest: /etc/systemd/system/epicprefill.service
+  changed_when: true
+  notify:
+    - systemd-daemon
+    - epic-service

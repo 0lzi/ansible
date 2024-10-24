@@ -3,3 +3,10 @@ lancache_pkgs:
   - jq
   - unzip
   - wget
+
+steamprefill_url: "https://raw.githubusercontent.com/tpill90/steam-lancache-prefill/master/scripts/update.sh"
+epicprefill_url: "https://raw.githubusercontent.com/tpill90/epic-lancache-prefill/master/scripts/update.sh"
+
+service:
+  - steamprefill
+  - epicprefill

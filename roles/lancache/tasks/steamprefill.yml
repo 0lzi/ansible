@@ -1,0 +1,38 @@
+---
+- name: Set up SteamPrefill
+  ansible.builtin.file:
+    path: /srv/SteamPrefill
+    state: directory
+    mode: '0755'
+
+- name: Download SteamPrefill updater
+  ansible.builtin.get_url:
+    url: "{{ steamprefill_url }}"
+    dest: /srv/SteamPrefill/update.sh
+    mode: '0755'
+
+- name: Run update.sh
+  ansible.builtin.shell:
+    cmd: set -o pipefail && ./update.sh
+    executable: /bin/bash
+    chdir: /srv/SteamPrefill
+  register: update_script
+  changed_when: false
+
+- name: Create systemd timer for SteamPrefill
+  ansible.builtin.template:
+    src: steamprefill.timer
+    dest: /etc/systemd/system/steamprefill.timer
+  changed_when: true
+  notify:
+    - systemd-daemon
+    - steam-timer
+
+- name: Create systemd timer for SteamPrefill
+  ansible.builtin.template:
+    src: steamprefill.service
+    dest: /etc/systemd/system/steamprefill.service
+  changed_when: true
+  notify:
+    - systemd-daemon
+    - steam-service

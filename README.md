@@ -3,6 +3,7 @@
 - [ ] Tidy up README
 - [ ] Tidy up playbooks
 - [ ] Tidy up vars > group & host vars
+- [ ] Linting
 
 # Ansible
 

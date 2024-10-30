@@ -1,7 +1,13 @@
+- name: Ensure {{ user_groups }} exists
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ user_groups }}"
+
 - name: Create my user and to sudo group
   ansible.builtin.user:
     name: "{{ user }}"
-    groups: sudo
+    groups: "{{ user_groups | list }}"
     append: true
     shell: /bin/bash
 
@@ -22,9 +28,10 @@
 #   ansible.builtin.user:
 #     name: "{{ unwanted_user }}"
 #     state: absent
+
 - name: Add user to passwordless sudo
   ansible.builtin.copy:
-    content: "oli ALL=(ALL:ALL) NOPASSWD:ALL"
+    content: "{{ user }} ALL=(ALL:ALL) NOPASSWD:ALL"
     dest: "/etc/sudoers.d/{{ user }}"
     owner: root
     group: root

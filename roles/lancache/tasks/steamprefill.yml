@@ -4,6 +4,8 @@
     path: /srv/SteamPrefill
     state: directory
     mode: '0755'
+    owner: root
+    group: admins
 
 - name: Download SteamPrefill updater
   ansible.builtin.get_url:

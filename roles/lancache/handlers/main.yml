@@ -2,6 +2,7 @@
 - name: Systemd-resolved
   ansible.builtin.systemd_service:
     state: restarted
+    enabled: true
     name: systemd-resolved
 
 - name: Systemd-daemon

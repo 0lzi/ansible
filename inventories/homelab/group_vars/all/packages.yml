@@ -25,3 +25,5 @@ aptpackages:
   - qemu-guest-agent
   - open-iscsi
 
+pip_packages:
+  - pipenv

@@ -1,5 +1,5 @@
 ---
-# Run with ansible-playbook -i inventory/hosts main.yml
+# Run with ansible-playbook -i inventory/hosts lancache.yml
 - name: Setup Lancache
   hosts: lancache
   remote_user: "{{ user }}"

@@ -1,5 +1,5 @@
 ---
-# Run with ansible-playbook -i inventory/hosts main.yml
+# Run with ansible-playbook -i inventory/hosts dockerpi.yml
 - name: Setup Docker pi
   hosts: all
   remote_user: pi

@@ -1,3 +1,5 @@
+# NIX
+.direnv
 # VSCode
 .vscode/*
 !.vscode/settings.json

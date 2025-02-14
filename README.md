@@ -65,7 +65,7 @@ Run `ansible-playbook -i "inventories/hosts" -kK main.yml`
 
 ## Usage
 
-Run `pipenv install` then `pipenv shell` before running the ansible playbooks.
+Run `uv sync --frozen` then `. .venv/bin/activate` before running the ansible playbooks.
 
 ## Playbooks
 

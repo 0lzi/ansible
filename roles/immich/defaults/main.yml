@@ -1,0 +1,5 @@
+immich_compose_url: "https://github.com/immich-app/immich/releases/latest/download/docker-compose.yml"
+
+immich_data: /srv/immich
+immich_pgdata: /srv/immich/pg
+immich_pgpassword: supersecurepassword

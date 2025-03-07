@@ -24,6 +24,5 @@ aptpackages:
   - yubikey-manager
   - qemu-guest-agent
   - open-iscsi
+  - lvm2
 
-pip_packages:
-  - pipenv

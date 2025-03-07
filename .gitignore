@@ -1,6 +1,12 @@
 # Direnv
 .direnv
 
+# Ansible
+.ansible/
+
+# Direnv
+.envrc
+
 # VSCode
 .vscode/*
 !.vscode/settings.json

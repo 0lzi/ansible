@@ -6,6 +6,14 @@
     - "start qemu-guest-agent"
     - "start open-iscsi"
 
+- name: Pip packages
+  ansible.builtin.pip:
+    name: "{{ pippackages }}"
+    state: present
+  when:
+   - not ansible_check_mode
+   - pippackages is defined
+
 # Check if Oh My Bash is installed
 - name: Check OMB is installed
   ansible.builtin.stat:

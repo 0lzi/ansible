@@ -1,0 +1,3 @@
+pi_hole_sync: true
+pi_hole_password: "{{ lookup ('ansible.builtin.env', 'PI_HOLE_PASSWORD' , default='Pa55word') }}"
+pi_hole_dir: "/home/{{ user }}/docker/pihole"

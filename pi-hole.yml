@@ -1,7 +1,7 @@
 ---
-# Run with ansible-playbook -i inventory/hosts lancache.yml
-- name: Setup Lancache
-  hosts: lancache
+# Run with ansible-playbook -i inventory/hosts pi-hole.yml
+- name: Setup Pi-Hole
+  hosts: pi-hole
   remote_user: "{{ user }}"
   become: true
   become_method: sudo
@@ -15,4 +15,4 @@
   roles:
     - users
     - docker
-    - lancache
+    - pi_hole

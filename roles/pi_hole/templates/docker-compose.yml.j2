@@ -1,0 +1,29 @@
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    network_mode: host
+    environment:
+      TZ: 'Europe/London'
+      FTLCONF_webserver_api_password: '{{ pi_hole_password }}'
+      FTLCONF_dns_listeningMode: 'all'
+    volumes:
+      - '{{ pi_hole_dir }}/etc-pihole:/etc/pihole'
+      - '{{ pi_hole_dir }}/etc-dnsmasq.d:/etc/dnsmasq.d'
+    cap_add:
+      - NET_ADMIN
+      - SYS_TIME
+    restart: unless-stopped
+{% if primary %}
+  nebula-sync:
+    image: ghcr.io/lovelaze/nebula-sync:latest
+    container_name: nebula-sync
+    environment:
+    - PRIMARY=http://{{ ansible_default_ipv4.address }}|{{ pi_hole_password }}
+    - REPLICAS=http://{{ peer }}|{{ pi_hole_password }}
+    - FULL_SYNC=true
+    - RUN_GRAVITY=true
+    - CLIENT_SKIP_TLS_VERIFICATION
+    - CRON=0 * * * *
+    restart: unless-stopped
+{% endif %}

@@ -5,7 +5,6 @@ aptpackages:
   - python3-pip
   - powerline
   - fonts-powerline
-  - python3-venv
   - tree
   - git
   - lsof
@@ -25,4 +24,3 @@ aptpackages:
   - qemu-guest-agent
   - open-iscsi
   - lvm2
-

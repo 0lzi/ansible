@@ -17,7 +17,7 @@ immich.lab
 pi-hole-[1:2].lab
 
 [lancache]
-lancache.lab ansible_host=192.168.1.244
+lancache.lab ansible_host=10.18.20.24
 
 [immich]
 immich.lab

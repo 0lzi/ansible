@@ -1,3 +1,4 @@
+ansible_ssh_user: oli
 user: oli
 
 user_groups:

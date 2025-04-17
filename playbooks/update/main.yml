@@ -23,3 +23,4 @@
       ansible.builtin.reboot:
         msg: "Reboot initiated by Ansible for kernel updates"
       when: reboot_required_file.stat.exists
+      throttle: 1

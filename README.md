@@ -1,3 +1,5 @@
+[![ansible-lint](https://github.com/0lzi/ansible/actions/workflows/ansible-lint.yml/badge.svg)](https://github.com/0lzi/ansible/actions/workflows/ansible-lint.yml)
+
 # TODO
 
 - [ ] Tidy up README

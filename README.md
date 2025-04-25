@@ -3,7 +3,7 @@
 - [ ] Tidy up README
 - [ ] Tidy up playbooks
 - [ ] Tidy up vars > group & host vars
-- [ ] Linting
+- [x] Linting
 
 # Ansible
 
@@ -62,6 +62,9 @@ Run `ansible-playbook -i "inventories/hosts" -kK main.yml`
     - packages # Sets packages for base config
     - users # Sets up my user
     - vm # Creates VMs from ./vars/vms.yml
+    - lancache # Sets up lancache on a host
+    - pihole # Sets up pihole on a host
+    - immicache # Sets up immich on a host
 
 ## Usage
 
@@ -79,3 +82,5 @@ pve-vms.yml - Creates VMs based on what is in ./vars/vars.yml <- Looking to swap
 
 - docker-1
 - pi-hole-[1-2]
+- immich
+- lancache

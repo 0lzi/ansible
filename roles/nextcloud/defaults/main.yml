@@ -1,0 +1,2 @@
+---
+nextcloud_dir: "{{ base_dir }}/nextcloud"

@@ -1,0 +1,4 @@
+mysql_root_password: "{{ lookup('ansible.builtin.env', 'MYSQL_ROOT_PASSWORD', default='Pa55word') }}"
+mysql_database: nextcloud
+mysql_user: ncuser
+mysql_user_password: "{{ lookup('ansible.builtin.env', 'MYSQL_USER_PASSWORD', default='Pa55word') }}"

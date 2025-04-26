@@ -2,4 +2,4 @@ immich_compose_url: "https://github.com/immich-app/immich/releases/latest/downlo
 
 immich_data: /srv/immich
 immich_pgdata: /srv/immich/pg
-immich_pgpassword: supersecurepassword
+immich_pgpassword: "{{ lookup('ansible.builtin.env', 'IMMICH_PGPASSWORD', default='pa55word') }}"

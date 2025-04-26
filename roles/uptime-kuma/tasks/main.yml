@@ -1,0 +1,22 @@
+- name: Create Data directory
+  ansible.builtin.file:
+    state: directory
+    path: "{{ uptime_kuma_dir }}"
+    mode: "0755"
+    owner: "{{ user }}"
+    group: admins
+
+- name: Template compose file
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ uptime_kuma_dir }}/docker-compose.yml"
+    mode: "0664"
+    owner: root
+    group: admins
+
+- name: Start container
+  community.docker.docker_compose_v2:
+    project_src: "{{ uptime_kuma_dir }}"
+    state: present
+    pull: always
+    remove_orphans: true

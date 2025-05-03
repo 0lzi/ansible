@@ -24,6 +24,6 @@ services:
     - FULL_SYNC=true
     - RUN_GRAVITY=true
     - CLIENT_SKIP_TLS_VERIFICATION
-    - CRON=0 * * * *
+    - CRON=* /5 * * * *
     restart: unless-stopped
 {% endif %}

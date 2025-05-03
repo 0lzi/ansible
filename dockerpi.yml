@@ -6,8 +6,6 @@
   become: true
   become_method: sudo
   gather_facts: true
-  vars_files:
-    - ./vars/pi-vars.yml
 
   pre_tasks:
     - name: Update Apt Cache
@@ -23,8 +21,6 @@
   become: true
   become_method: sudo
   gather_facts: true
-  vars_files:
-    - ./vars/pi-vars.yml
   roles:
     - nfs-server-pi
 
@@ -37,8 +33,6 @@
   become: true
   become_method: sudo
   gather_facts: true
-  vars_files:
-    - ./vars/pi-vars.yml
   roles:
     - nfs-client-pi
 

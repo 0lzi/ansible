@@ -1,0 +1,28 @@
+---
+- name: Create Traefik directories
+  ansible.builtin.file:
+    state: directory
+    path: "{{ traefik_dir }}/{{ item }}"
+    mode: "0755"
+    owner: "{{ user }}"
+    group: admins
+  loop:
+    - certs
+
+- name: Template files
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "{{ traefik_dir }}/{{ item }}.yml"
+    mode: "0664"
+    owner: root
+    group: admins
+  loop:
+    - docker-compose.yml
+    - traefik.yml
+
+- name: Start container
+  community.docker.docker_compose_v2:
+    project_src: "{{ traefik_dir }}"
+    state: present
+    pull: always
+    remove_orphans: true

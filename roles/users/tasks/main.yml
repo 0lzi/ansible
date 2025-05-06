@@ -2,7 +2,7 @@
   ansible.builtin.group:
     name: "{{ item }}"
     state: present
-  with_items: "{{ user_groups }}"
+  loop: "{{ user_groups }}"
 
 - name: Create my user and to sudo group
   ansible.builtin.user:
@@ -16,7 +16,7 @@
     user: "{{ user }}"
     state: present
     key: "{{ item }}"
-  with_items: "{{ keys }}"
+  loop: "{{ keys }}"
 
 # - name: "Kill any processes for {{ user }}"
 #   shell: "pkill -KILL -U {{ unwanted_user }} 2>/dev/null"

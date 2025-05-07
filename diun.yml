@@ -1,7 +1,7 @@
 ---
 # Run with ansible-playbook -i inventory/hosts diun.yml
 - name: Setup Diun
-  hosts: docker-hosts
+  hosts: docker_hosts
   remote_user: "{{ user }}"
   become: true
   become_method: sudo

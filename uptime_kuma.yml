@@ -1,7 +1,7 @@
 ---
-# Run with ansible-playbook docker-host.yml
-- name: Setup Docker host
-  hosts: docker-hosts
+# Run with ansible-playbook -i inventory/hosts uptime-kuma.yml
+- name: Setup Diun
+  hosts: docker_hosts
   remote_user: "{{ user }}"
   become: true
   become_method: sudo
@@ -14,5 +14,5 @@
         cache_valid_time: 3600
   roles:
     - users
-    - packages
     - docker
+    - uptime-kuma

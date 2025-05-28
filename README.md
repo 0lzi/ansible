@@ -64,7 +64,7 @@ Run `ansible-playbook -i "inventories/hosts" -kK main.yml`
     - vm # Creates VMs from ./vars/vms.yml
     - lancache # Sets up lancache on a host
     - pihole # Sets up pihole on a host
-    - immicache # Sets up immich on a host
+    - immich # Sets up immich on a host
 
 ## Usage
 

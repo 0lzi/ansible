@@ -69,7 +69,7 @@
       CACHE_ROOT: "/srv/lancache"
       CACHE_DISK_SIZE: "2000g"
       MIN_FREE_DISK: "10g"
-      CACHE_INDEX_SIZE: "500m"
+      CACHE_INDEX_SIZE: "1000m"
       CACHE_MAX_AGE: "3650d"
       TZ: "Europe/London"
     ports:

@@ -41,6 +41,15 @@
     group: admins
   notify: Restart_container
 
+- name: Template config file
+  ansible.builtin.template:
+    src: immich-config.json.j2
+    dest: "{{ immich_data }}/immich-config.json"
+    mode: '0644'
+    owner: immich
+    group: admins
+  notify: Restart_container
+
 - name: Start container
   community.docker.docker_compose_v2:
     project_src: "{{ immich_data }}"

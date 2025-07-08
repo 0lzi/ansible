@@ -1,0 +1,27 @@
+ui            = true
+cluster_addr  = "http://{{ ansible_default_ipv4.address }}:8201"
+api_addr      = "http://{{ ansible_default_ipv4.address }}:8200"
+cluster_name  = "{{ openbao_cluster_name }}"
+
+storage "raft" {
+  path = "{{ openbao_data_dir }}"
+  node_id = "{{ inventory_hostname_short }}"
+{% for host in groups[openbao_cluster_name] %}
+  retry_join = {
+    leader_api_addr = "http://{{ hostvars[host]['ansible_default_ipv4']['address'] }}:8200"
+  }
+{% endfor %}
+
+
+}
+
+listener "tcp" {
+  address       = "{{ ansible_default_ipv4.address }}:8200"
+  tls_disable   = 1
+}
+
+listener "tcp" {
+  address       = "127.0.0.1:8200"
+  tls_disable   = 1
+}
+

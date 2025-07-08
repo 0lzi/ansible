@@ -1,0 +1,178 @@
+- name: Update apt and install unzip
+  ansible.builtin.apt:
+    name:
+      - unzip
+    update_cache: true
+
+- name: Check if openbao installed
+  ansible.builtin.stat:
+    path: "/usr/bin/bao"
+  register: openbao_installed
+
+- name: Check if CA exists
+  ansible.builtin.find:
+    path: "/etc/openbao.d/certs"
+    patterns: "*ca.pem"
+  register: ca_file
+
+- name: Download openbao deb for {{ openbao_version }}
+  ansible.builtin.apt:
+    deb: "{{ openbao_url }}"
+  when:
+    - not openbao_installed.stat.exists
+
+- name: Create non-priv openbao user
+  ansible.builtin.user:
+    name: openbao
+    state: present
+    home: "{{ openbao_config_dir }}"
+    shell: /bin/bash
+    groups:
+      - openbao
+
+- name: Create openbao directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: openbao
+    group: openbao
+    mode: "0750"
+  with_items:
+    - "{{ openbao_data_dir }}"
+    - "{{ openbao_config_dir }}"
+    - "{{ openbao_cert_dir }}"
+
+# - name: Set primary node
+#   ansible.builtin.set_fact:
+#     primary_node: "{{ inventory_hostname }}"
+#     loop: "{{ groups['openbao'] }}"
+#     when: "'01' in item"
+#
+# - name: Set node_number
+#   ansible.builtin.set_fact:
+#     node_number: "{{ inventory_hostname.split('.')[0].split('-')[1][-1] }}"
+#
+# - name: Debug
+#   debug:
+#     var: node_number
+#
+# - name: Generate openbao Gossip keys
+#   ansible.builtin.shell: openbao keygen
+#   delegate_to: "{{ primary_node }}"
+#   run_once: true
+#   register: openbao_gossip_key
+#
+# - name: Set gossip_key
+#   ansible.builtin.set_fact:
+#     gossip_key: "{{ openbao_gossip_key.stdout }}"
+#
+# may be easier to generate once then put it in role and copy to each node
+# - name: Generate openbao CA
+#   ansible.builtin.shell: openbao tls ca create -domain codethink
+#   delegate_to: "{{ primary_node }}"
+#   with_items: "{{ ca_file.results }}"
+#   when:
+#     - ca_file.matched == 0
+#   run_once: true
+#   register: openbao_ca
+#
+# - name: Move certs to /etc/openbao.d/certs
+#   ansible.builtin.copy:
+#     remote_src: true
+#     src: "{{ item }}"
+#     dest: "/etc/openbao.d/certs"
+#     owner: openbao
+#     group: openbao
+#     mode: "0644"
+#   with_items:
+#     - codethink-agent-ca.pem
+#     - codethink-agent-ca-key.pem
+#   delegate_to: "{{ primary_node }}"
+#   run_once: true
+#
+
+#   - name: Move pem and key files for each server
+- name: Copy openbao.hcl
+  ansible.builtin.template:
+    src: openbao.hcl.j2
+    dest: "{{ openbao_config_dir }}/openbao.hcl"
+    owner: openbao
+    group: openbao
+    mode: '0640'
+  notify: Restart_openbao
+
+- name: Copy service file
+  ansible.builtin.template:
+    src: openbao.service.j2
+    dest: /etc/systemd/system/openbao.service
+    owner: openbao
+    group: openbao
+    mode: '0640'
+  notify:
+    - Systemd
+    - Restart_openbao
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Set primary node
+  ansible.builtin.set_fact:
+    primary_node: "{{ groups[cluster_name][0] }}"
+
+- name: debug
+  debug:
+    msg: "{{ primary_node }}"
+
+- name: Get status
+  ansible.builtin.shell: /usr/bin/bao status
+  environment:
+    VAULT_ADDR: "http://127.0.0.1:8200"
+  register: bao_status
+  delegate_to: "{{ primary_node }}"
+  run_once: true
+  failed_when: bao_status.rc not in [0,2]
+
+- name: Debug
+  debug:
+    var: bao_status
+
+- name: Init openbao
+  ansible.builtin.shell: /usr/bin/bao operator init
+  environment:
+    VAULT_ADDR: "http://127.0.0.1:8200"
+  register: bao_init
+  delegate_to: "{{ primary_node }}"
+  run_once: true
+
+- name: debug
+  debug:
+    var: bao_init
+
+- name: Set unseal keys and root token from bao_init output
+  set_fact:
+    unseal_keys: "{{ bao_init.stdout_lines | select('match', '^Unseal Key \\d+:') | map('regex_replace', '^Unseal Key \\d+: ', '') | list }}"
+    root_token: "{{ (bao_init.stdout_lines | select('match', '^Initial Root Token:') | list).0.split(': ')[1] }}"
+
+- name: debug
+  ansible.builtin.debug:
+    msg: "key:{{ unseal_keys[0] }} key:{{ unseal_keys[1] }} key:{{ unseal_keys[2] }}  key:{{ unseal_keys[3] }} root:{{ root_token }}"
+
+- name: Unseal vault
+  ansible.builtin.shell: /usr/bin/bao operator unseal {{ unseal_keys[0] }} {{ unseal_keys[1] }}
+  environment:
+    VAULT_ADDR: "http://127.0.0.1:8200"
+  register: bao_init
+  delegate_to: "{{ primary_node }}"
+  run_once: true
+
+- name: Check vault health
+  ansible.builtin.uri:
+    url: "http://{{ hostvars[primary_node].ansible_default_ipv4.address }}:8200/v1/sys/healthz"
+    validate_certs: false
+    status_code:
+      - 503
+      - 200
+  delegate_to: "{{ primary_node }}"
+  run_once: true
+  register: cluster_health
+

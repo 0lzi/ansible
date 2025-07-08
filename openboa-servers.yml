@@ -1,0 +1,7 @@
+- name: Openbao Servers
+  hosts: openbao_servers
+  become: true
+  roles:
+    - openbao_server_init
+  tags:
+    - openbao

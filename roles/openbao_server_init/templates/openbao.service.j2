@@ -1,0 +1,19 @@
+[Unit]
+Description="Openbao"
+Documentation=https://www.openbao.org/
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=openbao
+Group=openbao
+ExecStart=/usr/bin/bao server \
+        -config=/etc/openbao.d/openbao.hcl
+ExecReload=/bin/kill --signal HUP $MAINPID
+KillMode=process
+KillSignal=SIGTERM
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

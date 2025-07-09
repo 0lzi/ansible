@@ -1,1 +1,4 @@
 openbao_cluster_name: openbao_staging
+openbao_config_dir: "/etc/openbao.d"
+openbao_data_dir: "/opt/openbao/data"
+openbao_cert_dir: "{{ openbao_config_dir }}/certs"

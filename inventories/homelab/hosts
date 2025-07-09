@@ -4,9 +4,8 @@ docker_hosts
 lancache
 immich
 consul
-openbao_production
 
-[dev]
+[dev:children]
 openbao_staging
 
 [pve]
@@ -44,10 +43,8 @@ consul-2.0lzi.com
 
 [openbao_servers:children]
 openbao_staging
-#openbao_production
 
 [openbao_staging]
 vault-0.0lzi.com
 vault-1.0lzi.com
 vault-2.0lzi.com
-

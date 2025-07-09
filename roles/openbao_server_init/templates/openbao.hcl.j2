@@ -1,6 +1,11 @@
 ui            = true
+{% if tls_enabled %}
+cluster_addr  = "https://{{ ansible_default_ipv4.address }}:8201"
+api_addr      = "https://{{ ansible_default_ipv4.address }}:8200"
+{% else %}
 cluster_addr  = "http://{{ ansible_default_ipv4.address }}:8201"
 api_addr      = "http://{{ ansible_default_ipv4.address }}:8200"
+{% endif %}
 cluster_name  = "{{ openbao_cluster_name }}"
 
 storage "raft" {
@@ -8,16 +13,36 @@ storage "raft" {
   node_id = "{{ inventory_hostname_short }}"
 {% for host in groups[openbao_cluster_name] %}
   retry_join = {
-    leader_api_addr = "http://{{ hostvars[host]['ansible_default_ipv4']['address'] }}:8200"
+    {% if tls_enabled %}
+    leader_api_addr     = "https://{{ hostvars[host]['ansible_default_ipv4']['address'] }}:8200"
+    leader_ca_cert_file = 
+{% else %}
+    leader_api_addr     = "http://{{ hostvars[host]['ansible_default_ipv4']['address'] }}:8200"
+{% endif %}
   }
 {% endfor %}
-
-
 }
+
+{% if openbao_version is version('2.4.0', '>') %}
+seal "static" {
+  current_key_id = "{{ ansible_date_time.date }}"
+  current_key    = "file://{{ openbao_config_dir }}/secrets/{{ ansible_date_time.date }}.key"
+}
+{% endif %}
 
 listener "tcp" {
   address       = "{{ ansible_default_ipv4.address }}:8200"
+{% if tls_enabled and openbao_self_signed %}
+  tls_cert_file = "{{ openbao_self_signed_cert_dir}}/tls.crt"
+  tls_key_file  = "{{ openbao_self_signed_cert_dir}}/tls.key"
+{% else %}
+{% if tls_enabled and not openbao_self_signed %}
+  tls_cert_file = /path/to/cert/cert.crt
+  tls_key_file  = /path/to/cert/cert.key
+{% else %}
   tls_disable   = 1
+{% endif %}
+{% endif %}
 }
 
 listener "tcp" {
@@ -25,3 +50,5 @@ listener "tcp" {
   tls_disable   = 1
 }
 
+log_requests_level = "debug"
+log_level          = "debug"

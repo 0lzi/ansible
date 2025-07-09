@@ -9,12 +9,6 @@
     path: "/usr/bin/bao"
   register: openbao_installed
 
-- name: Check if CA exists
-  ansible.builtin.find:
-    path: "/etc/openbao.d/certs"
-    patterns: "*ca.pem"
-  register: ca_file
-
 - name: Download openbao deb for {{ openbao_version }}
   ansible.builtin.apt:
     deb: "{{ openbao_url }}"
@@ -42,56 +36,10 @@
     - "{{ openbao_config_dir }}"
     - "{{ openbao_cert_dir }}"
 
-# - name: Set primary node
-#   ansible.builtin.set_fact:
-#     primary_node: "{{ inventory_hostname }}"
-#     loop: "{{ groups['openbao'] }}"
-#     when: "'01' in item"
-#
-# - name: Set node_number
-#   ansible.builtin.set_fact:
-#     node_number: "{{ inventory_hostname.split('.')[0].split('-')[1][-1] }}"
-#
-# - name: Debug
-#   debug:
-#     var: node_number
-#
-# - name: Generate openbao Gossip keys
-#   ansible.builtin.shell: openbao keygen
-#   delegate_to: "{{ primary_node }}"
-#   run_once: true
-#   register: openbao_gossip_key
-#
-# - name: Set gossip_key
-#   ansible.builtin.set_fact:
-#     gossip_key: "{{ openbao_gossip_key.stdout }}"
-#
-# may be easier to generate once then put it in role and copy to each node
-# - name: Generate openbao CA
-#   ansible.builtin.shell: openbao tls ca create -domain codethink
-#   delegate_to: "{{ primary_node }}"
-#   with_items: "{{ ca_file.results }}"
-#   when:
-#     - ca_file.matched == 0
-#   run_once: true
-#   register: openbao_ca
-#
-# - name: Move certs to /etc/openbao.d/certs
-#   ansible.builtin.copy:
-#     remote_src: true
-#     src: "{{ item }}"
-#     dest: "/etc/openbao.d/certs"
-#     owner: openbao
-#     group: openbao
-#     mode: "0644"
-#   with_items:
-#     - codethink-agent-ca.pem
-#     - codethink-agent-ca-key.pem
-#   delegate_to: "{{ primary_node }}"
-#   run_once: true
-#
+- name: Create unseal key # noqa no-changed-when
+  ansible.builtin.command:
+    cmd: "openssl rand -out {{ openbao_config_dir }}/unseal-{{ ansible_date_time.date }}.key 32"
 
-#   - name: Move pem and key files for each server
 - name: Copy openbao.hcl
   ansible.builtin.template:
     src: openbao.hcl.j2
@@ -117,13 +65,9 @@
 
 - name: Set primary node
   ansible.builtin.set_fact:
-    primary_node: "{{ groups[cluster_name][0] }}"
+    primary_node: "{{ groups[openbao_cluster_name][0] }}"
 
-- name: debug
-  debug:
-    msg: "{{ primary_node }}"
-
-- name: Get status
+- name: Get status # noqa no-changed-when command-instead-of-shell
   ansible.builtin.shell: /usr/bin/bao status
   environment:
     VAULT_ADDR: "http://127.0.0.1:8200"
@@ -132,47 +76,82 @@
   run_once: true
   failed_when: bao_status.rc not in [0,2]
 
-- name: Debug
-  debug:
-    var: bao_status
+- name: Parse Initialized status
+  set_fact:
+    openbao_initialized: "{{ bao_status.stdout_lines | select('search', '^Initialized') | first | regex_search('true|false') }}"
 
-- name: Init openbao
+- name: dbg
+  ansible.builtin.debug:
+    msg: "{{ openbao_initialized }}"
+
+- name: Init openbao # noqa no-changed-when command-instead-of-shell
   ansible.builtin.shell: /usr/bin/bao operator init
   environment:
     VAULT_ADDR: "http://127.0.0.1:8200"
   register: bao_init
   delegate_to: "{{ primary_node }}"
   run_once: true
-
-- name: debug
-  debug:
-    var: bao_init
+  when: not openbao_initialized
 
 - name: Set unseal keys and root token from bao_init output
   set_fact:
     unseal_keys: "{{ bao_init.stdout_lines | select('match', '^Unseal Key \\d+:') | map('regex_replace', '^Unseal Key \\d+: ', '') | list }}"
     root_token: "{{ (bao_init.stdout_lines | select('match', '^Initial Root Token:') | list).0.split(': ')[1] }}"
+  when: not openbao_initialized
 
-- name: debug
-  ansible.builtin.debug:
-    msg: "key:{{ unseal_keys[0] }} key:{{ unseal_keys[1] }} key:{{ unseal_keys[2] }}  key:{{ unseal_keys[3] }} root:{{ root_token }}"
-
-- name: Unseal vault
-  ansible.builtin.shell: /usr/bin/bao operator unseal {{ unseal_keys[0] }} {{ unseal_keys[1] }}
+- name: Unseal vault # noqa no-changed-when command-instead-of-shell
+  ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
   environment:
     VAULT_ADDR: "http://127.0.0.1:8200"
+  loop: "{{ unseal_keys[0:3] }}"
   register: bao_init
   delegate_to: "{{ primary_node }}"
   run_once: true
+  when:
+    - not openbao_initialized
 
 - name: Check vault health
   ansible.builtin.uri:
-    url: "http://{{ hostvars[primary_node].ansible_default_ipv4.address }}:8200/v1/sys/healthz"
+    url: "http://{{ hostvars[primary_node].ansible_default_ipv4.address }}:8200/v1/sys/health"
     validate_certs: false
     status_code:
       - 503
       - 200
+      - 400
   delegate_to: "{{ primary_node }}"
   run_once: true
   register: cluster_health
 
+- name: Display root token
+  ansible.builtin.debug:
+    msg: "You can now login with root_token: {{ root_token }}"
+  when: not openbao_initialized
+
+- name: Write Unseal and Root token to file
+  ansible.builtin.copy:
+    content: |
+      unseal_key_1: "{{ unseal_keys[0] }}"
+      unseal_key_2: "{{ unseal_keys[1] }}"
+      unseal_key_3: "{{ unseal_keys[2] }}"
+      unseal_key_4: "{{ unseal_keys[3] }}"
+      unseal_key_5: "{{ unseal_keys[4] }}"
+      root_token: "{{ root_token }}"
+    dest: "{{ playbook_dir }}/inventories/homelab/group_vars/{{ openbao_cluster_name }}/unseal.yml"
+  delegate_to: localhost
+  run_once: true
+
+- name: Join node to cluster
+  ansible.builtin.shell: |
+    /usr/bin/bao operator raft join "http://{{ primary_node }}:8200"
+  environment:
+    VAULT_ADDR: "http://127.0.0.1:8200"
+  delegate_to: "{{ groups[openbao_cluster_name][1] }}"
+  run_once: true
+
+- name: Join node to cluster
+  ansible.builtin.shell: |
+    /usr/bin/bao operator raft join "http://{{ primary_node }}:8200"
+  environment:
+    VAULT_ADDR: "http://127.0.0.1:8200"
+  delegate_to: "{{ groups[openbao_cluster_name][2] }}"
+  run_once: true

@@ -1,7 +1,8 @@
 ---
 collections:
   - ansible.posix
-  - community.general.cloudflare_dns
+  - community.general
   - openstack.cloud
   - community.docker
   - community.general
+  - community.hashi_vault

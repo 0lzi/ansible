@@ -1,7 +1,7 @@
 ui            = true
-{% if tls_enabled %}
-cluster_addr  = "https://{{ ansible_default_ipv4.address }}:8201"
-api_addr      = "https://{{ ansible_default_ipv4.address }}:8200"
+{% if tls.enabled %}
+cluster_addr  = "https://{{ inventory_hostname }}:8201"
+api_addr      = "https://{{ inventory_hostname }}:8200"
 {% else %}
 cluster_addr  = "http://{{ ansible_default_ipv4.address }}:8201"
 api_addr      = "http://{{ ansible_default_ipv4.address }}:8200"
@@ -13,9 +13,9 @@ storage "raft" {
   node_id = "{{ inventory_hostname_short }}"
 {% for host in groups[openbao_cluster_name] %}
   retry_join = {
-    {% if tls_enabled %}
-    leader_api_addr     = "https://{{ hostvars[host]['ansible_default_ipv4']['address'] }}:8200"
-    leader_ca_cert_file = 
+{% if tls.enabled and tls.letsencrypt %}
+    leader_api_addr     = "https://{{ hostvars[host]['inventory_hostname'] }}:8200"
+    leader_ca_cert_file = "{{ openbao_cert_dir}}/fullchain.pem"
 {% else %}
     leader_api_addr     = "http://{{ hostvars[host]['ansible_default_ipv4']['address'] }}:8200"
 {% endif %}
@@ -32,13 +32,13 @@ seal "static" {
 
 listener "tcp" {
   address       = "{{ ansible_default_ipv4.address }}:8200"
-{% if tls_enabled and openbao_self_signed %}
+{% if tls.enabled and tls.self_signed %}
   tls_cert_file = "{{ openbao_self_signed_cert_dir}}/tls.crt"
   tls_key_file  = "{{ openbao_self_signed_cert_dir}}/tls.key"
 {% else %}
-{% if tls_enabled and not openbao_self_signed %}
-  tls_cert_file = /path/to/cert/cert.crt
-  tls_key_file  = /path/to/cert/cert.key
+{% if tls.enabled and tls.letsencrypt %}
+  tls_cert_file = "{{ openbao_cert_dir}}/fullchain.pem"
+  tls_key_file  = "{{ openbao_cert_dir}}/privkey.key"
 {% else %}
   tls_disable   = 1
 {% endif %}
@@ -47,7 +47,12 @@ listener "tcp" {
 
 listener "tcp" {
   address       = "127.0.0.1:8200"
+{% if tls.enabled %}
+  tls_cert_file = "{{ openbao_self_signed_cert_dir}}/tls.crt"
+  tls_key_file  = "{{ openbao_self_signed_cert_dir}}/tls.key"
+{% else %}
   tls_disable   = 1
+{% endif %}
 }
 
 log_requests_level = "debug"

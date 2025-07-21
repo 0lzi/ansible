@@ -3,8 +3,10 @@ openbao_version: "2.3.1"
 openbao_cluster_name: "openbao"
 openbao_config_dir: "/etc/openbao.d"
 openbao_data_dir: "/opt/openbao/data"
-openbao_log_dir: "/var/log/openbao"
 openbao_cert_dir: "{{ openbao_config_dir }}/certs"
-openbao_self_signed: true
+openbao_log_dir: "/var/log/openbao"
 openbao_self_signed_cert_dir: "/opt/openbao/tls"
-tls_enabled: false
+tls:
+  enabled: false
+  self_signed: false
+  letsencrypt: true

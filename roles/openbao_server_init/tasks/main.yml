@@ -1,7 +1,8 @@
-- name: Update apt and install unzip
+- name: Update apt and install usefull packages
   ansible.builtin.apt:
     name:
       - unzip
+      - jq # Helpful for viewing logs
     update_cache: true
 
 - name: Check if openbao installed
@@ -71,31 +72,33 @@
 - name: Get status # noqa no-changed-when command-instead-of-shell
   ansible.builtin.shell: /usr/bin/bao status
   environment:
-    VAULT_ADDR: "http://127.0.0.1:8200"
+    BAO_SKIP_VERIFY: "1"
+    BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
   register: bao_status
   delegate_to: "{{ primary_node }}"
   run_once: true
   failed_when: bao_status.rc not in [0,2]
 
 - name: Parse Initialized status
-  set_fact:
+  ansible.builtin.set_fact:
     openbao_initialized: "{{ bao_status.stdout_lines | select('search', '^Initialized') | first | regex_search('true|false') }}"
 
-- name: dbg
+- name: Dbg
   ansible.builtin.debug:
     msg: "{{ openbao_initialized }}"
 
 - name: Init openbao # noqa no-changed-when command-instead-of-shell
   ansible.builtin.shell: /usr/bin/bao operator init
   environment:
-    VAULT_ADDR: "http://127.0.0.1:8200"
+    BAO_SKIP_VERIFY: "1"
+    BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
   register: bao_init
   delegate_to: "{{ primary_node }}"
   run_once: true
   when: not openbao_initialized
 
 - name: Set unseal keys and root token from bao_init output
-  set_fact:
+  ansible.builtin.set_fact:
     unseal_keys: "{{ bao_init.stdout_lines | select('match', '^Unseal Key \\d+:') | map('regex_replace', '^Unseal Key \\d+: ', '') | list }}"
     root_token: "{{ (bao_init.stdout_lines | select('match', '^Initial Root Token:') | list).0.split(': ')[1] }}"
   when: not openbao_initialized
@@ -103,7 +106,8 @@
 - name: Unseal vault # noqa no-changed-when command-instead-of-shell
   ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
   environment:
-    VAULT_ADDR: "http://127.0.0.1:8200"
+    BAO_SKIP_VERIFY: "1"
+    BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
   loop: "{{ unseal_keys[0:3] }}"
   register: bao_init
   delegate_to: "{{ primary_node }}"
@@ -131,48 +135,70 @@
 - name: Write Unseal and Root token to file
   ansible.builtin.copy:
     content: |
-      unseal_key_1: "{{ unseal_keys[0] }}"
-      unseal_key_2: "{{ unseal_keys[1] }}"
-      unseal_key_3: "{{ unseal_keys[2] }}"
-      unseal_key_4: "{{ unseal_keys[3] }}"
-      unseal_key_5: "{{ unseal_keys[4] }}"
-      root_token: "{{ root_token }}"
+      ---
+      unseal_keys:
+        # Unseal Key 1
+        - !vault |
+      {{ unseal_keys[0] | vault(lookup('ansible.builtin.file', '../vault_password')) | indent(4, true) }}
+        # Unseal Key 2
+        - !vault |
+      {{ unseal_keys[1] | vault(lookup('ansible.builtin.file', '../vault_password')) | indent(4, true) }}
+        # Unseal Key 3
+        - !vault |
+      {{ unseal_keys[2] | vault(lookup('ansible.builtin.file', '../vault_password')) | indent(4, true) }}
+        # Unseal Key 4
+        - !vault |
+      {{ unseal_keys[3] | vault(lookup('ansible.builtin.file', '../vault_password')) | indent(4, true) }}
+        # Unseal Key 5
+        - !vault |
+      {{ unseal_keys[4] | vault(lookup('ansible.builtin.file', '../vault_password')) | indent(4, true) }}
+      root_token: !vault |
+                  {{ root_token | vault(lookup('ansible.builtin.file', '../vault_password')) | indent(12, false) }}
     dest: "{{ playbook_dir }}/inventories/homelab/group_vars/{{ openbao_cluster_name }}/unseal.yml"
   delegate_to: localhost
   run_once: true
+  when: not openbao_initialized
 
-- name: Join node to cluster
+- name: Join node to cluster # noqa no-changed-when command-instead-of-shell
   ansible.builtin.shell: |
     /usr/bin/bao operator raft join "http://{{ primary_node }}:8200"
   environment:
-    VAULT_ADDR: "http://127.0.0.1:8200"
+    BAO_SKIP_VERIFY: "1"
+    BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
   delegate_to: "{{ groups[openbao_cluster_name][1] }}"
   run_once: true
+  when:
+    - not openbao_initialized
+    - not tls.enabled
 
-- name: Join node to cluster
+- name: Join node to cluster # noqa no-changed-when command-instead-of-shell
   ansible.builtin.shell: |
     /usr/bin/bao operator raft join "http://{{ primary_node }}:8200"
   environment:
-    VAULT_ADDR: "http://127.0.0.1:8200"
+    BAO_SKIP_VERIFY: "1"
+    BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
   delegate_to: "{{ groups[openbao_cluster_name][2] }}"
   run_once: true
+  when:
+    - not openbao_initialized
+    - not tls.enabled
 
 - name: Unseal vault {{ groups[openbao_cluster_name][1] }} # noqa no-changed-when command-instead-of-shell
   ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
   environment:
-    VAULT_ADDR: "http://127.0.0.1:8200"
+    BAO_SKIP_VERIFY: "1"
+    BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
   loop: "{{ unseal_keys[0:3] }}"
   delegate_to: "{{ groups[openbao_cluster_name][1] }}"
   run_once: true
-  when:
-    - not openbao_initialized
+  when: not openbao_initialized
 
 - name: Unseal vault {{ groups[openbao_cluster_name][2] }} # noqa no-changed-when command-instead-of-shell
   ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
   environment:
-    VAULT_ADDR: "http://127.0.0.1:8200"
+    BAO_SKIP_VERIFY: "1"
+    BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
   loop: "{{ unseal_keys[0:3] }}"
   delegate_to: "{{ groups[openbao_cluster_name][2] }}"
   run_once: true
-  when:
-    - not openbao_initialized
+  when: not openbao_initialized

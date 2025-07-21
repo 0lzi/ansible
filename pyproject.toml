@@ -6,6 +6,7 @@ dependencies = [
     "ansible==11.*",
     "ansible-lint==24.2.*",
     "ansible-pylibssh==1.2*",
+    "hvac==2.3.*",
 ]
 
 [dependency-groups]

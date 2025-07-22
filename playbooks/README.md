@@ -5,6 +5,8 @@
 - docker-deploy/
 - get_running_containers/
 - openstack/
+- openbao/
+  - unseal
 - patching/
 - pihole/
 - reset_password/

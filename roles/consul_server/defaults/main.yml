@@ -1,0 +1,14 @@
+# https://releases.hashicorp.com/consul/1.21.3/consul_1.21.3_linux_amd64.zip
+consul_url: "https://releases.hashicorp.com/consul"
+consul_version: "1.21.3"
+consul_dc: dc1
+consul_domain: 0lzi.com
+consul_cluster_size: 3
+
+consul_config_dir: "/etc/consul.d"
+consul_data_dir: "/opt/consul/data"
+consul_cert_dir: "{{ consul_config_dir }}/certs"
+consul_log_dir: "/var/log/consul"
+
+tls:
+  enabled: true

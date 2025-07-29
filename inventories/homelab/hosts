@@ -29,3 +29,11 @@ lancache.0lzi.com
 
 [immich]
 immich.0lzi.com
+
+[consul_servers:children]
+dc1
+
+[dc1]
+consul-0.0lzi.com
+consul-1.0lzi.com
+consul-2.0lzi.com

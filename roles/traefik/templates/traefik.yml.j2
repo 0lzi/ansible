@@ -1,6 +1,6 @@
 global:
   checkNewVersion: false
-  sendAnonymouseUsage: false
+  sendAnonymousUsage: false
 
 log:
   level: DEBUG
@@ -10,8 +10,32 @@ api:
   insecure: true
 
 entryPoints:
-  web:
+  http:
     address: :80
-  websecure:
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+
+  https:
     address: :443
 
+certificatesResolvers:
+  cloudflare:
+    acme:
+      email: {{ cf_email }}
+      storage: /letsencrypt/acme.json
+      dnsChallenge:
+        provider: cloudflare
+        delayBeforeCheck: 0
+        resolvers:
+        - "1.1.1.1:53"
+        - "8.8.8.8:53"
+
+providers:
+  # Enable Docker configuration backend
+  docker:
+    exposedByDefault: false
+#  consul:
+#    endpoints: ""

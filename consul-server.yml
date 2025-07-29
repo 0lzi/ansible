@@ -1,0 +1,9 @@
+- name: Install consul Servers
+  hosts: consul_servers
+  become: true
+  roles:
+    - users
+    - packages
+    - consul_server
+  tags:
+    - consul_server

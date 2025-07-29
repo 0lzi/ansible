@@ -1,0 +1,98 @@
+- name: Update apt
+  ansible.builtin.apt:
+    name:
+      - unzip
+      - jq
+    update_cache: true
+
+- name: Check if consul installed
+  ansible.builtin.stat:
+    path: "/usr/bin/consul"
+  register: consul_installed
+
+- name: Check if certs exist
+  ansible.builtin.stat:
+    path: "{{ consul_cert_dir }}/ca.pem"
+  register: ca_file
+
+- name: Download consul binary for {{ consul_version }}
+  ansible.builtin.unarchive:
+    src: "{{ consul_url }}/{{ consul_version }}/consul_{{ consul_version }}_linux_amd64.zip"
+    dest: "/usr/bin"
+    owner: "root"
+    group: "root"
+    remote_src: true
+  when:
+    - not consul_installed.stat.exists
+
+- name: Create consul group
+  ansible.builtin.group:
+    name: consul
+
+- name: Create non-priv consul user
+  ansible.builtin.user:
+    name: consul
+    state: present
+    home: "{{ consul_config_dir }}"
+    shell: /bin/bash
+    groups:
+      - consul
+
+- name: Create Consul directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: consul
+    group: consul
+  with_items:
+    - "{{ consul_config_dir }}"
+    - "{{ consul_data_dir }}"
+    - "{{ consul_cert_dir }}"
+    - "{{ consul_log_dir }}"
+
+- name: Add consul user to ssl-certs
+  ansible.builtin.user:
+    name: consul
+    groups: ssl-cert
+    append: true
+  when:
+    - tls.enabled and tls.letsencrypt
+
+- name: Set primary node
+  ansible.builtin.set_fact:
+    primary_node: "{{ groups[consul_dc][0] }}"
+
+- name: Generate consul Gossip keys
+  ansible.builtin.shell: consul keygen
+  delegate_to: "{{ primary_node }}"
+  run_once: true
+  register: consul_gossip_key
+
+- name: Set gossip_key
+  ansible.builtin.set_fact:
+    gossip_key: "{{ consul_gossip_key.stdout }}"
+
+- name: Copy consul.hcl
+  ansible.builtin.template:
+    src: consul.hcl.j2
+    dest: "{{ consul_config_dir }}/consul.hcl"
+    owner: consul
+    group: consul
+    mode: '0644'
+  notify: Restart_consul
+
+- name: Copy service file
+  ansible.builtin.template:
+    src: consul.service.j2
+    dest: /etc/systemd/system/consul.service
+    owner: consul
+    group: consul
+    mode: '0644'
+  notify:
+    - Systemd
+    - Restart_consul
+
+- name: Validate config
+  ansible.builtin.shell: consul validate /etc/consul.d/
+  register: consul_validate
+  failed_when: "'failed' in consul_validate.stderr"

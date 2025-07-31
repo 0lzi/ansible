@@ -1,7 +1,7 @@
 ---
 # Run with ansible-playbook -i inventory/hosts pi-hole.yml
 - name: Setup Pi-Hole
-  hosts: pi-hole
+  hosts: pi_hole
   remote_user: "{{ user }}"
   become: true
   become_method: sudo

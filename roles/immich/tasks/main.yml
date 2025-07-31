@@ -21,6 +21,7 @@
     mode: '0644'
     owner: immich
     group: admins
+  notify: Restart_container
 
 - name: Template .env file
   ansible.builtin.template:
@@ -29,6 +30,7 @@
     mode: '0644'
     owner: immich
     group: admins
+  notify: Restart_container
 
 - name: Template config file
   ansible.builtin.template:

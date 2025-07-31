@@ -1,0 +1,7 @@
+---
+- name: Restart_container
+  community.docker.docker_compose_v2:
+    project_src: "{{ immich_data }}"
+    state: restarted
+    recreate: always
+    pull: always

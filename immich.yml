@@ -1,7 +1,7 @@
 ---
 # Run with ansible-playbook -i inventory/hosts immich.yml
 - name: Setup Immich
-  hosts: docker_hosts
+  hosts: immich
   remote_user: "{{ user }}"
   become: true
   become_method: sudo

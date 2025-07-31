@@ -3,3 +3,8 @@ immich_compose_url: "https://github.com/immich-app/immich/releases/latest/downlo
 immich_data: /srv/immich
 immich_pgdata: /srv/immich/pg
 immich_pgpassword: "{{ lookup('ansible.builtin.env', 'IMMICH_PGPASSWORD', default='pa55word') }}"
+# SMTP
+immich_smtpserver: "{{ lookup('ansible.builtin.env', 'IMMICH_SMTPSERVER', default='smtp.example.com') }}"
+immich_smtpuser: "{{ lookup('ansible.builtin.env', 'IMMICH_SMTPUSER', default='user@example.com') }}"
+immich_smtpfrom: "{{ lookup('ansible.builtin.env', 'IMMICH_SMTPFROM', default='user@example.com') }}"
+immich_smtppassword: "{{ lookup('ansible.builtin.env', 'IMMICH_SMTPPASSWORD', default='pa55word') }}"

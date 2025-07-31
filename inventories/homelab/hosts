@@ -2,19 +2,24 @@
 docker_hosts
 pi_hole
 lancache
-#immich
+immich
 
 [dev]
 
 [pve]
 pve[1:3].0lzi.com
 
+[docker_servers:children]
+docker_hosts
+immich
+lancache
+pi_hole
+
 [docker_hosts]
 docker-1.0lzi.com
 dockerhost-0.0lzi.com
 dockerhost-1.0lzi.com
 dockerhost-2.0lzi.com
-#immich
 
 [pi_hole]
 pi-hole-[1:2].0lzi.com
@@ -23,4 +28,4 @@ pi-hole-[1:2].0lzi.com
 lancache.0lzi.com
 
 [immich]
-#immich.lab
+immich.0lzi.com

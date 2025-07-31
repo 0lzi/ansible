@@ -15,16 +15,6 @@ services:
       - proxy
     labels:
       - "traefik.enable=true"
-      # Router for http
-      - "traefik.http.routers.traefik_http.entrypoints=http"
-      - "traefik.http.routers.traefik_http.rule=Host(`traefik.0lzi.com`)"
-      # Router for https
-      - "traefik.http.routers.traefik_https.entrypoints=https"
-      - "traefik.http.routers.traefik_https.rule=Host(`traefik.0lzi.com`)"
-      - "traefik.http.routers.traefik_https.tls=true"
-      - "traefik.http.routers.traefik_https.tls.certresolver=cloudflare"
-      - "traefik.http.routers.traefik_https.tls.domains[0].main=traefik.0lzi.com"
-      - "traefik.http.routers.traefik_https.service=api@internal"
 networks:
   proxy:
     external: true

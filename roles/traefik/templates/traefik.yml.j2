@@ -7,7 +7,10 @@ log:
 
 api:
   dashboard: true
-  insecure: true
+  insecure: false
+
+metrics:
+  prometheus: true
 
 entryPoints:
   http:
@@ -17,9 +20,17 @@ entryPoints:
         entryPoint:
           to: websecure
           scheme: https
+          permanent: true
 
-  https:
+  websecure:
     address: :443
+    http:
+      tls: true
+    transport:
+      respondingTimeouts:
+        readTimeout: 600s
+        idleTimeout: 600s
+        writeTimeout: 600s
 
 certificatesResolvers:
   cloudflare:
@@ -37,5 +48,6 @@ providers:
   # Enable Docker configuration backend
   docker:
     exposedByDefault: false
-#  consul:
-#    endpoints: ""
+  consul:
+    endpoints:
+      - "http://consul-0.0lzi.com:8500"

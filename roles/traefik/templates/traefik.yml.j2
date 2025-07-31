@@ -1,0 +1,53 @@
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+log:
+  level: DEBUG
+
+api:
+  dashboard: true
+  insecure: false
+
+metrics:
+  prometheus: true
+
+entryPoints:
+  http:
+    address: :80
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+
+  websecure:
+    address: :443
+    http:
+      tls: true
+    transport:
+      respondingTimeouts:
+        readTimeout: 600s
+        idleTimeout: 600s
+        writeTimeout: 600s
+
+certificatesResolvers:
+  cloudflare:
+    acme:
+      email: {{ cf_email }}
+      storage: /letsencrypt/acme.json
+      dnsChallenge:
+        provider: cloudflare
+        delayBeforeCheck: 0
+        resolvers:
+        - "1.1.1.1:53"
+        - "8.8.8.8:53"
+
+providers:
+  # Enable Docker configuration backend
+  docker:
+    exposedByDefault: false
+  consul:
+    endpoints:
+      - "http://consul-0.0lzi.com:8500"

@@ -1,0 +1,92 @@
+# Templated from https://github.com/btkrausen/hashicorp/blob/master/consul/config.hcl
+log_level  = "INFO"
+log_file = "{{ consul_log_dir }}/consul.log"
+server     = true
+datacenter = "{{ consul_dc }}"
+domain = "{{ consul_domain }}"
+
+# Authoritative datacenter for Federation
+# primary_datacenter = "dc1"
+
+ui_config {
+  enabled = true
+}
+
+# TLS Configuration
+# Security Note: The Certificate Authority (CA) configured on the internal RPC interface
+# (either explicitly by tls.internal_rpc or implicitly by tls.defaults) should be a private CA,
+# not a public one. We recommend using a dedicated CA which should not be used with any other systems.
+# Any certificate signed by the CA will be allowed to communicate with the cluster and a specially
+# crafted certificate signed by the CA can be used to gain full access to Consul.
+{% if tls.enabled %}
+tls {
+  defaults {
+    key_file               = "{{ consul_cert_dir}}/privkey.key"
+    cert_file              = "{{ consul_cert_dir}}/cert.pem"
+    ca_file                = "{{ consul_cert_dir}}/{{ consul_ca_file }}.pem"
+    verify_incoming        = true
+    verify_outgoing        = true
+    verify_server_hostname = true
+  }
+}
+{% endif %}
+# Gossip Encryption - generate key using consul keygen
+encrypt = "{{ gossip_key }}"
+
+leave_on_terminate = true
+data_dir           = "{{ consul_data_dir }}"
+
+# Agent Network Configuration
+client_addr = "0.0.0.0"
+bind_addr = "{{ ansible_default_ipv4.address }}"
+advertise_addr = "{{ ansible_default_ipv4.address }}"
+
+# Disable HTTP and use 8501 for HTTPS
+ports {
+  {% if tls.enabled %}
+  http  = -1
+  https = 8501
+  {% else %}
+  http = 8500
+  {% endif %}
+}
+
+# Cluster Join
+bootstrap_expect = {{ consul_cluster_size }}
+retry_join       = [{% for host in groups[consul_dc] %}"{{ hostvars[host]['inventory_hostname'] }}"{% if not loop.last %},{% endif %}
+{% endfor %}]
+start_join = [{% for host in groups[consul_dc] %}"{{ hostvars[host]['inventory_hostname'] }}"{% if not loop.last %},{% endif %}
+{% endfor %}]
+rejoin_after_leave = true
+
+# Enable and Configure Consul ACLs
+#acl = {
+#  enabled        = true
+#  default_policy = "deny"
+#  down_policy    = "extend-cache"
+#  tokens = {
+#    agent = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+#  }
+#}
+
+# Set raft multiplier to lowest value (best performance) - 1 is recommended for Production servers
+performance = {
+    raft_multiplier = 1
+}
+
+# Enables auto encrypt for distribution of certs to Consul clients from the Connect CA
+auto_encrypt {
+  allow_tls = true
+}
+
+# Enable service mesh capability for Consul datacenter
+connect = {
+  enabled = true
+}
+
+enable_script_checks =  true
+
+dns_config {
+  enable_truncate = true
+  only_passing = true
+    }

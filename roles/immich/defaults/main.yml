@@ -1,5 +1,5 @@
+immich_version: "v1.137.3"
 immich_compose_url: "https://github.com/immich-app/immich/releases/latest/download/docker-compose.yml"
-
 immich_data: /srv/immich
 immich_pgdata: /srv/immich/pg
 immich_pgpassword: "{{ lookup('ansible.builtin.env', 'IMMICH_PGPASSWORD', default='pa55word') }}"

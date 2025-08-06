@@ -21,7 +21,9 @@
     mode: '0644'
     owner: immich
     group: admins
-  notify: Restart_container
+  notify:
+    - Restart_container
+    - Pull images
 
 - name: Template .env file
   ansible.builtin.template:

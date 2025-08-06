@@ -5,3 +5,7 @@
     state: restarted
     recreate: always
     pull: always
+
+- name: Pull images
+  community.docker.docker_compose_v2_pull:
+    project_src: "{{ immich_data }}"

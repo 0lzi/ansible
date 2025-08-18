@@ -11,7 +11,7 @@ User=root
 WorkingDirectory=/srv/BattleNetPrefill
 
 # This should be the full path to SteamPrefill, as well as any additional option flags
-ExecStart= /srv/EpimPrefill/BattleNetPrefill prefill --no-ansi
+ExecStart= /srv/BattleNetPrefill/BattleNetPrefill prefill --no-ansi
 
 Type=oneshot
 Nice=19

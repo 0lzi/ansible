@@ -12,7 +12,6 @@ User=root
 WorkingDirectory=/srv/SteamPrefill
 
 # This should be the full path to SteamPrefill, as well as any additional option flags
-# Example: /home/tim/SteamPrefill/SteamPrefill prefill --no-ansi
 ExecStart= /srv/SteamPrefill/SteamPrefill prefill --no-ansi
 
 Type=oneshot

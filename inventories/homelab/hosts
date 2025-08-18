@@ -20,6 +20,7 @@ docker-1.0lzi.com
 dockerhost-0.0lzi.com
 dockerhost-1.0lzi.com
 dockerhost-2.0lzi.com
+immich.0lzi.com
 
 [pi_hole]
 pi-hole-[1:2].0lzi.com

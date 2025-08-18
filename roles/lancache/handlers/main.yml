@@ -42,5 +42,5 @@
 - name: Battlenet-service
   ansible.builtin.systemd_service:
     name: battlenetprefill.service
-    state: "{{ battlenetprefill | ternary('started', 'stopped') }}"
     enabled: "{{ battlenetprefill | ternary('true', 'false') }}"
+    state: "{{ battlenetprefill | ternary('started', 'stopped') }}"

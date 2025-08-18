@@ -11,7 +11,7 @@ User=root
 WorkingDirectory=/srv/EpicPrefill
 
 # This should be the full path to SteamPrefill, as well as any additional option flags
-ExecStart= /srv/EpimPrefill/EpicPrefill prefill --no-ansi
+ExecStart= /srv/EpicPrefill/EpicPrefill prefill --no-ansi
 
 Type=oneshot
 Nice=19

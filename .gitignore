@@ -3,6 +3,7 @@
 
 # Ansible
 .ansible/
+vault_password*
 
 # Direnv
 .envrc

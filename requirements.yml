@@ -3,4 +3,4 @@ collections:
   - ansible.posix
   - openstack.cloud
   - community.docker
-  - community.general
+  - community.hashi_vault

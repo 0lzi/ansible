@@ -1,0 +1,52 @@
+---
+- name: Create gitlab data directory
+  ansible.builtin.file:
+    path: "{{ base_dir }}/gitlab/{{ item }}"
+    state: directory
+    owner: root
+    group: admins
+    mode: "0755"
+  loop:
+    - config
+    - data
+    - logs
+
+- name: Create gitlab docker network
+  community.docker.docker_network:
+    name: gitlab-network
+    state: present
+
+- name: Template gitlab.rb configuration file
+  ansible.builtin.template:
+    src: gitlab.rb.j2
+    dest: "{{ base_dir }}/{{ service }}/config/gitlab.rb"
+    owner: root
+    group: admins
+    mode: '0644'
+  # notify: Restart GitLab
+
+- name: Template gitlab docker-compose file
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ base_dir }}/{{ service }}/docker-compose.yml"
+    owner: root
+    group: admins
+    mode: '0644'
+  # notify: Restart GitLab
+
+- name: Add traefik label to Consul for GitLab
+  community.general.consul_kv:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    host: "{{ consul_host }}"
+    port: 443
+    scheme: "https"
+    state: present
+  loop: "{{ gitlab.traefik_labels | dict2items }}"
+  delegate_to: localhost
+  tags: consul
+
+- name: Start GitLab container
+  community.docker.docker_compose_v2:
+    project_src: "{{ base_dir }}/{{ service }}"
+    state: present

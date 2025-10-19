@@ -1,0 +1,20 @@
+---
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:{{ gitlab.version }}
+    container_name: gitlab
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+      - '{{ gitlab.ssh_port }}:22'
+{% if gitlab.registry %}
+      - "{{ gitlab.registry_port }}:{{ gitlab.registry_port }}"
+{% endif %}
+    volumes:
+      - {{ base_dir }}/{{ service}}/config:/etc/gitlab
+      - {{ base_dir }}/{{ service}}/logs:/var/log/gitlab
+      - {{ base_dir }}/{{ service}}/data:/var/opt/gitlab
+networks:
+  gitlab:
+    external: true

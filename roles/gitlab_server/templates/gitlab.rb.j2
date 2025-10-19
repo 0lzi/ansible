@@ -1,0 +1,20 @@
+# Gitlab rb file
+# This file is managed by Ansible, any changes made directly to it will be lost.
+external_url '{{ gitlab.url }}'
+nginx['listen_port'] = {{ gitlab.port }}
+nginx['listen_https'] = {{ gitlab.https | default('false') | lower }}
+
+# Registry settings
+{% if gitlab.registry | default(false) %}
+registry['enable'] = {{ gitlab.registry | default('false') | lower }}
+registry_external_url '{{ gitlab.registry_url }}'
+registry_nginx['listen_port'] = {{ gitlab.registry_port | default(5000) }}
+{% endif %}
+
+# Prometheus settings
+{% if gitlab.prometheus | default(false) %}
+prometheus_monitoring['enable'] = true
+prometheus['listen_address'] = ':9090'
+{% endif %}
+
+

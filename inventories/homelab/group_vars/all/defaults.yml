@@ -1,1 +1,4 @@
 base_dir: /srv
+
+ansible_hashi_vault_addr: "https://vault.0lzi.com"
+ansible_hashi_vault_engine_mount_point: "kv"

@@ -1,0 +1,14 @@
+---
+service: consul
+consul:
+  traefik_labels:
+    # consul main interface
+    traefik/http/routers/consul/rule: "Host(`consul.0lzi.com`)"
+    traefik/http/routers/consul/service: "consul"
+    traefik/http/routers/consul/entrypoints: "websecure"
+    traefik/http/routers/consul/tls/certresolver: "cloudflare"
+    traefik/http/routers/consul/tls: "true"
+    # consul Service
+    traefik/http/services/consul/loadbalancer/servers/0/url: "http://consul-0.0lzi.com:8500"
+    traefik/http/services/consul/loadbalancer/servers/1/url: "http://consul-1.0lzi.com:8500"
+    traefik/http/services/consul/loadbalancer/servers/2/url: "http://consul-2.0lzi.com:8500"

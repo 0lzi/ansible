@@ -1,0 +1,12 @@
+---
+service: immich
+immich:
+  traefik_labels:
+    # immich main interface
+    traefik/http/routers/immich/rule: "Host(`photos.0lzi.com`)"
+    traefik/http/routers/immich/service: "immich"
+    traefik/http/routers/immich/entrypoints: "websecure"
+    traefik/http/routers/immich/tls/certresolver: "cloudflare"
+    traefik/http/routers/immich/tls: "true"
+    # immich Service
+    traefik/http/services/immich/loadbalancer/servers/0/url: "http://immich.0lzi.com:2283"

@@ -1,0 +1,15 @@
+---
+service: proxmox
+proxmox:
+  traefik_labels:
+    # proxmox main interface
+    traefik/http/routers/proxmox/rule: "Host(`pve.0lzi.com`)"
+    traefik/http/routers/proxmox/service: "proxmox"
+    traefik/http/routers/proxmox/entrypoints: "websecure"
+    traefik/http/routers/proxmox/tls/certresolver: "cloudflare"
+    traefik/http/routers/proxmox/tls: "true"
+    # Proxmox Service
+    traefik/http/services/proxmox/loadbalancer/sticky/cookie/name: "proxmox"
+    traefik/http/services/proxmox/loadbalancer/servers/0/url: "https://pve1.0lzi.com:8006"
+    traefik/http/services/proxmox/loadbalancer/servers/1/url: "https://pve2.0lzi.com:8006"
+    traefik/http/services/proxmox/loadbalancer/servers/2/url: "https://pve3.0lzi.com:8006"

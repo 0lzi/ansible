@@ -1,6 +1,6 @@
 ---
 aptpackages:
-  - htop
+  - btop
   - sshpass
   - python3-pip
   - powerline

@@ -49,4 +49,6 @@
 - name: Start GitLab container
   community.docker.docker_compose_v2:
     project_src: "{{ base_dir }}/{{ service }}"
+    recreate: always
     state: present
+  tags: compose

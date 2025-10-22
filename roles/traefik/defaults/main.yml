@@ -1,2 +1,8 @@
 ---
 traefik_version: 3.4
+traefik:
+  logs:
+    level: INFO
+    access: true
+  metrics:
+    prometheus: true

@@ -12,6 +12,7 @@ services:
       - "{{ traefik_dir }}/certs:/letsencrypt"
       - "{{ traefik_dir }}/traefik.yml:/etc/traefik/traefik.yml:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "{{ traefik_dir }}/logs:/var/log/traefik"
     networks:
       - proxy
     labels:

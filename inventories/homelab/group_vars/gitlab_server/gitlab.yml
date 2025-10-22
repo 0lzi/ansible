@@ -8,7 +8,7 @@ gitlab:
   url: https://gitlab.0lzi.com
   port: 80
   ssh_port: 2222
-  prometheus: true
+  prometheus: false
   registry: true
   registry_port: 5050
   registry_url: https://registry.gitlab.0lzi.com

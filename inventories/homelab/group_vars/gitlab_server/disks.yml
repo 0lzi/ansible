@@ -1,0 +1,9 @@
+# Create a YAML file to define vg_name, lv_name, and mount_point for each disk
+# Example:
+lvm:
+  - vg_name: vg_data
+    lv_name: lv_data0
+    mount_point: /srv
+    size: 99G
+    pvs:
+      - /dev/sdb

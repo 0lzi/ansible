@@ -4,3 +4,4 @@ collections:
   - openstack.cloud
   - community.docker
   - community.hashi_vault
+  - community.general

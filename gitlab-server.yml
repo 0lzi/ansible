@@ -1,7 +1,7 @@
 ---
-# Run with ansible-playbook -i inventory/hosts base.yml
-- name: Setup Base
-  hosts: all
+# Run with ansible-playbook -i inventory/hosts gitlab-server.yml
+- name: Setup gitlab server
+  hosts: gitlab_server
   remote_user: "{{ user }}"
   become: true
   become_method: sudo
@@ -14,5 +14,5 @@
         cache_valid_time: 3600
   roles:
     - users
-    - packages
-    # - server
+    - docker
+    - gitlab_server

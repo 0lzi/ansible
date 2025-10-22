@@ -1,0 +1,36 @@
+# Gitlab rb file
+# This file is managed by Ansible, any changes made directly to it will be lost.
+external_url '{{ gitlab.url }}'
+
+# Gitlab SSH
+gitlab_rails['gitlab_shell_ssh_port'] = {{ gitlab.ssh_port }}
+
+letsencrypt['enable'] = false
+nginx['listen_port'] = {{ gitlab.port }}
+nginx['listen_https'] = {{ gitlab.https | default('false') | lower }}
+
+# Registry settings
+{% if gitlab.registry | default(false) %}
+gitlab_rails['registry_enable'] = {{ gitlab.registry | default('false') | lower }}
+registry_external_url '{{ gitlab.registry_url }}'
+registry_nginx['listen_https']    = false
+registry_nginx['listen_port'] = {{ gitlab.registry_port | default(5000) }}
+{% endif %}
+
+# Prometheus settings
+{% if gitlab.prometheus | default(false) %}
+prometheus_monitoring['enable'] = true
+{% endif %}
+
+{% if gitlab.smtp | default(false) %}
+gitlab_rails['smtp_enable'] = true
+gitlab_rails['smtp_address'] = "{{ gitlab.smtp.url }}"
+gitlab_rails['smtp_port'] = {{ gitlab.smtp.port }}
+gitlab_rails['smtp_user_name'] = "{{ gitlab.smtp.user }}"
+gitlab_rails['smtp_password'] = "{{ gitlab.smtp.password }}"
+gitlab_rails['smtp_domain'] = "smtp.gmail.com"
+gitlab_rails['smtp_authentication'] = "login"
+gitlab_rails['smtp_enable_starttls_auto'] = true
+gitlab_rails['smtp_tls'] = false
+gitlab_rails['smtp_openssl_verify_mode'] = 'peer'
+{% endif %}

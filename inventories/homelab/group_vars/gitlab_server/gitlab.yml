@@ -35,3 +35,9 @@ gitlab:
     traefik/http/routers/gitlab_prometheus/middlewares: "prometheus-auth"
     traefik/http/middlewares/prometheus-auth/basicauth/users: "{{ gitlab_prometheus_auth_user }}:{{ gitlab_prometheus_auth_password }}"
     traefik/http/middlewares/prometheus-auth/basicauth/realm: "gitlab"
+    # Gitlab ssh_port
+    traefik/tcp/routers/gitlab_ssh/rule: "HostSNI(`*`)"
+    traefik/tcp/routers/gitlab_ssh/service: "gitlab_ssh"
+    traefik/tcp/routers/gitlab_ssh/tls/passthrough: "true"
+    traefik/tcp/routers/gitlab_ssh/entrypoints: "ssh"
+    traefik/tcp/services/gitlab_ssh/loadbalancer/servers/0/address: "gitlab.0lzi.internal:2222"

@@ -5,6 +5,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "2222:2222"
     environment:
       - "CF_DNS_API_TOKEN={{ cf_api_token }}"
     volumes:

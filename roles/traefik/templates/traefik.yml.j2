@@ -2,15 +2,37 @@ global:
   checkNewVersion: false
   sendAnonymousUsage: false
 
+{% if traefik.logs %}
 log:
-  level: DEBUG
+  level: {{ traefik.logs.level | upper }}
+  filePath: "/var/log/traefik/traefik.log"
+  format: json
+
+accessLog:
+  filePath: "/var/log/traefik/access.log"
+  format: json
+  filters:
+    statusCodes:
+      - "200"
+      - "300-302"
+    retryAttempts: true
+    minDuration: "10ms"
+  fields:
+    defaultMode: keep
+    headers:
+      defaultMode: keep
+      names:
+        Authorization: drop
+{% endif %}
 
 api:
   dashboard: true
   insecure: false
 
+{% if traefik.metrics.prometheus %}
 metrics:
   prometheus: true
+{% endif %}
 
 entryPoints:
   http:

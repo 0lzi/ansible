@@ -11,6 +11,11 @@ gitlab:
   registry: true
   registry_port: 5000
   registry_url: https://registry.gitlab.0lzi.com
+  smtp:
+    user: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/gitlab')['secret']['smtp_user'] }}"
+    password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/gitlab')['secret']['smtp_password'] }}"
+    url: "smtp.gmail.com"
+    port: 587
   traefik_labels:
     # GitLab main interface
     traefik/http/routers/gitlab/rule: "Host(`gitlab.0lzi.com`)"

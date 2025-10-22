@@ -23,7 +23,7 @@
     owner: root
     group: admins
     mode: '0644'
-  # notify: Restart GitLab
+  register: gitlab_rb
 
 - name: Template gitlab docker-compose file
   ansible.builtin.template:
@@ -32,7 +32,7 @@
     owner: root
     group: admins
     mode: '0644'
-  # notify: Restart GitLab
+  register: compose_file
 
 - name: Add traefik label to Consul for GitLab
   community.general.consul_kv:
@@ -52,3 +52,4 @@
     recreate: always
     state: present
   tags: compose
+  when: gitlab_rb.changed or compose_file.changed

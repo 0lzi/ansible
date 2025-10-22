@@ -34,3 +34,17 @@ gitlab_rails['smtp_enable_starttls_auto'] = true
 gitlab_rails['smtp_tls'] = false
 gitlab_rails['smtp_openssl_verify_mode'] = 'peer'
 {% endif %}
+
+{% if gitlab.log_level %}
+gitlab_rails['env'] = {
+  'GITLAB_LOG_LEVEL' => '{{ gitlab.log_level }}'
+}
+
+registry['log_level'] = '{{ gitlab.log_level | lower }}'
+gitlab_shell['log_level']  = '{{ gitlab.log_level | upper }}'
+gitaly['configuration'] = {
+  logging: {
+    level: "{{ gitlab.log_level | lower}}"
+    }
+}
+{% endif %}

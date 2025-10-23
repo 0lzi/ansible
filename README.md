@@ -58,13 +58,20 @@ Run `ansible-playbook -i "inventories/hosts" -kK main.yml`
 
 ## Roles
 
+    - consul_server # Sets up 3 node consul cluster (no ACLs)
+    - disks # Sets up disks in lvm
+    - diun # Sets up diun in docker for notifications on docker image tag upates
     - docker # Sets up docker on a host
+    - gitlab_server # Sets up gitlab server
     - packages # Sets packages for base config
     - users # Sets up my user
     - vm # Creates VMs from ./vars/vms.yml
     - lancache # Sets up lancache on a host
     - pihole # Sets up pihole on a host
     - immich # Sets up immich on a host
+    - openbao_server_init # Sets up a 3 node openbao
+    - traefik # Sets up traefik in docker
+    - uptime-kuma # Sets uptime-kuma in docker
 
 ## Usage
 

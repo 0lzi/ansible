@@ -1,5 +1,5 @@
 ---
-# Run with ansible-playbook -i inventory/hosts base.yml
+# Run with ansible-playbook base.yml
 - name: Setup Base
   hosts: all
   remote_user: "{{ user }}"
@@ -12,6 +12,13 @@
       ansible.builtin.apt:
         update_cache: true
         cache_valid_time: 3600
+
+    - name: Update packages
+      ansible.builtin.apt:
+        name: "*"
+        state: latest
+        update_cache: true
+        force_apt_get: true
   roles:
     - users
     - packages

@@ -13,6 +13,12 @@
         force_apt_get: true
         cache_valid_time: 3600
 
+    - name: Dist upgrade host
+      when: ansible_os_family == 'Debian'
+      ansible.builtin.apt:
+        upgrade: dist
+        cache_valid_time: 3600
+
     - name: Check if reboot required
       register: reboot_required_file
       ansible.builtin.stat:
@@ -24,3 +30,11 @@
         msg: "Reboot initiated by Ansible for kernel updates"
       when: reboot_required_file.stat.exists
       throttle: 1
+
+    - name: Unseal vault # noqa no-changed-when command-instead-of-shell run-once[task]
+      ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
+      environment:
+        BAO_SKIP_VERIFY: "1"
+        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+      loop: "{{ unseal_keys[0:3] }}"
+      when: inventory_hostname in groups['openbao_servers']

@@ -1,5 +1,5 @@
 ---
-traefik_version: 3.5.3
+traefik_version: 3.5
 traefik:
   logs:
     level: INFO

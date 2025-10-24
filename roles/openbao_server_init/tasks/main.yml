@@ -38,10 +38,6 @@
     - "{{ openbao_cert_dir }}"
     - "{{ openbao_log_dir }}"
 
-- name: Create unseal key # noqa no-changed-when
-  ansible.builtin.command:
-    cmd: "openssl rand -out {{ openbao_config_dir }}/unseal-{{ ansible_date_time.date }}.key 32"
-
 - name: Copy openbao.hcl
   ansible.builtin.template:
     src: openbao.hcl.j2
@@ -49,7 +45,8 @@
     owner: openbao
     group: openbao
     mode: '0640'
-  notify: Restart_openbao
+  notify:
+    - Restart_openbao
 
 - name: Copy service file
   ansible.builtin.template:
@@ -61,6 +58,38 @@
   notify:
     - Systemd
     - Restart_openbao
+
+- name: Copy backup script
+  ansible.builtin.template:
+    src: openbao-backup.sh
+    dest: /usr/bin/bao-backup
+    owner: root
+    group: root
+    mode: '0700'
+  notify:
+    - Systemd
+
+- name: Copy backup service file
+  ansible.builtin.template:
+    src: openbao-backup.service.j2
+    dest: /etc/systemd/system/openbao-backup.service
+    owner: root
+    group: root
+    mode: '0640'
+  notify:
+    - Systemd
+    - Enable_service
+
+- name: Copy backup service timer
+  ansible.builtin.template:
+    src: openbao-backup.timer
+    dest: /etc/systemd/system/openbao-backup.timer
+    owner: root
+    group: root
+    mode: '0640'
+  notify:
+    - Systemd
+    - Enable_service
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
@@ -120,6 +149,7 @@
     url: "http://{{ hostvars[primary_node].ansible_default_ipv4.address }}:8200/v1/sys/health"
     validate_certs: false
     status_code:
+      - 429
       - 503
       - 200
       - 400

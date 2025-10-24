@@ -1,0 +1,14 @@
+Unit]
+Description=Run openbao-backup daily
+Requires=openbao-backup.service
+
+[Timer]
+# Runs every day at 4am (local time)
+OnCalendar=*-*-* 4:00:00
+
+# Set to true so we can store when the timer last triggered on disk.
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+

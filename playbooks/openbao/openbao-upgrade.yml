@@ -1,0 +1,142 @@
+---
+- name: Upgrade Openbao
+  hosts: openbao_servers
+  serial: 1
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Get Leader # noqa command-instead-of-shell
+      ansible.builtin.shell: /usr/bin/bao status -format=json
+      environment:
+        BAO_SKIP_VERIFY: "1"
+        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+      register: openbao_leader
+      changed_when: true
+
+    - name: Follow the Leader
+      ansible.builtin.set_fact:
+        primary: "{{ openbao_leader.stdout | from_json | json_query('leader_address') | regex_replace('^https?://([^:/]+).*', '\\1') }}"
+      delegate_to: localhost
+
+    - name: Set leader_host for all nodes
+      ansible.builtin.add_host:
+        name: "{{ primary }}"
+        groups:
+          - bao_leader
+
+- name: Rolling upgrade for non-leaders
+  hosts: openbao_servers:!bao_leader
+  serial: 1
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Check if Openbao installed
+      ansible.builtin.stat:
+        path: "/usr/bin/bao"
+      register: openbao_installed
+
+    - name: Get Current Version # noqa command-instead-of-shell
+      ansible.builtin.shell: /usr/bin/bao --version
+      environment:
+        BAO_SKIP_VERIFY: "1"
+        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+      register: openbao_current_version
+      changed_when: true
+
+    - name: Set current_version
+      ansible.builtin.set_fact:
+        current_version: "{{ openbao_current_version.stdout | regex_search('v[0-9.]+') }}"
+
+    - name: Stop Openbao service
+      ansible.builtin.systemd:
+        name: openbao.service
+        state: stopped
+      when:
+        - not openbao_installed.stat.exists
+          or current_version != 'v' ~ openbao_version
+
+    - name: Download openbao deb for {{ openbao_version }}
+      ansible.builtin.apt:
+        deb: "{{ openbao_url }}"
+      when:
+        - not openbao_installed.stat.exists
+          or current_version != 'v' ~ openbao_version
+
+    - name: Restart Openbao service
+      ansible.builtin.systemd:
+        name: openbao.service
+        state: started
+
+    - name: Unseal vault # noqa no-changed-when command-instead-of-shell run-once[task]
+      ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
+      environment:
+        BAO_SKIP_VERIFY: "1"
+        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+      loop: "{{ unseal_keys[0:3] }}"
+
+- name: Step down the old OpenBao leader
+  hosts: bao_leader
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Login # noqa command-instead-of-shell
+      ansible.builtin.shell: /usr/bin/bao login {{ root_token }}
+      environment:
+        BAO_SKIP_VERIFY: "1"
+        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+      register: bao_login
+      changed_when: "'Success!' in bao_login.stdout"
+
+    - name: Step down the leader # noqa command-instead-of-shell
+      ansible.builtin.shell: /usr/bin/bao operator step-down
+      environment:
+        BAO_SKIP_VERIFY: "1"
+        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+
+      register: stepdown_result
+      changed_when: "'Leadership lost' in stepdown_result.stdout"
+
+    - name: Wait for new leader to be elected
+      ansible.builtin.pause:
+        seconds: 15  # adjust if necessary
+
+    - name: Check if openbao installed
+      ansible.builtin.stat:
+        path: "/usr/bin/bao"
+      register: openbao_installed
+
+    - name: Get Current Version # noqa command-instead-of-shell
+      ansible.builtin.shell: /usr/bin/bao --version
+      environment:
+        BAO_SKIP_VERIFY: "1"
+        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+      register: openbao_current_version
+      changed_when: true
+
+    - name: Stop Openbao service
+      ansible.builtin.systemd:
+        name: openbao.service
+        state: stopped
+
+    - name: Set current_version
+      ansible.builtin.set_fact:
+        current_version: "{{ openbao_current_version.stdout | regex_search('v[0-9.]+') }}"
+
+    - name: Download openbao deb for {{ openbao_version }}
+      ansible.builtin.apt:
+        deb: "{{ openbao_url }}"
+      when:
+        - not openbao_installed.stat.exists
+          or current_version != 'v' ~ openbao_version
+
+    - name: Restart Openbao service
+      ansible.builtin.systemd:
+        name: openbao.service
+        state: started
+
+    - name: Unseal vault # noqa no-changed-when command-instead-of-shell run-once[task]
+      ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
+      environment:
+        BAO_SKIP_VERIFY: "1"
+        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+      loop: "{{ unseal_keys[0:3] }}"

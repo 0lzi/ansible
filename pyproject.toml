@@ -8,6 +8,7 @@ dependencies = [
     "ansible-pylibssh==1.2*",
     "hvac==2.3.*",
     "python-consul2",
+    "jmespath"
 ]
 
 [dependency-groups]

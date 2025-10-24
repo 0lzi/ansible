@@ -1,0 +1,11 @@
+[Unit]
+Description="Openbao backups"
+
+[Service]
+User=root
+ExecStart=/usr/bin/bao-backup
+Environment="BAO_ADDR=http://127.0.0.1:8200"
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target

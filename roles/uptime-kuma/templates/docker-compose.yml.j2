@@ -1,6 +1,6 @@
 services:
   uptime-kuma:
-    image: louislam/uptime-kuma:1
+    image: louislam/uptime-kuma:{{ uptime_kuma_version }}
     container_name: uptime-kuma
     volumes:
       - {{ uptime_kuma_dir }}/data:/app/data

@@ -1,0 +1,6 @@
+---
+
+gitlab_runner:
+  name: gitlab-runner-1
+  url: https://gitlab.0lzi.com
+  token: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/gitlab')['secret']['ghrunner-1'] }}"

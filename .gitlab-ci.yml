@@ -1,0 +1,10 @@
+---
+image: registry.gitlab.0lzi.com/containers/ansible:main
+
+stages:
+  - lint
+  - maintenance
+  - deploy
+
+include:
+  - local: .gitlab/ci/maintenance/dist-upgrade.yml

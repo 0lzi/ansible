@@ -1,0 +1,39 @@
+---
+dist_upgrade:
+  stage: maintenance
+  tags:
+    - ansible
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'schedule'
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: manual
+  variables:
+    VAULT_ADDR: https://vault.0lzi.com
+  id_tokens:
+    VAULT_ID_TOKEN:
+      aud: https://vault.0lzi.com
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+    - export VAULT_TOKEN="$( /bin/bao write -field=token auth/jwt/login role=read-only jwt=$VAULT_ID_TOKEN)"
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - cp ./files/.ssh_config ~/.ssh/config
+    - export SSH_PRIVATE_KEY="$( /bin/bao kv get -format=json kv/ansible/ssh | jq -r .data.data.SSH_PRIVATE_KEY)"
+    - export VAULT_KEY="$( /bin/bao kv get -format=json kv/ansible/vault | jq -r .data.data.VAULT_KEY)"
+    - export ANSIBLE_USER="$( /bin/bao kv get -format=json kv/ansible/vault | jq -r .data.data.ANSIBLE_USER)"
+    - export ANSIBLE_REMOTE_USER="$( /bin/bao kv get -format=json kv/ansible/vault | jq -r .data.data.ANSIBLE_USER)"
+    - echo "$VAULT_KEY" > vault_password
+    - chmod 600 vault_password
+    - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-add ~/.ssh/id_rsa
+    - chmod o-w .
+  script:
+    - uv run ansible-playbook playbooks/update/main.yml --check -l prod
+  after_script:
+    - rm -rf ~/.ssh
+    - rm -f vault_password
+  cache:
+    paths:
+      - .pip_cache
+      - ~/.ansible/roles

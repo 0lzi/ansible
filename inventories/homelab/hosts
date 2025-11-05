@@ -17,6 +17,7 @@ docker_hosts
 immich
 lancache
 gitlab_server
+gitlab_runners
 #pi_hole
 
 [docker_hosts]
@@ -25,9 +26,14 @@ dockerhost-0.0lzi.com
 dockerhost-1.0lzi.com
 dockerhost-2.0lzi.com
 immich.0lzi.com
+gitlab.0lzi.internal
+gitlab-runner-1.0lzi.com
 
 [gitlab_server]
 gitlab.0lzi.internal
+
+[gitlab_runners]
+gitlab-runner-1.0lzi.com
 
 # [pi_hole]
 # pi-hole-[1:2].0lzi.com

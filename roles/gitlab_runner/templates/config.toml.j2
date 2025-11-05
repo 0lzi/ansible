@@ -1,0 +1,19 @@
+concurrent = 1
+log_level = "warning"
+log_format = "json"
+check_interval = 5
+
+[[runners]]
+  name = "{{ gitlab_runner.name }}"
+  url = "{{ gitlab_runner.url }}"
+  executor = "docker"
+  token = "{{ gitlab_runner.token }}"
+  limit = 0
+  [runners.docker]
+    tls_verify = false
+    image = "alpine:latest"
+    privileged = true
+    disable_cache = false
+    volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
+  [runners.cache]
+    Insecure = false

@@ -1,0 +1,44 @@
+---
+- name: Add gitlab repo
+  block:
+    - name: Add Signing Key
+      ansible.builtin.get_url:
+        url: https://packages.gitlab.com/runner/gitlab-runner/gpgkey
+        dest: /etc/apt/trusted.gpg.d/gitlab.asc # Needs the asc extension
+        mode: '0644'
+        force: true
+
+    - name: Gitlab runnerr apt source
+      ansible.builtin.apt_repository:
+        repo: "{{ item }}"
+      loop:
+        - >-
+          deb
+          https://packages.gitlab.com/runner/gitlab-runner/{{ ansible_distribution | lower }}/
+          {{ ansible_distribution_release }}
+          main
+        - >-
+          deb-src
+          https://packages.gitlab.com/runner/gitlab-runner/{{ ansible_distribution | lower }}/
+          {{ ansible_distribution_release }}
+          main
+
+- name: Install git packages
+  ansible.builtin.apt:
+    name:
+      - gitlab-runner
+      - python3-pip
+    state: present
+
+- name: Install python-gitlab
+  ansible.builtin.pip:
+    name: python-gitlab>=4.4.0
+    executable: pip3
+    extra_args: '{% if ansible_distribution == "Ubuntu" %}--break-system-packages{% endif %}'
+
+- name: Template runner config
+  ansible.builtin.template:
+    src: config.toml.j2
+    dest: /etc/gitlab-runner/config.toml
+    mode: "0600"
+  notify: Restart gitlab runner

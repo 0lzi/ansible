@@ -38,3 +38,4 @@
         BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
       loop: "{{ unseal_keys[0:3] }}"
       when: inventory_hostname in groups['openbao_servers']
+      no_log: true

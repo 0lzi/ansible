@@ -29,7 +29,7 @@ dist_upgrade:
     - ssh-add ~/.ssh/id_rsa
     - chmod o-w .
   script:
-    - uv run ansible-playbook playbooks/update/main.yml --check -l prod
+    - uv run ansible-playbook playbooks/update/main.yml -l prod
   after_script:
     - rm -rf ~/.ssh
     - rm -f vault_password

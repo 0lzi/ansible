@@ -29,6 +29,7 @@
       ansible.builtin.reboot:
         msg: "Reboot initiated by Ansible for kernel updates"
       when: reboot_required_file.stat.exists
+      register: rebooted
       throttle: 1
 
     - name: Unseal vault # noqa no-changed-when command-instead-of-shell
@@ -37,4 +38,7 @@
         BAO_SKIP_VERIFY: "1"
         BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
       loop: "{{ unseal_keys[0:3] }}"
-      when: inventory_hostname in groups['openbao_servers']
+      when:
+        - inventory_hostname in groups['openbao_servers']
+        - rebooted.changed
+      no_log: true

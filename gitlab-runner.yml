@@ -1,7 +1,7 @@
 ---
-# Run with ansible-playbook -i inventory/hosts gitlab-server.yml
-- name: Setup gitlab server
-  hosts: gitlab_server
+# Run with ansible-playbook -i inventory/hosts gitlab-runner.yml
+- name: Setup gitlab runner
+  hosts: gitlab_runners
   remote_user: "{{ user }}"
   become: true
   become_method: sudo
@@ -16,4 +16,4 @@
     - users
     - packages
     - docker
-    - gitlab_server
+    - gitlab_runner

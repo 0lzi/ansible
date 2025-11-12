@@ -1,0 +1,54 @@
+---
+- name: Create directories
+  ansible.builtin.file:
+    name: "{{ grafana_dir }}/{{ item }}"
+    mode: "0755"
+    owner: "{{ user }}"
+    group: admins
+  loop:
+    - data
+
+- name: Deploy config file
+  ansible.builtin.template:
+    src: grafana.ini
+    dest: "{{ grafana_dir }}/grafana.ini"
+    mode: "0755"
+    owner: "{{ user }}"
+    group: admins
+  register: config_file_deployed
+
+- name: Deploy compose file
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ grafana_dir }}/docker-compose.yml"
+    mode: "0755"
+    owner: "{{ user }}"
+    group: admins
+  register: copose_deployed
+
+- name: Add traefik label to Consul for {{ service }}
+  community.general.consul_kv:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    host: "{{ consul_host }}"
+    port: 443
+    scheme: "https"
+    state: present
+  loop: "{{ lookup('vars', service).traefik_labels | dict2items }}"
+  delegate_to: localhost
+  tags: consul
+
+- name: Start container
+  community.docker.docker_compose_v2:
+    project_src: "{{ grafana_dir }}"
+    state: present
+
+- name: Wait for Grafana to be ready
+  ansible.builtin.uri:
+    url: "https://{{ grafana_url }}"
+    return_content: true
+    follow_redirects: true
+  register: result
+  until: result.status == 200
+  retries: 30
+  delay: 10

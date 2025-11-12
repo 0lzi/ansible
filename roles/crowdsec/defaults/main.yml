@@ -1,4 +1,5 @@
 ---
+crowdsec_dir: "{{ base_dir }}/crowdsec"
 crowdsec:
   enabled: true
   version: 1.7.3

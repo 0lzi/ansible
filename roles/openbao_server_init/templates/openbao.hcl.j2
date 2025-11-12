@@ -1,6 +1,6 @@
 ui            = true
 
-{% if tls.enabled %}
+{% if openbao.tls.enabled %}
 cluster_addr  = "https://{{ inventory_hostname }}:8201"
 api_addr      = "https://{{ inventory_hostname }}:8200"
 {% else %}
@@ -14,7 +14,7 @@ storage "raft" {
   node_id = "{{ inventory_hostname_short }}"
 {% for host in groups[openbao_cluster_name] %}
   retry_join = {
-{% if tls.enabled and tls.letsencrypt %}
+{% if openbao.tls.enabled and openbao.tls.letsencrypt %}
     leader_api_addr     = "https://{{ hostvars[host]['inventory_hostname'] }}:8200"
     leader_ca_cert_file = "{{ openbao_cert_dir}}/fullchain.pem"
 {% else %}
@@ -32,11 +32,11 @@ listener "tcp" {
     disallow_metrics = true
   }
 {% endif %}
-{% if tls.enabled and tls.self_signed %}
+{% if openbao.tls.enabled and openbao.tls.self_signed %}
   tls_cert_file = "{{ openbao_self_signed_cert_dir}}/tls.crt"
   tls_key_file  = "{{ openbao_self_signed_cert_dir}}/tls.key"
 {% else %}
-{% if tls.enabled and tls.letsencrypt %}
+{% if openbao.tls.enabled and openbao.tls.letsencrypt %}
   tls_cert_file = "{{ openbao_cert_dir}}/fullchain.pem"
   tls_key_file  = "{{ openbao_cert_dir}}/privkey.key"
 {% else %}
@@ -47,7 +47,7 @@ listener "tcp" {
 
 listener "tcp" {
   address       = "127.0.0.1:8200"
-{% if tls.enabled %}
+{% if openbao.tls.enabled %}
   tls_cert_file = "{{ openbao_self_signed_cert_dir}}/tls.crt"
   tls_key_file  = "{{ openbao_self_signed_cert_dir}}/tls.key"
 {% else %}

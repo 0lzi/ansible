@@ -2,9 +2,15 @@
 gitlab:
   version: 18.5.0-ce.0
   url: https://gitlab.example.com
+  log_level: error
   port: 80
   ssh_port: 2222
   prometheus: true
   registry: true
   registry_port: 5000
   registry_url: https://registry.gitlab.example.com
+  smtp:
+    user: "smtp-user"
+    password: "smtp-password"
+    url: "smtp.example.com"
+    port: 587

@@ -41,6 +41,9 @@ gitlab.0lzi.internal
 [gitlab_runners]
 gitlab-runner-1.0lzi.com
 
+[grafana_servers]
+dockerhost-1.0lzi.com
+
 # [pi_hole]
 # pi-hole-[1:2].0lzi.com
 

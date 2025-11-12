@@ -1,0 +1,17 @@
+---
+services:
+  grafana:
+    image: {{ grafana_image }}
+    container_name: "{{ service }}"
+    command: "--config=/etc/grafana/grafana.ini"
+    user: "0"
+    ports:
+     - "3000:3000"
+    volumes:
+      - {{ grafana_dir }}/grafana.ini:/etc/grafana/grafana.ini
+      - {{ grafana_dir }}/data:/var/lib/grafana
+    labels:
+      - "diun.enable=true"
+    restart: unless-stopped
+
+

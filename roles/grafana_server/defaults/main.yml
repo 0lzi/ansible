@@ -1,0 +1,16 @@
+---
+service: grafana
+grafana_dir: "{{ base_dir }}/grafana"
+grafana_install: docker
+grafana_image: grafana/grafana:latest
+grafana_url: "grafana.example.com"
+grafana:
+  traefik_labels:
+    # grafana main
+    traefik/http/routers/grafana/rule: "Host(`{{ grafana_url }}`)"
+    traefik/http/routers/grafana/service: "grafana"
+    traefik/http/routers/grafana/entrypoints: "websecure"
+    traefik/http/routers/grafana/tls/certresolver: "cloudflare"
+    traefik/http/routers/grafana/tls: "true"
+    # grafana service
+    traefik/http/services/grafana/loadbalancer/server/0/url: "http://{{ grafana_url }}:3000"

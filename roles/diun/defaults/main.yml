@@ -1,0 +1,4 @@
+---
+diun_dir: "{{ base_dir }}/diun"
+diun_webhook_url: "https://insert-webhook-url-here"
+diun_template: "{% raw %} Docker tag {{ .Entry.Image }} which you subscribed through {{ .Entry.Provider }} provider has been released.{% endraw %}"

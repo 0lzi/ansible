@@ -1,0 +1,5 @@
+---
+gitlab_runner:
+  name: gitlab-runner
+  url: https://gitlab.example.com
+  token: "glpat-XXXXXXXXXXXXXXXXXXXXXXXXXX"

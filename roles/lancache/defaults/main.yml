@@ -1,3 +1,8 @@
+---
+steamprefill: true
+epicprefill: true
+battlenetprefill: true
+
 lancache_pkgs:
   - curl
   - jq

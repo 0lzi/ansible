@@ -1,3 +1,4 @@
+---
 openbao_url: "https://github.com/openbao/openbao/releases/download/v{{ openbao_version }}/bao-hsm_{{ openbao_version }}_linux_amd64.deb"
 openbao_version: "2.4.3"
 openbao_cluster_name: "openbao"
@@ -6,6 +7,7 @@ openbao_data_dir: "/opt/openbao/data"
 openbao_cert_dir: "{{ openbao_config_dir }}/certs"
 openbao_log_dir: "/var/log/openbao"
 openbao_self_signed_cert_dir: "/opt/openbao/tls"
+openbao_metrics: false
 openbao_tls:
   enabled: false
   self_signed: false

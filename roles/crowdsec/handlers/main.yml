@@ -1,7 +1,7 @@
 ---
 - name: Restart container
   community.docker.docker_compose_v2:
-    project_src: "{{ traefik_dir }}"
+    project_src: "{{ crowdsec_dir }}"
     state: present
     pull: always
     recreate: always

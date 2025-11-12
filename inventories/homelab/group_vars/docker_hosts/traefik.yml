@@ -1,4 +1,4 @@
-traefik_dir: "{{ base_dir }}/trafik"
+traefik_dir: "{{ base_dir }}/traefik"
 cf_email: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/cloudflare')['secret']['CF_EMAIL'] }}"
 # cf_email: "{{ lookup('ansible.builtin.env', 'CF_EMAIL', default='na@na.com') }}"
 cf_api_token: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/cloudflare')['secret']['CLOUDFLARE_DNS_API_TOKEN'] }}"

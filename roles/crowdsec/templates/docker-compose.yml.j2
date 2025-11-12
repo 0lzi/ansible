@@ -1,0 +1,23 @@
+---
+services:
+  crowdsec:
+    image: crowdsecurity/crowdsec:v{{ crowdsec.version }}
+    container_name: "crowdsec"
+    environment:
+      COLLECTIONS: crowdsecurity/traefik crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
+      CUSTOM_HOSTNAME: crowdsec
+      BOUNCER_KEY_TRAEFIK_DEV: d20+YNMaQxV4k4tv2Jh9ZbI7QoPIfnGDgv6XRfYPAJI
+    volumes:
+      - ./acquis.yaml:/etc/crowdsec/acquis.yaml:ro
+      - {{ crowdsec.traefiklogs }}/logs:/var/log/traefik:ro
+      - {{ crowdsec_dir }}:/var/lib/crowdsec/data/
+      - {{ crowdsec_dir }}:/etc/crowdsec/
+    labels:
+      - "traefik.enable=false"
+    networks:
+      - proxy
+    restart: unless-stopped
+
+networks:
+  proxy:
+    external: true

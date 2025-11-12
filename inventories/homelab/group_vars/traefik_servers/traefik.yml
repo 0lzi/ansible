@@ -3,6 +3,15 @@ traefik_dashboard_user: "admin"
 traefik_dashboard_password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/traefik')['secret']['dashboard_password'] }}"
 service: traefik
 traefik:
+  logs:
+    level: INFO
+    access: true
+  metrics:
+    prometheus: true
+  plugins:
+    - name: bouncer
+      url: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
+      version: v1.4.5
   traefik_labels:
     traefik/http/routers/http/rule: "Host(`traefik.0lzi.com`)"
     traefik/http/routers/http/service: "api@internal"

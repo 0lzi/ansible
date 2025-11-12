@@ -75,3 +75,13 @@ providers:
   consul:
     endpoints:
       - "http://consul-0.0lzi.com:8500"
+
+{% if traefik.plugins is defined %}
+experimental:
+  plugins:
+  {% for plugin in traefik.plugins %}
+    {{ plugin.name }}:
+        moduleName: {{ plugin.url }}
+        version: {{ plugin.version }}
+  {% endfor %}
+{% endif %}

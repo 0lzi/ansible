@@ -32,3 +32,9 @@
     state: present
     pull: always
     remove_orphans: true
+
+- name: Enroll Engine
+  community.docker.docker_container_exec:
+    container: crowdsec
+    command: "cscli console enroll {{ crowdsec_enroll_key }} "
+  register: crowdsec_enroll

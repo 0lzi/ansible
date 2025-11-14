@@ -1,4 +1,5 @@
 ---
+crowdsec_enroll_key: xxxxxxxxxxxxxxxxxxxxxxxxxx # Replace with your enroll key
 crowdsec:
   enabled: true
   version: 1.7.3

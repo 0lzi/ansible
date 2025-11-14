@@ -1,5 +1,7 @@
 ---
 crowdsec_dir: "{{ base_dir }}/crowdsec"
+crowdsec_enroll_key: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/crowdsec')['secret']['ENROLL_KEY'] }}"
+
 crowdsec:
   enabled: true
   version: 1.7.3

@@ -1,0 +1,4 @@
+---
+backup: true
+service: demo
+backup_schedule: "*-*-* 4:00:00"

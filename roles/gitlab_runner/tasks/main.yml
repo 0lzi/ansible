@@ -8,7 +8,7 @@
         mode: '0644'
         force: true
 
-    - name: Gitlab runnerr apt source
+    - name: Gitlab runner apt source
       ansible.builtin.apt_repository:
         repo: "{{ item }}"
       loop:

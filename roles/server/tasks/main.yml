@@ -1,0 +1,6 @@
+---
+- name: Configure rclone for backups
+  ansible.builtin.include_tasks: ./rclone.yml
+  when:
+    - inventory_hostname in groups['prod']
+    - backup | default(false)

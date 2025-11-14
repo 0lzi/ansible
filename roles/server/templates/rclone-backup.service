@@ -1,0 +1,18 @@
+[Unit]
+Description=Rclone backup for {{ service }} on {{ inventory_hostname_short }}
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/rclone sync {{ base_dir }}/{{ backup_dir }} {{ backup_base }}:{{ backup_bucket }}/{{ inventory_hostname_short }}/{{ service }} \
+    --transfers=8 \
+    --checkers=8 \
+    --log-level=INFO \
+    --log-file=/var/log/rclone-backup-{{ service }}.log
+
+User=root
+Group=root
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7

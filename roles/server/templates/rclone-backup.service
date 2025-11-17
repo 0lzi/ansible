@@ -6,7 +6,8 @@ After=network-online.target
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/rclone sync {{ base_dir }}/{{ backup_dir }} {{ (backup_base ~ '-encrypted' if backup_encrypted | default(true) else backup_base) }}:{{ backup_bucket }}/{{ inventory_hostname_short }}/{{ service }} \
-    --transfers=8 \
+    --fast-list \
+    --transfers=16 \
     --checkers=8 \
     --log-level=INFO \
     --log-file=/var/log/rclone-backup-{{ service }}.log

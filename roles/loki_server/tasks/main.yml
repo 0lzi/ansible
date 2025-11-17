@@ -1,0 +1,62 @@
+---
+- name: Create directories
+  ansible.builtin.file:
+    name: "{{ loki_dir }}/{{ item }}"
+    state: directory
+    mode: "0644"
+  loop:
+    - data
+
+- name: Create loki docker network
+  community.docker.docker_network:
+    name: loki
+    state: present
+
+- name: Deploy config file
+  ansible.builtin.template:
+    src: local-config.j2
+    dest: /srv/loki/local-config.yaml
+    mode: "0644"
+    group: admins
+  register: config_file_deployed
+
+- name: Deploy compose-file
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ base_dir }}/loki/docker-compose.yml"
+    mode: "0644"
+    owner: oli
+    group: admins
+  register: compose_deployed
+
+- name: Add traefik label to Consul for {{ service }}
+  community.general.consul_kv:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    host: "{{ consul_host }}"
+    port: 443
+    scheme: "https"
+    state: present
+  loop: "{{ loki.traefik_labels | dict2items }}"
+  delegate_to: localhost
+  tags: consul
+
+- name: Deploy container
+  community.docker.docker_compose_v2:
+    project_src: "{{ loki_dir }}"
+    state: present
+    pull: always
+    remove_orphans: true
+
+- name: Wait for Loki to be ready
+  ansible.builtin.uri:
+    url: "https://{{ loki_url }}/ready"
+    return_content: true
+    follow_redirects: true
+    url_username: "{{ loki.user }}"
+    url_password: "{{ loki.password }}"
+    force_basic_auth: true
+  register: result
+  until: result.status == 200 and 'ready\n' in result.content
+  retries: 30
+  delay: 10

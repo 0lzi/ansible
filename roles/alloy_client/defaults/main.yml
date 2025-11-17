@@ -1,0 +1,13 @@
+---
+loki:
+  env: prod
+  org_id: 1
+  url: https://loki.example.com/loki/api/v1/push
+  user: monitoring
+  password: test
+mimir:
+  env: prod
+  org_id: 1
+  url: https://mimir.example.com/api/v1/push
+  user: monitoring
+  password: test

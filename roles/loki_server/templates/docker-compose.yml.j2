@@ -1,0 +1,17 @@
+---
+services:
+  loki:
+    image: {{ loki_image }}
+    container_name: "{{ servce }}"
+    command: -config.file=/etc/loki/local-config.yml
+    ports:
+      - 3100:3100
+    volumes:
+      - {{ loki_dir }}:/etc/loki/local-config.yaml
+      - {{ loki_dir }}/data:/data/loki
+    restart: unless-stopped
+
+networks:
+  loki:
+    external: true
+

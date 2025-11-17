@@ -1,0 +1,19 @@
+---
+{% set replica = [1,2,3] %}
+services:
+{% for i in replica %}
+  mimir-{{ i }}:
+    image: {{ mimir_image }}
+    container_name: "mimir-{{ i }}"
+    command: -config.file=etc/mimir/mimir-config.yaml
+    ports:
+      - "808{{ i-1 }}:8080"
+    volumes:
+      - {{ mimir_dir }}:/etc/mimir/mimir-config.yaml
+      - {{ mimir_dir }}/data-{{ i }}:/data/mimir
+    restart: unless-stopped
+{% endfor %}
+networks:
+  mimir:
+    external: true
+

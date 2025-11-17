@@ -1,0 +1,34 @@
+target: all,alertmanager
+
+server:
+  log_level: warn
+
+# Storage
+common:
+  storage:
+{% if 'local' in mimir_server.filesystem %}
+   backend: local
+
+{% endif %}
+{% if 's3' in mimir_server.filesystem  %}
+    backend: s3
+    s3:
+      endpoint: {{ mimir_server.s3_url}}
+      access_key_id: "{{ mimir_server.s3_access }}"
+      secret_access_key: "{{ mimir_server.s3_secret_key  }}"
+
+blocks_storage:
+  s3:
+    bucket_name: {{ mimir_server.s3_bucket }}-blocks
+
+alertmanager_storage:
+  s3:
+    bucket_name: {{ mimir_server.s3_bucket }}-alertmanager
+
+ruler_storage:
+  s3:
+    bucket_name: {{ mimir_server.s3_bucket }}-ruler
+{% endif %}
+
+memberlist:
+  join_members: [ mimir-1,mimir-2,mimir-3]

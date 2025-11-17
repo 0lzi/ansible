@@ -1,0 +1,30 @@
+---
+service: mimir
+mimir_dir: "{{ base_dir }}/mimir"
+mimir_image: grafana/mimir:2.17.0
+mimir_url: "prometheus.staging.codethink.co.uk"
+mimir_server:
+  filesystem: local
+## Alternatives
+# filesystem: s3
+# s3_access: <s3_access_key>
+# s3_secret_key: <s3_secret_key>
+# s3_url: <s3_url>
+# s3_bucket: mimir
+mimir:
+  env: prod
+  user: mimir
+  password: changeme
+  org_id: 1
+  url: https://mimir.example.com/api/v1/push
+  traefik_labels:
+    traefik/http/routers/mimir/rule: "Host(`{{ mimir_url }}`)"
+    traefik/http/routers/mimir/service: "mimir"
+    traefik/http/routers/mimir/entrypoints: "web,websecure"
+    traefik/http/routers/mimir/tls/certresolver: "cloudflare"
+    traefik/http/routers/mimir/middlewares: "{% if mimir.password %}mimir_auth{% endif %}"
+    traefik/http/middlewares/mimir_auth/basicauth.users: "{{ mimir.user }}:{{ mimir.password | trim | password_hash('blowfish', '1234567890123456789012') }}"
+    traefik/http/middlewares/mimir_auth/basicauth/realm: mimir
+    traefik/http/services/mimir/loadbalancer/servers/0/url: "http://dockerhost-1.0lzi.com:8080"
+    traefik/http/services/mimir/loadbalancer/servers/1/url: "http://dockerhost-1.0lzi.com:8081"
+    traefik/http/services/mimir/loadbalancer/servers/2/url: "http://dockerhost-1.0lzi.com:8082"

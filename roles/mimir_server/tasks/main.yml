@@ -1,0 +1,78 @@
+---
+- name: Create directories
+  ansible.builtin.file:
+    name: "{{ item }}"
+    state: directory
+    mode: "0644"
+  loop:
+    - /srv/mimir
+
+- name: Create Docker network
+  community.docker.docker_network:
+    name: mimir
+    connected:
+      - "{{ reverse_proxy_name }}"
+    appends: true
+
+- name: Deploy config file
+  ansible.builtin.template:
+    src: mimir-config.j2
+    dest: /srv/mimir/mimir-config.yaml
+  register: config_file_deployed
+
+- name: Add traefik label to Consul for {{ service }}
+  community.general.consul_kv:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    host: "{{ consul_host }}"
+    port: 443
+    scheme: "https"
+    state: present
+  loop: "{{ mimir.traefik_labels | dict2items }}"
+  delegate_to: localhost
+  tags: consul
+
+- name: Deploy container
+  community.docker.docker_container:
+    name: "{{ item.name }}"
+    hostname: "{{ item.name }}"
+    image: "{{ mimir_image }}"
+    command: -config.file=/etc/mimir/mimir-config.yaml
+    state: started
+    restart_policy: unless-stopped
+    networks:
+      - name: mimir
+    restart: "{{ config_file_deployed.changed }}"
+    volumes:
+      - /srv/mimir/mimir-config.yaml:/etc/mimir/mimir-config.yaml
+    purge_networks: true
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      com.centurylinklabs.watchtower.scope: "default"
+      traefik.enable: "true"
+      traefik.http.routers.mimir.rule: "Host(`{{ mimir_url }}`)"
+      traefik.http.routers.mimir.service: "mimir"
+      traefik.http.routers.mimir.entrypoints: "web,websecure"
+      traefik.http.routers.mimir.tls.certresolver: "mythicdns"
+      traefik.http.routers.mimir.middlewares: "{% if mimir.password %}mimir_auth{% endif %}"
+      traefik.http.middlewares.mimir_auth.basicauth.users: "{{ mimir.user }}:{{ mimir.password | trim | password_hash('blowfish', '1234567890123456789012') }}"
+      traefik.http.middlewares.mimir_auth.basicauth.realm: mimir
+      traefik.http.services.mimir.loadbalancer.server.port: "8080"
+    recreate: "{{ config_file_deployed.changed }}"
+  loop:
+    - { name: "mimir-1"}
+    - { name: "mimir-2"}
+    - { name: "mimir-3"}
+
+- name: Wait for mimir to be ready
+  ansible.builtin.uri:
+    url: "https://{{ mimir_url }}/ready"
+    return_content: true
+    follow_redirects: true
+    url_username: "{{ mimir.user }}"
+    url_password: "{{ mimir.password }}"
+    force_basic_auth: true
+  register: result
+  until: result.status == 200 and 'ready' in result.content
+  retries: 30
+  delay: 10

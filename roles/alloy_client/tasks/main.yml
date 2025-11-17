@@ -1,0 +1,18 @@
+---
+- name: Render Alloy Config template
+  ansible.builtin.set_fact:
+    alloy_config_template: "{{ lookup('template', 'config.alloy.j2') }}"
+
+- name: Install Alloy
+  ansible.builtin.include_role:
+    name: grafana.grafana.alloy
+  vars:
+    alloy_config: "{{ alloy_config_template }}"
+
+- name: Add alloy user to docker group
+  ansible.builtin.user:
+    name: alloy
+    groups: docker
+    append: true
+  when: inventory_hostname in groups['docker_servers']
+  notify: Restart alloy

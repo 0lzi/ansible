@@ -4,7 +4,7 @@ service: gitlab
 gitlab_prometheus_auth_user: "prometheus"
 gitlab_prometheus_auth_password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/gitlab')['secret']['prometheus_password'] }}"
 gitlab:
-  version: 18.5.1-ce.0
+  version: latest
   log_level: error
   url: https://gitlab.0lzi.com
   port: 80

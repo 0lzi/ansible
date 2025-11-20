@@ -3,9 +3,9 @@
   ansible.builtin.systemd:
     state: restarted
     name: gitlab-runner
+    no_block: true
   async: "{{ ansible_check_mode | ternary(0, 86400) }}"
   poll: 0
-
 
 - name: Systemctl daemon reload
   ansible.builtin.systemd:

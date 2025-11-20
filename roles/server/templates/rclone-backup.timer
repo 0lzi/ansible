@@ -1,0 +1,9 @@
+[Unit]
+Description=Timer for rclone backup of {{ service }} on {{ inventory_hostname_short }}
+
+[Timer]
+OnCalendar={{ backup_schedule }}
+Persistent=true
+
+[Install]
+WantedBy=timers.target

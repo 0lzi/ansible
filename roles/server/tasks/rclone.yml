@@ -1,0 +1,54 @@
+---
+- name: Install rclone
+  ansible.builtin.apt:
+    name: rclone
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Ensure rclone confg dir exists
+  ansible.builtin.file:
+    path: /root/.config/rclone
+    state: directory
+    mode: '0700'
+    owner: root
+    group: root
+
+- name: Template rclone config
+  ansible.builtin.template:
+    src: rclone.j2
+    dest: /root/.config/rclone/rclone.conf
+    mode: '0600'
+    owner: root
+    group: root
+
+- name: Make sure backup dir exists
+  ansible.builtin.file:
+    path: "{{ base_dir }}/{{ backup_dir }}"
+    state: directory
+    mode: '0750'
+    owner: root
+    group: admins
+
+- name: Template rclone files
+  ansible.builtin.template:
+    src: "rclone-backup.{{ item }}"
+    dest: "/etc/systemd/system/rclone-backup.{{ item }}"
+    mode: '0644'
+  loop:
+    - service
+    - timer
+  notify:
+    - Reload systemd
+    - Start rclone service
+
+- name: Template srv-backup files
+  ansible.builtin.template:
+    src: "srv-backup.{{ item }}"
+    dest: "/etc/systemd/system/srv-backup.{{ item }}"
+    mode: '0644'
+  loop:
+    - service
+    - timer
+  notify:
+    - Reload systemd
+    - Start srv-backup service

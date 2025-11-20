@@ -1,0 +1,15 @@
+[{{ backup_base }}]
+type = b2
+account = {{ backup_creds.b2_key }}
+key = {{ backup_creds.b2_secret }}
+hard_delete = true
+
+{% if backup_encrypted | default('true') %}
+[{{ backup_base}}-encrypted]
+type = crypt
+remote = {{ backup_base }}:
+filename_encryption = obfuscate
+directory_name_encryption = false
+password = {{ backup_creds.b2_cryp2_pass_hash }}
+password2 = {{ backup_creds.b2_cryp2_pass2_hash }}
+{% endif %}

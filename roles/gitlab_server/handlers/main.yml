@@ -1,0 +1,15 @@
+---
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Start gitlab-backup service
+  ansible.builtin.systemd:
+    name: "gitlab-backup.{{ item }}"
+    state: started
+    enabled: true
+    no_block: true
+  async: "{{ ansible_check_mode | ternary(0, 86400) }}"
+  loop:
+    - service
+    - timer

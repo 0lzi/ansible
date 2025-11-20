@@ -53,3 +53,15 @@
     state: present
   tags: compose
   when: gitlab_rb.changed or compose_file.changed
+
+- name: Template backup service files
+  ansible.builtin.template:
+    src: "gitlab-backup.{{ item }}"
+    dest: "/etc/systemd/system/gitlab-backup.{{ item }}"
+    mode: '0644'
+  loop:
+    - service
+    - timer
+  notify:
+    - Reload systemd
+    - Start gitlab-backup service

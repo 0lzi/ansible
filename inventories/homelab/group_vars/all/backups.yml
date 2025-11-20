@@ -1,0 +1,7 @@
+---
+backup: false
+backup_bucket: 0lzi-backups
+backup_base: s3
+backup_dir: "backups"
+backup_schedule: daily
+backup_creds: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/backups').secret }}"

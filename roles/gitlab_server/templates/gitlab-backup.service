@@ -1,0 +1,14 @@
+[Unit]
+Description=Backup for {{ service }} on {{ inventory_hostname_short }}
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/docker exec -t gitlab gitlab-backup create SKIP=tar,registry,artifacts,pages
+
+User=root
+Group=root
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7

@@ -1,6 +1,6 @@
 ---
 traefik_dashboard_user: "admin"
-traefik_dashboard_password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/traefik')['secret']['dashboard_password'] }}"
+traefik_dashboard_password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/traefik')['secret']['dashboard_password_plain'] }}"
 service: traefik
 traefik:
   logs:
@@ -16,4 +16,4 @@ traefik:
     traefik/http/routers/http/rule: "Host(`traefik.0lzi.com`)"
     traefik/http/routers/http/service: "api@internal"
     traefik/http/routers/http/entrypoints: "http"
-    traefik/http/middlewares/dashboard/basicauth/users: "{{ traefik_dashboard_user }}:{{ traefik_dashboard_password }}"
+    traefik/http/middlewares/dashboard/basicauth/users: "{{ traefik_dashboard_user }}:{{ traefik_dashboard_password | password_hash('md5')}}"

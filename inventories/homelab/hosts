@@ -6,6 +6,10 @@ immich
 consul
 gitlab_server
 openbao_servers
+tmux
+
+[tmux]
+tmux.0lzi.com
 
 [dev:children]
 
@@ -74,3 +78,6 @@ dockerhost-0.0lzi.com
 
 [traefik_servers]
 traefik.0lzi.com
+
+[homeassistant]
+home-assistant.0lzi.com

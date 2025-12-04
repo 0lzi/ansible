@@ -1,0 +1,12 @@
+---
+service: homeassistant
+homeassistant:
+  traefik_labels:
+    # proxmox main interface
+    traefik/http/routers/homeassistant/rule: "Host(`home-assistant.0lzi.com`)"
+    traefik/http/routers/homeassistant/service: "homeassistant"
+    traefik/http/routers/homeassistant/entrypoints: "websecure"
+    traefik/http/routers/homeassistant/tls/certresolver: "cloudflare"
+    traefik/http/routers/homeassistant/tls: "true"
+    # Proxmox Service
+    traefik/http/services/homeassistant/loadbalancer/servers/0/url: "http://home-assistant.0lzi.internal:8123"

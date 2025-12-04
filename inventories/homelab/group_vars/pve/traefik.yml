@@ -8,7 +8,6 @@ proxmox:
     traefik/http/routers/proxmox/entrypoints: "websecure"
     traefik/http/routers/proxmox/tls/certresolver: "cloudflare"
     traefik/http/routers/proxmox/tls: "true"
-    traefik/http/routers/proxmox/middlewares: "crowdsec@consul"
     # Proxmox Service
     traefik/http/services/proxmox/loadbalancer/sticky/cookie/name: "proxmox"
     traefik/http/services/proxmox/loadbalancer/servers/0/url: "https://pve1.0lzi.com:8006"

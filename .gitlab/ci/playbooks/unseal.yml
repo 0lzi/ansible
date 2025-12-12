@@ -1,18 +1,17 @@
 ---
-dist_upgrade:
+unseal:
   extends: .default
-  stage: maintenance
+  stage: playbooks
   tags:
     - ansible
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'schedule'
+  when: manual
   variables:
     VAULT_ADDR: https://vault.0lzi.com
   id_tokens:
     VAULT_ID_TOKEN:
       aud: https://vault.0lzi.com
   script:
-    - uv run ansible-playbook playbooks/update/main.yml -l prod:!gitlab_runners
+    - uv run ansible-playbook playbooks/openbao/unseal.yml --tags node1,node2,node3
   after_script:
     - rm -rf ~/.ssh
     - rm -f vault_password

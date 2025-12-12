@@ -3,8 +3,13 @@ image: registry.gitlab.0lzi.com/containers/ansible:main
 
 stages:
   - lint
+  - playbooks
   - maintenance
   - deploy
 
 include:
+  - local: .gitlab/ci/default.yml
+  # maintenance
   - local: .gitlab/ci/maintenance/dist-upgrade.yml
+  # playbooks
+  - local: .gitlab/ci/playbooks/unseal.yml

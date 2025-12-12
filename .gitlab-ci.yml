@@ -1,6 +1,9 @@
 ---
 image: registry.gitlab.0lzi.com/containers/ansible:main
 
+variables:
+  ANSIBLE_CONFIG: ansible.cfg
+
 stages:
   - lint
   - playbooks
@@ -8,6 +11,9 @@ stages:
   - deploy
 
 include:
+  # lint
+  - local: .gitlab/ci/lint/ansible-lint.yml
+  # default
   - local: .gitlab/ci/default.yml
   # maintenance
   - local: .gitlab/ci/maintenance/dist-upgrade.yml

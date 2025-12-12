@@ -5,6 +5,10 @@ unseal:
   tags:
     - ansible
   when: manual
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: never   # Do NOT show in MR
+    - when: manual  # Show for normal pipelines
   variables:
     VAULT_ADDR: https://vault.0lzi.com
   id_tokens:

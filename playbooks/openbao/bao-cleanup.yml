@@ -1,5 +1,5 @@
 ---
-- name: clearup
+- name: Clearup
   hosts: openbao_servers
   become: true
 

@@ -16,9 +16,9 @@
     - name: Update packages
       ansible.builtin.apt:
         name: "*"
-        state: latest
         update_cache: true
         force_apt_get: true
+        only_upgrade: true
   roles:
     - users
     - packages

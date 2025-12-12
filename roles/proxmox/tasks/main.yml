@@ -27,8 +27,10 @@
 - name: Reboot
   ansible.builtin.reboot:
 
-- name: Get debian kernel versions
-  ansible.builtin.shell: dpkg --list | grep linux-image | awk '{print $2}
+- name: Get debian kernel versions # noqa no-changed-when
+  ansible.builtin.shell: >
+    set -o pipefail
+    dpkg --list | grep linux-image | awk '{print $2}'
   register: kernel
 
 - name: Set kernelversion

@@ -15,4 +15,4 @@
   roles:
     - users
     - docker
-    - uptime-kuma
+    - uptime_kuma

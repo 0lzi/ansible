@@ -24,4 +24,3 @@ subnets:
     dhcp: false
     allocaton_pool_start: '192.168.3.10'
     allocaton_pool_end: '192.168.3.20'
-

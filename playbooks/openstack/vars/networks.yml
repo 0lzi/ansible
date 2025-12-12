@@ -4,7 +4,7 @@ networks:
     admin_state: true
     external: true
     provider_network_type: vlan
-    pysnet_type: provider 
+    pysnet_type: provider
     vlan: 10
     shared: true
   - name: Admin
@@ -12,7 +12,7 @@ networks:
     admin_state: true
     external: true
     provider_network_type: vlan
-    pysnet_type: provider 
+    pysnet_type: provider
     vlan: 2
     shared: true
   - name: Guest
@@ -20,7 +20,6 @@ networks:
     admin_state: true
     external: true
     provider_network_type: vlan
-    pysnet_type: provider 
+    pysnet_type: provider
     vlan: 3
     shared: true
-

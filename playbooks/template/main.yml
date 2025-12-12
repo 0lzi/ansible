@@ -3,5 +3,6 @@
   hosts: all
   become: true
   tasks:
-    - name: Task Name
-
+    - name: Task name
+      ansible.builtin.debug:
+        msg: "Hi"

@@ -13,7 +13,7 @@
         update_cache: true
         cache_valid_time: 3600
   roles:
-    - docker-pi
+    - docker_pi
 
 - name: Setup nfs-server
   hosts: nfs-server
@@ -22,7 +22,7 @@
   become_method: sudo
   gather_facts: true
   roles:
-    - nfs-server-pi
+    - nfs_server_pi
 
 #  tasks:
 #    - name: Reboot nfs-server
@@ -34,7 +34,7 @@
   become_method: sudo
   gather_facts: true
   roles:
-    - nfs-client-pi
+    - nfs_client_pi
 
 #  tasks:
 #    - name: Reboot nfs-clients

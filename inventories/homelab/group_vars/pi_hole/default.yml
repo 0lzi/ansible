@@ -1,4 +1,4 @@
 pi_hole_sync: true
 pi_hole_password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/pi_hole')['secret']['PI_HOLE_PASSWORD'] }}"
 # pi_hole_password: "{{ lookup('ansible.builtin.env', 'PI_HOLE_PASSWORD', default='Pa55word') }}"
-pi_hole_dir: "{{ base_dir}}/pihole"
+pi_hole_dir: "{{ base_dir }}/pihole"

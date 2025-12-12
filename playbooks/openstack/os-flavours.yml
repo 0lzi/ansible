@@ -1,4 +1,4 @@
-- name: Create Flavours 
+- name: Create Flavours
   openstack.cloud.compute_flavor:
     cloud:
       auth:
@@ -12,7 +12,7 @@
     state: "{{ item.state }}"
     name: "{{ item.name }}"
     ram: "{{ item.ram }}"
-    vcpus: "{{item.vcpus }}"
+    vcpus: "{{ item.vcpus }}"
     disk: "{{ item.disk }}"
-    is_public: "{{item.is_public }}"
+    is_public: "{{ item.is_public }}"
   with_items: "{{ flavours }}"

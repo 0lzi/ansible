@@ -4,4 +4,4 @@ immich_pgpassword: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/im
 immich_smtpserver: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/immich')['secret']['IMMICH_SMTPSERVER'] }}"
 immich_smtpuser: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/immich')['secret']['IMIMCH_SMTPUSER'] }}"
 immich_smtpfrom: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/immich')['secret']['IMMICH_SMTPFROM'] }}"
-immich_smtppassword: "{{lookup('community.hashi_vault.vault_kv2_get', 'ansible/immich')['secret']['IMMICH_SMTPPASSWORD'] }}"
+immich_smtppassword: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/immich')['secret']['IMMICH_SMTPPASSWORD'] }}"

@@ -8,7 +8,7 @@
       when: ansible_os_family == 'Debian'
       ansible.builtin.apt:
         name: "*"
-        state: latest
+        only_upgrade: true
         update_cache: true
         force_apt_get: true
         cache_valid_time: 3600

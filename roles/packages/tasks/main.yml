@@ -11,8 +11,8 @@
     name: "{{ pippackages }}"
     state: present
   when:
-   - not ansible_check_mode
-   - pippackages is defined
+    - not ansible_check_mode
+    - pippackages is defined
 
 # Check if Oh My Bash is installed
 - name: Check OMB is installed

@@ -13,7 +13,7 @@
     name: "{{ item.name }}"
     network_name: "{{ item.net_name }}"
     cidr: "{{ item.cidr }}"
-    dns_nameservers: "{{ item.nameservers}}"
+    dns_nameservers: "{{ item.nameservers }}"
     enable_dhcp: "{{ item.dhcp }}"
     gateway_ip: "{{ item.gateway }}"
   with_items: "{{ subnets }}"

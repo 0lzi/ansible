@@ -185,6 +185,7 @@
       root_token: !vault |
                   {{ root_token | vault(lookup('ansible.builtin.file', '../vault_password')) | indent(12, false) }}
     dest: "{{ playbook_dir }}/inventories/homelab/group_vars/{{ openbao_cluster_name }}/unseal.yml"
+    mode: '0600'
   delegate_to: localhost
   run_once: true
   when: not openbao_initialized

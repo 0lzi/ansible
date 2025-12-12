@@ -11,7 +11,7 @@
       region_name: "{{ region_name }}"
     state: "{{ item.state }}"
     name: "{{ item.name }}"
-    admin_state_up: "{{ item.admin_state}}"
+    admin_state_up: "{{ item.admin_state }}"
     external: "{{ item.external }}"
     provider_network_type: "{{ item.provider_network_type }}"
     provider_physical_network: "{{ item.pysnet_type }}"

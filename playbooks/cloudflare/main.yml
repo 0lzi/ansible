@@ -13,7 +13,8 @@
         type: A
         value: "{{ public_ip }}"
         account_email: "{{ account_email }}"
-        api_token: "{{ account_api_token }}"
+        account_api_key: "{{ account_api_token }}"
+        # api_token: "{{ account_api_token }}"
         ttl: 60
         state: present
         proxied: false

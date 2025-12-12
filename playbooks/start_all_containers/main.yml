@@ -16,5 +16,5 @@
       ansible.builtin.debug:
         msg: "Hostname - {{ pre_restart.host_info.Name }} has {{ pre_restart.host_info.Containers }} Containers "
 
-    - name: Restart containers
+    - name: Restart containers # noqa no-changed-when
       ansible.builtin.shell: "docker restart $(docker ps -a -q)"

@@ -44,6 +44,7 @@
     state: directory
     owner: consul
     group: consul
+    mode: "0644"
   with_items:
     - "{{ consul_config_dir }}"
     - "{{ consul_data_dir }}"
@@ -62,7 +63,7 @@
   ansible.builtin.set_fact:
     primary_node: "{{ groups[consul_dc][0] }}"
 
-- name: Generate consul Gossip keys
+- name: Generate consul Gossip keys # noqa command-instead-of-shell no-changed-when
   ansible.builtin.shell: consul keygen
   delegate_to: "{{ primary_node }}"
   run_once: true
@@ -92,7 +93,7 @@
     - Systemd
     - Restart_consul
 
-- name: Validate config
+- name: Validate config # noqa command-instead-of-shell no-changed-when
   ansible.builtin.shell: consul validate /etc/consul.d/
   register: consul_validate
   failed_when: "'failed' in consul_validate.stderr"

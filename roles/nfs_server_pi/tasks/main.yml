@@ -46,7 +46,7 @@
     opts: defaults,noatime
     state: present
 
-- name: Mount nfs drive
+- name: Mount nfs drive # noqa command-instead-of-module
   ansible.builtin.command: mount -a
   changed_when: false
 

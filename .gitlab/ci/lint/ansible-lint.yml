@@ -9,4 +9,9 @@ ansible-lint:
   before_script:
     - sed -i '/vault_password_file/d' ${ANSIBLE_CONFIG}
   script:
-    - ansible-lint
+    - ansible-lint -f codeclimate | python3 -m json.tool | tee gl-code-quality-report.json || true
+  artifacts:
+    reports:
+      codequality:
+        - gl-code-quality-report.json
+    expire_in: 1 week

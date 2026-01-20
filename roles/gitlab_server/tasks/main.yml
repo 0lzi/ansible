@@ -46,13 +46,18 @@
   delegate_to: localhost
   tags: consul
 
+- name: Pull Latest
+  community.docker.docker_compose_v2_pull:
+    project_src: "{{ base_dir }}/{{ service }}"
+  register: gitlab_pull
+
 - name: Start GitLab container
   community.docker.docker_compose_v2:
     project_src: "{{ base_dir }}/{{ service }}"
     recreate: always
     state: present
   tags: compose
-  when: gitlab_rb.changed or compose_file.changed
+  when: gitlab_rb.changed or compose_file.changed or gitlab_pull.changed
 
 - name: Template backup service files
   ansible.builtin.template:

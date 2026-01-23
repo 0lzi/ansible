@@ -26,6 +26,7 @@ gitlab:
     traefik/http/routers/gitlab/tls/certresolver: "cloudflare"
     traefik/http/routers/gitlab/tls/domains/0/sans/0: "gitlab.0lzi.com"
     traefik/http/routers/gitlab/tls: "true"
+    traefik/http/routers/gitlab/middlewares: "crowdsec@consul"
     traefik/http/services/gitlab/loadbalancer/servers/0/url: "http://gitlab.0lzi.internal"
     # GitLa/ reg/stry
     traefik/http/routers/gitlab_registry/rule: "Host(`registry.gitlab.0lzi.com`)"

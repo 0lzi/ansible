@@ -2,12 +2,13 @@
 services:
   loki:
     image: {{ loki_image }}
-    container_name: "{{ servce }}"
+    container_name: "{{ service }}"
     command: -config.file=/etc/loki/local-config.yml
+    user: "10001:10001"
     ports:
       - 3100:3100
     volumes:
-      - {{ loki_dir }}:/etc/loki/local-config.yaml
+      - {{ loki_dir }}/local-config.yml:/etc/loki/local-config.yml
       - {{ loki_dir }}/data:/data/loki
     restart: unless-stopped
 

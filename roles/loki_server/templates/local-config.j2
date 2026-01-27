@@ -59,9 +59,9 @@ storage_config:
    cache_location: /loki/index_cache
  aws:
    bucketnames: loki
-   endpoint: {{ loki_server.s3_url}}
-   access_key_id: "{{ loki_server.s3_access }}"
-   secret_access_key: "{{ loki_server.s3_secret_key  }}"
+   endpoint: {{ loki_server.s3_url | default('') }}
+   access_key_id: "{{ loki_server.s3_access | default('') }}"
+   secret_access_key: "{{ loki_server.s3_secret_key | default('')  }}"
    s3forcepathstyle: true
    insecure: false
 {% endif %}

@@ -2,7 +2,7 @@
 service: loki
 loki_dir: "{{ base_dir }}/loki"
 loki_image: grafana/loki:3.5.5
-loki_url: "{{ inventory_hostname }}"
+loki_url: "loki.0lzi.com"
 loki_server:
   filesystem: local
 ## Alternatives
@@ -11,18 +11,19 @@ loki_server:
 # s3_secret_key: <s3_secret_key>
 # s3_url: <s3_url>
 # s3_bucket: loki
+loki_user: loki
+loki_password: "{{ lookup('ansible.builtin.env', 'LOKI_PASSWORD', default='pa55word') }}"
 loki:
-  user: demo
-  password: changeme
   traefik_labels:
     # Loki main interface
-    traefik/http/routers/loki/rule: "Host(`loki.example.com`)"
+    traefik/http/routers/loki/rule: "Host(`loki.0lzi.com`)"
     traefik/http/routers/loki/service: "loki"
     traefik/http/routers/loki/entrypoints: "websecure"
     traefik/http/routers/loki/tls/certresolver: "cloudflare"
-    traefik/http/routers/loki/tls/domains/0/sans/0: "loki.example.com"
-    traefik/http/routers/loki/middlewares: "{% if loki.password %}loki_auth{% endif %}"
+    traefik/http/routers/loki/tls/domains/0/sans/0: "loki.0lzi.com"
+    traefik/http/routers/loki/middlewares: "{% if loki_password %}loki_auth{% endif %}"
     traefik/http/routers/loki/tls: "true"
-    traefik/http/services/loki/loadbalancer/servers/0/url: "http://loki.example.com:3100"
-    traefik/http/middlewares/loki_auth/basicauth/users: "{{ loki.user }}:{{ loki.password | trim | password_hash('blowfish', '1234567890123456789012') }}"
+    traefik/http/services/loki/loadbalancer/servers/0/url: "http://loki.0lzi.com:3100"
+    traefik/http/middlewares/loki_auth/basicauth/users: >
+      {{ loki_user }}:{{ loki_password | password_hash('md5_crypt') }}
     traefik/http/middlewares/loki_auth/basicauth/realm: loki

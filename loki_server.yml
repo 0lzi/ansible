@@ -1,0 +1,18 @@
+---
+# Run with ansible-playbook -i inventory/hosts loki_server.yml
+- name: Setup loki server
+  hosts: loki_servers
+  remote_user: "{{ user }}"
+  become: true
+  become_method: sudo
+  gather_facts: true
+
+  pre_tasks:
+    - name: Update Apt Cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+  roles:
+    - users
+    - docker
+    - loki_server

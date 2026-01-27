@@ -3,9 +3,12 @@
   ansible.builtin.file:
     name: "{{ loki_dir }}/{{ item }}"
     state: directory
-    mode: "0644"
+    mode: "0755"
+    owner: "10001"
+    group: "10001"
   loop:
     - data
+    - data/loki/rules
 
 - name: Create loki docker network
   community.docker.docker_network:
@@ -15,7 +18,7 @@
 - name: Deploy config file
   ansible.builtin.template:
     src: local-config.j2
-    dest: /srv/loki/local-config.yaml
+    dest: /srv/loki/local-config.yml
     mode: "0644"
     group: admins
   register: config_file_deployed
@@ -53,8 +56,8 @@
     url: "https://{{ loki_url }}/ready"
     return_content: true
     follow_redirects: true
-    url_username: "{{ loki.user }}"
-    url_password: "{{ loki.password }}"
+    url_username: "{{ loki_user }}"
+    url_password: "{{ loki_password }}"
     force_basic_auth: true
   register: result
   until: result.status == 200 and 'ready\n' in result.content

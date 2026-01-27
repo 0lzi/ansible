@@ -11,10 +11,10 @@ loki_server:
 # s3_secret_key: <s3_secret_key>
 # s3_url: <s3_url>
 # s3_bucket: loki
+loki_user: loki
+loki_password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/monitoring')['secret']['loki_password'] }}"
 loki:
   org_id: 1
-  user: loki
-  password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/monitoring')['secret']['loki_password'] }}" 
   traefik_labels:
     # Loki main interface
     traefik/http/routers/loki/rule: "Host(`loki.0lzi.com`)"
@@ -22,8 +22,9 @@ loki:
     traefik/http/routers/loki/entrypoints: "websecure"
     traefik/http/routers/loki/tls/certresolver: "cloudflare"
     traefik/http/routers/loki/tls/domains/0/sans/0: "loki.0lzi.com"
-    traefik/http/routers/loki/middlewares: "{% if loki.password %}loki_auth{% endif %}"
+    traefik/http/routers/loki/middlewares: "{% if loki_password %}loki_auth{% endif %}"
     traefik/http/routers/loki/tls: "true"
     traefik/http/services/loki/loadbalancer/servers/0/url: "http://dockerhost-1.0lzi.com:3100"
-    traefik/http/middlewares/loki_auth/basicauth/users: "{{ loki.user }}:{{ loki.password | trim | password_hash('blowfish', '1234567890123456789012') }}"
+    traefik/http/middlewares/loki_auth/basicauth/users: >
+      {{ loki_user }}:{{ loki_password | password_hash('md5_crypt') }}
     traefik/http/middlewares/loki_auth/basicauth/realm: loki

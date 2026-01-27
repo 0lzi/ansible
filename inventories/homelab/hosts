@@ -23,6 +23,8 @@ lancache
 gitlab_server
 gitlab_runners
 traefik_servers
+loki_servers
+mimir_servers
 #pi_hole
 
 [docker_hosts]
@@ -35,6 +37,9 @@ gitlab.0lzi.internal
 gitlab-runner-1.0lzi.com
 traefik.0lzi.com
 
+[alloy_clients]
+prod
+
 [gitlab_server]
 gitlab.0lzi.internal
 
@@ -42,6 +47,12 @@ gitlab.0lzi.internal
 gitlab-runner-1.0lzi.com
 
 [grafana_servers]
+dockerhost-1.0lzi.com
+
+[loki_servers]
+dockerhost-1.0lzi.com
+
+[mimir_servers]
 dockerhost-1.0lzi.com
 
 # [pi_hole]
@@ -66,11 +77,6 @@ consul-0.0lzi.com
 consul-1.0lzi.com
 consul-2.0lzi.com
 
-[dc1]
-consul-0.0lzi.com
-consul-1.0lzi.com
-consul-2.0lzi.com
-
 [openbao_servers]
 vault-0.0lzi.com
 vault-1.0lzi.com
@@ -87,3 +93,4 @@ home-assistant.0lzi.com
 
 [uptime_kuma]
 uptime.0lzi.com
+

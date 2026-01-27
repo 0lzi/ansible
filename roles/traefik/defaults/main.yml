@@ -1,6 +1,6 @@
 ---
 traefik_dir: "{{ base_dir }}/traefik"
-traefik_version: 3.6
+traefik_version: 3
 traefik:
   logs:
     level: INFO

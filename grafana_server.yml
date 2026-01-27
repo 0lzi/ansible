@@ -1,7 +1,7 @@
 ---
 # Run with ansible-playbook -i inventory/hosts grafana_server.yml
 - name: Setup grafana server
-  hosts: docker_servers
+  hosts: grafana_servers
   remote_user: "{{ user }}"
   become: true
   become_method: sudo

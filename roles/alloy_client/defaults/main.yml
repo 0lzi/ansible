@@ -2,12 +2,12 @@
 loki:
   env: prod
   org_id: 1
-  url: https://loki.example.com/loki/api/v1/push
-  user: monitoring
-  password: test
+  url: https://loki.0lzi.com/loki/api/v1/push
+  user: loki
+  password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/loki')['secret']['LOKI_PASSWORD'] | default('changeme') }}"
 mimir:
   env: prod
   org_id: 1
-  url: https://mimir.example.com/api/v1/push
-  user: monitoring
-  password: test
+  url: https://mimir.0lzi.com/api/v1/push
+  user: mimir
+  password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/mimir')['secret']['MIMIR_PASSWORD'] | default('changeme') }}"

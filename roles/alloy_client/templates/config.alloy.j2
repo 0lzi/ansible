@@ -28,20 +28,20 @@ prometheus.relabel "relabel_node_exporter_job_name" {
     replacement = "node_exporter_scraper"
     target_label = "job"
   }
-  forward_to = [prometheus.remote_write.mimir_{{ mimir.env }}.receiver]
+  forward_to = [prometheus.remote_write.mimir_{{ monitoring.mimir.env }}.receiver]
 }
 
-prometheus.remote_write "mimir_{{ mimir.env }}" {
+prometheus.remote_write "mimir_{{ monitoring.mimir.env }}" {
     endpoint {
-        url = "{{ mimir.url }}"
+        url = "{{ monitoring.mimir.url }}"
 
         headers = {
-            "X-Scope-OrgID" = "{{ mimir.org_id }}",
+            "X-Scope-OrgID" = "{{ monitoring.mimir.org_id }}",
         }
 
         basic_auth {
-            username = "{{ mimir.user }}"
-            password = "{{ mimir.password }}"
+            username = "{{ monitoring.mimir.user }}"
+            password = "{{ monitoring.mimir.password }}"
         }
     }
 }
@@ -75,31 +75,31 @@ loki.source.docker "collect_docker_logs" {
     job = "loki.source.docker.collect_docker_logs",
   }
 
-  forward_to = [loki.write.loki_{{ loki.env }}.receiver]
+  forward_to = [loki.write.loki_{{ monitoring.loki.env }}.receiver]
 }
 {% endif %}
 
 // *** SYSTEMD JOURNAL ***
 loki.source.journal "systemd_journal" {
   path = "/var/log/journal"
-  forward_to = [loki.write.loki_{{ loki.env }}.receiver]
+  forward_to = [loki.write.loki_{{ monitoring.loki.env }}.receiver]
   labels  = {hostname = "{{ inventory_hostname_short }}"}
 }
 // ** SSH JOURNAL
 loki.source.journal "ssh_journal" {
-  forward_to = [loki.write.loki_{{ loki.env }}.receiver]
+  forward_to = [loki.write.loki_{{ monitoring.loki.env }}.receiver]
   matches = "_SYSTEMD_UNIT=ssh.service"
   labels  = {hostname = "{{ inventory_hostname_short }}", journal = "ssh"}
 }
 
 // *** LOKI WRITE ENDPOINT ***
-loki.write "loki_{{ loki.env }}" {
+loki.write "loki_{{ monitoring.loki.env }}" {
     endpoint {
-        url = "{{ loki.url }}"
+        url = "{{ monitoring.loki.url }}"
 
         basic_auth {
-            username = "{{ loki.user }}"
-            password = "{{ loki.password }}"
+            username = "{{ monitoring.loki.user }}"
+            password = "{{ monitoring.loki.password }}"
         }
     }
 }

@@ -8,6 +8,16 @@ gitlab_server
 openbao_servers
 tmux
 
+[vms]
+vault-[0:2].0lzi.com
+consul-[0:2].0lzi.com
+gitlab-runner-1.0lzi.com
+gitlab.0lzi.internal
+dockerhost-[0:2].0lzi.com
+immich.0lzi.com
+lancache.0lzi.com
+tmux.0lzi.com
+
 [tmux]
 tmux.0lzi.com
 
@@ -37,7 +47,7 @@ gitlab.0lzi.internal
 gitlab-runner-1.0lzi.com
 traefik.0lzi.com
 
-[alloy_clients]
+[alloy_clients:children]
 prod
 
 [gitlab_server]

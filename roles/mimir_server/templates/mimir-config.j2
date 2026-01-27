@@ -2,33 +2,75 @@ target: all,alertmanager
 
 server:
   log_level: warn
+  grpc_listen_port: 9095
 
 # Storage
+{% if 'local' in mimir_server.filesystem %}
 common:
   storage:
-{% if 'local' in mimir_server.filesystem %}
-   backend: local
+    backend: filesystem
 
+blocks_storage:
+ backend: filesystem
+ filesystem:
+   dir: "/data/blocks"
+
+ingester:
+  ring:
+    kvstore:
+      store: inmemory
+    replication_factor: 1
+
+compactor:
+  data_dir: /data/compactor
+  sharding_ring:
+    kvstore:
+      store: inmemory
+
+store_gateway:
+  sharding_ring:
+    replication_factor: 1
+    kvstore:
+      store: inmemory
+
+ruler:
+  rule_path: /data/ruler
+  ring:
+    kvstore:
+      store: inmemory
+
+distributor: {}
+
+
+alertmanager:
+  data_dir: /data/alertmanager
+
+limits:
+  ingestion_rate: 20000
+  ingestion_burst_size: 40000
+  compactor_blocks_retention_period: 7d
 {% endif %}
 {% if 's3' in mimir_server.filesystem  %}
+common:
+  storage
     backend: s3
     s3:
-      endpoint: {{ mimir_server.s3_url}}
-      access_key_id: "{{ mimir_server.s3_access }}"
-      secret_access_key: "{{ mimir_server.s3_secret_key  }}"
+      endpoint: {{ mimir_server.s3_url | default('') }}
+      access_key_id: "{{ mimir_server.s3_access | default('') }}"
+      secret_access_key: "{{ mimir_server.s3_secret_key | default('') }}"
 
 blocks_storage:
   s3:
-    bucket_name: {{ mimir_server.s3_bucket }}-blocks
+    bucket_name: {{ mimir_server.s3_bucket | default('') }}-blocks
 
 alertmanager_storage:
   s3:
-    bucket_name: {{ mimir_server.s3_bucket }}-alertmanager
+    bucket_name: {{ mimir_server.s3_bucket | default('') }}-alertmanager
 
 ruler_storage:
   s3:
-    bucket_name: {{ mimir_server.s3_bucket }}-ruler
+    bucket_name: {{ mimir_server.s3_bucket | default('') }}-ruler
 {% endif %}
 
-memberlist:
-  join_members: [ mimir-1,mimir-2,mimir-3]
+#memberlist:
+#  join_members: [ mimir-1,mimir-2,mimir-3 ]

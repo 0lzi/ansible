@@ -11,9 +11,8 @@ mimir_server:
 # s3_secret_key: <s3_secret_key>
 # s3_url: <s3_url>
 # s3_bucket: mimir
-
 mimir_user: mimir
-mimir_password: "{{ lookup('ansible.builtin.env', 'MIMIR_PASSWORD', default='pa55word') }}"
+mimir_password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/monitoring')['secret']['mimir_password'] }}"
 mimir:
   env: prod
   org_id: 1
@@ -21,12 +20,14 @@ mimir:
   traefik_labels:
     traefik/http/routers/mimir/rule: "Host(`{{ mimir_url }}`)"
     traefik/http/routers/mimir/service: "mimir"
-    traefik/http/routers/mimir/entrypoints: "web,websecure"
+    traefik/http/routers/mimir/entrypoints: "websecure"
     traefik/http/routers/mimir/tls/certresolver: "cloudflare"
-    traefik/http/routers/mimir/middlewares: "{% if mimir.password %}mimir_auth{% endif %}"
-    traefik/http/middlewares/mimir_auth/basicauth/users: >
-      {{ mimir.user }}:{{ mimir.password | password_hash('md5_crypt') }}
-    traefik/http/middlewares/mimir_auth/basicauth/realm: mimir
+    traefik/http/routers/mimir/tls/domains/0/sans/0: "mimir.0lzi.com"
+    traefik/http/routers/mimir/middlewares: "{% if mimir_password %}mimir_auth{% endif %}"
+    traefik/http/routers/mimir/tls: "true"
     traefik/http/services/mimir/loadbalancer/servers/0/url: "http://dockerhost-1.0lzi.com:8080"
     # traefik/http/services/mimir/loadbalancer/servers/1/url: "http://dockerhost-1.0lzi.com:8081"
     # traefik/http/services/mimir/loadbalancer/servers/2/url: "http://dockerhost-1.0lzi.com:8082"
+    traefik/http/middlewares/mimir_auth/basicauth/users: >
+      {{ mimir_user }}:{{ mimir_password | password_hash('md5_crypt') }}
+    traefik/http/middlewares/mimir_auth/basicauth/realm: mimir

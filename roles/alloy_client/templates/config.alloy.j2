@@ -5,6 +5,20 @@ logging {
 }
 
 // *** METRICS ***
+{% for name, scraper in alloy_scrapers.items() %}
+prometheus.scrape "{{ name }}" {
+  targets = [
+    {
+      __address__ = "{{ scraper.address }}:{{ scraper.port }}"
+      job         = "{{ scraper.job | default(name) }}"
+     }
+  ]
+  scheme          = "{{ scraper.scheme | default('http') }}"
+  metrics_path    = "{{ scraper.path | default('') }}"
+
+  forward_to = [prometheus.remote_write.mimir_{{ monitoring.mimir.env }}.receiver]
+}
+{% endfor %}
 
 prometheus.exporter.unix "node_exporter" {
     procfs_path  = "/proc"

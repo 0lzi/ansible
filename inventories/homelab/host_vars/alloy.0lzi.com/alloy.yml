@@ -1,0 +1,8 @@
+---
+alloy_scrapers:
+  traefik:
+    address: traefik.0lzi.com
+    port: 443
+    scheme: https
+    path: "/metrics"
+    job: traefik

@@ -7,6 +7,7 @@ consul
 gitlab_server
 openbao_servers
 tmux
+alloy_scraper
 
 [vms]
 vault-[0:2].0lzi.com
@@ -17,6 +18,7 @@ dockerhost-[0:2].0lzi.com
 immich.0lzi.com
 lancache.0lzi.com
 tmux.0lzi.com
+alloy.0lzi.com
 
 [tmux]
 tmux.0lzi.com
@@ -104,3 +106,8 @@ home-assistant.0lzi.com
 [uptime_kuma]
 uptime.0lzi.com
 
+[nextcloud]
+nextcloud.0lzi.com
+
+[alloy_scraper]
+alloy.0lzi.com

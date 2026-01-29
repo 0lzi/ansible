@@ -2,6 +2,7 @@
 service: grafana
 grafana_url: "grafana.0lzi.com"
 grafana:
+  experimental_features: true
   traefik_labels:
     # grafana main
     traefik/http/routers/grafana/rule: "Host(`{{ grafana_url }}`)"

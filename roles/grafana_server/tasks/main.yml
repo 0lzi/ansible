@@ -24,7 +24,8 @@
     mode: "0755"
     owner: "{{ user }}"
     group: admins
-  register: copose_deployed
+  register: compose_deployed
+  notify: Recreate service
 
 - name: Add traefik label to Consul for {{ service }}
   community.general.consul_kv:
@@ -37,11 +38,15 @@
   loop: "{{ lookup('vars', service).traefik_labels | dict2items }}"
   delegate_to: localhost
   tags: consul
+  notify: Recreate service
 
 - name: Start container
   community.docker.docker_compose_v2:
     project_src: "{{ grafana_dir }}"
     state: present
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Wait for Grafana to be ready
   ansible.builtin.uri:

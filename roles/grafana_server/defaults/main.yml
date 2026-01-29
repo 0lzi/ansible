@@ -5,6 +5,7 @@ grafana_install: docker
 grafana_image: grafana/grafana:latest
 grafana_url: "grafana.example.com"
 grafana:
+  experimental_features: false
   traefik_labels:
     # grafana main
     traefik/http/routers/grafana/rule: "Host(`{{ grafana_url }}`)"

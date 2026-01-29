@@ -6,7 +6,8 @@
   become: true
   become_method: sudo
   gather_facts: true
-
+  vars:
+    service: grafana
   pre_tasks:
     - name: Update Apt Cache
       ansible.builtin.apt:

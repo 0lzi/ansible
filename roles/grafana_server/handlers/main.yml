@@ -1,0 +1,6 @@
+---
+- name: Recreate service
+  community.docker.docker_compose_v2:
+    project_src: "{{ grafana_dir }}"
+    recreate: true
+    pull: always

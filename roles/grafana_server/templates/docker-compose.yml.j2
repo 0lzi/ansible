@@ -2,7 +2,7 @@
 services:
   grafana:
     image: {{ grafana_image }}
-    container_name: "{{ service }}"
+    container_name: "grafana"
     command: "--config=/etc/grafana/grafana.ini"
     user: "0"
     ports:

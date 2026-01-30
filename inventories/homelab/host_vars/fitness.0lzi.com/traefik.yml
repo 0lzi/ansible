@@ -1,0 +1,14 @@
+---
+service: fitness_blog
+fitness_blog:
+  traefik_labels:
+    # blog main interface
+    traefik/http/routers/fitness-blog/rule: "Host(`fitness.0lzi.com`)"
+    traefik/http/routers/fitness-blog/service: "fitness-blog"
+    traefik/http/routers/fitness-blog/entrypoints: "websecure"
+    traefik/http/routers/fitness-blog/tls/certresolver: "cloudflare"
+    traefik/http/routers/fitness-blog/tls: "true"
+    # blog Service
+    traefik/http/services/fitness-blog/loadbalancer/servers/0/url: "http://docker-1.0lzi.com:3005"
+    # blog WAF
+    traefik/http/routers/fitness-blog/middlewares: "crowdsec@consul"

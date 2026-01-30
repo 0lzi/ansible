@@ -4,7 +4,7 @@ global:
 
 {% if traefik.logs %}
 log:
-  level: {{ traefik.logs.level | upper }}
+  level: {{ traefik.logs.level | upper | default('INFO')}}
   filePath: "/var/log/traefik/traefik.log"
   format: json
 
@@ -31,7 +31,8 @@ api:
 
 {% if traefik.metrics.prometheus %}
 metrics:
-  prometheus: true
+  prometheus:
+    entryPoint: websecure
 {% endif %}
 
 entryPoints:
@@ -67,6 +68,19 @@ certificatesResolvers:
         resolvers:
         - "1.1.1.1:53"
         - "8.8.8.8:53"
+
+  httpresolver:
+    acme:
+      email: admin@0lzi.com
+      storage: /letsencrypt/acme.json
+      httpChallenge:
+        entryPoint: web
+
+  tlsresolver:
+    acme:
+      email: admin@0lzi.com
+      storage: /letsencrypt/acme.json
+      tlsChallenge: {}
 
 providers:
   # Enable Docker configuration backend

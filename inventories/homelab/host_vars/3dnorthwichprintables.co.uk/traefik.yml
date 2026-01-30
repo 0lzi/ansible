@@ -1,0 +1,15 @@
+---
+service: printables
+printables:
+  traefik_labels:
+    # blog main interface
+    traefik/http/routers/printables-blog/rule: "Host(`3dnorthwichprintables.co.uk`)"
+    traefik/http/routers/printables-blog/service: "printables-blog"
+    traefik/http/routers/printables-blog/entrypoints: "websecure"
+    traefik/http/routers/printables-blog/tls/certresolver: "tlsresolver"
+    traefik/http/routers/printables-blog/tls: "true"
+    traefik/http/routers/printables-blog/tls/domains/0/sans/0: "3dnorthwichprintables.co.uk"
+    # blog Service
+    traefik/http/services/printables-blog/loadbalancer/servers/0/url: "http://docker-1.0lzi.com:3004"
+    # blog WAF
+    traefik/http/routers/printables-blog/middlewares: "crowdsec@consul"

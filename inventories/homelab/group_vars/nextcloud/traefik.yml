@@ -11,6 +11,7 @@ nextcloud:
     traefik/http/routers/nextcloud/middlewares/0: "nextcloud-secure-headers"
     traefik/http/routers/nextcloud/middlewares/1: "nextcloud-redirect"
     traefik/http/routers/nextcloud/middlewares/2: "nc-regexreplace"
+    traefik/http/routers/nextcloud/middlewares/3: "crowdsec@consul"
     # nextcloud Service
     traefik/http/services/nextcloud/loadbalancer/servers/0/url: "http://docker-1.0lzi.com:8080"
     traefik/http/services/nextcloud/loadbalancer/passHostHeader: "true"
@@ -28,3 +29,4 @@ nextcloud:
     traefik/http/middlewares/nc-regexreplace/redirectregex/regex: '^https?://([^/]+)/\.well-known/(card|cal)dav'
     traefik/http/middlewares/nc-regexreplace/redirectregex/replacement: 'https://$1/remote.php/dav'
     traefik/http/middlewares/nc-regexreplace/redirectregex/permanent: "true"
+    # nextclouud WAF

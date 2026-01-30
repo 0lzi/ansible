@@ -1,0 +1,11 @@
+---
+- name: Pull latest gitlab container
+  hosts: gitlab_server
+  gather_facts: true
+  become: true
+  tasks:
+
+    - name: Pull Latest
+      community.docker.docker_compose_v2_pull:
+        project_src: "{{ base_dir }}/{{ service }}"
+      register: gitlab_pull

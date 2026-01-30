@@ -1,0 +1,22 @@
+---
+gitlab_pull:
+  extends: .default
+  stage: maintenance
+  tags:
+    - ansible
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'schedule'
+  variables:
+    VAULT_ADDR: https://vault.0lzi.com
+  id_tokens:
+    VAULT_ID_TOKEN:
+      aud: https://vault.0lzi.com
+  script:
+    - uv run ansible-playbook playbooks/update/gitlab-pull.yml
+  after_script:
+    - rm -rf ~/.ssh
+    - rm -f vault_password
+  cache:
+    paths:
+      - .pip_cache
+      - ~/.ansible/roles

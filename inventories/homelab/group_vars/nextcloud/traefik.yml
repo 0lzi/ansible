@@ -8,11 +8,23 @@ nextcloud:
     traefik/http/routers/nextcloud/entrypoints: "websecure"
     traefik/http/routers/nextcloud/tls/certresolver: "cloudflare"
     traefik/http/routers/nextcloud/tls: "true"
-    traefik/http/routers/nextcloud/middlewares: "nextcloud-chain"
+    traefik/http/routers/nextcloud/middlewares/0: "nextcloud-secure-headers"
+    traefik/http/routers/nextcloud/middlewares/1: "nextcloud-redirect"
+    traefik/http/routers/nextcloud/middlewares/2: "nc-regexreplace"
     # nextcloud Service
     traefik/http/services/nextcloud/loadbalancer/servers/0/url: "http://docker-1.0lzi.com:8080"
-    # nextcloud middlewares
+    traefik/http/services/nextcloud/loadbalancer/passHostHeader: "true"
+    # nextcloud https redirect
     traefik/http/middlewares/nextcloud-redirect/redirectscheme/scheme: "https"
+    traefik/http/middlewares/nextcloud-redirect/redirectscheme/permanent: "true"
+    # nextcloud secure headers
     traefik/http/middlewares/nextcloud-secure-headers/headers/hostsProxyHeaders: "X-Forwarded-Host"
-    traefik/http/middlewares/nextcloud-secure-headers/headers/hostsProxyHeaders: "X-Forwarded-Host"
-    traefik/http/middlewares/nextcloud-chain/middlewares: "nextcloud-redirect,nextcloud-secure-headers"
+    traefik/http/middlewares/nextcloud-secure-headers/headers/stsSeconds: "15552000"
+    traefik/http/middlewares/nextcloud-secure-headers/headers/stsIncludeSubdomains: "true"
+    traefik/http/middlewares/nextcloud-secure-headers/headers/customResponseHeaders/X-Robots-Tag: "noindex,nofollow"
+    traefik/http/middlewares/nextcloud-secure-headers/headers/customResponseHeaders/X-Permitted-Cross-Domain-Policies: "none"
+    traefik/http/middlewares/nextcloud-secure-headers/headers/customFrameOptionsValue: "SAMEORIGIN"
+    # nextcloud CalDav/CardDav redirect
+    traefik/http/middlewares/nc-regexreplace/redirectregex/regex: '^https?://([^/]+)/\.well-known/(card|cal)dav'
+    traefik/http/middlewares/nc-regexreplace/redirectregex/replacement: 'https://$1/remote.php/dav'
+    traefik/http/middlewares/nc-regexreplace/redirectregex/permanent: "true"

@@ -31,7 +31,8 @@ api:
 
 {% if traefik.metrics.prometheus %}
 metrics:
-  prometheus: true
+  prometheus:
+    entryPoint: websecure
 {% endif %}
 
 entryPoints:

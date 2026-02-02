@@ -2,5 +2,5 @@
 crowdsec_dir: "{{ base_dir }}/crowdsec"
 crowdsec:
   enabled: true
-  version: "1.7.5-rc1"
+  version: "latest"
   traefiklogs: /srv/traefik/

@@ -2,7 +2,7 @@
 service: crowdsec
 crowdsec:
   enabled: true
-  version: "1.7.5-rc1"
+  version: "latest"
   traefiklogs: /srv/traefik
   traefik_labels:
     traefik/http/middlewares/crowdsec/plugin/bouncer/enabled: "true"

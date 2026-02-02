@@ -1,7 +1,7 @@
 ---
 services:
   crowdsec:
-    image: crowdsecurity/crowdsec:v{{ crowdsec.version }}
+    image: crowdsecurity/crowdsec:{{ crowdsec.version }}
     container_name: "crowdsec"
     environment:
       COLLECTIONS: crowdsecurity/traefik crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules

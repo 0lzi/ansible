@@ -11,7 +11,7 @@
   ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
   environment:
     BAO_SKIP_VERIFY: "1"
-    BAO_ADDR: "{{ openbao.tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+    BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
   loop: "{{ unseal_keys[0:3] }}"
 
 - name: Enable_service

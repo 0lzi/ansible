@@ -133,8 +133,8 @@
     unseal_keys: "{{ bao_init.stdout_lines | select('match', '^Unseal Key \\d+:') | map('regex_replace', '^Unseal Key \\d+: ', '') | list }}"
     root_token: "{{ (bao_init.stdout_lines | select('match', '^Initial Root Token:') | list).0.split(': ')[1] }}"
   when:
-   - not openbao_initialized
-   - not ansible_check_mode
+    - not openbao_initialized
+    - not ansible_check_mode
 
 - name: Unseal vault # noqa no-changed-when command-instead-of-shell
   ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}

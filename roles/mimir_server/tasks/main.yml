@@ -18,6 +18,9 @@
   ansible.builtin.template:
     src: mimir-config.j2
     dest: /srv/mimir/mimir-config.yml
+    mode: "0644"
+    owner: oli
+    group: admins
   register: config_file_deployed
 
 - name: Deploy compose-file

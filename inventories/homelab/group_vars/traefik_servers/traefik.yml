@@ -1,6 +1,7 @@
 ---
 traefik_dashboard_user: "admin"
 traefik_dashboard_password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/traefik')['secret']['dashboard_password_plain'] }}"
+traefik_metrics_password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/traefik')['secret']['metrics_password_plain'] }}"
 service: traefik
 traefik:
   logs:
@@ -26,7 +27,7 @@ traefik:
     traefik/http/routers/prometheus/middlewares/0: "prometheus"
     traefik/http/routers/prometheus/middlewares/1: "metrics"
     traefik/http/middlewares/metrics/basicauth/users: >
-      {{ traefik_dashboard_user }}:{{ traefik_dashboard_password | password_hash('md5', salt=inventory_hostname_short) }}
+      {{ traefik_dashboard_user }}:{{ traefik_metrics_password | password_hash('md5', salt=inventory_hostname_short) }}
     traefik/http/middlewares/prometheus/ipAllowList/sourcerange: "10.18.0.0/16"
     # Traefik ipAllowList
     traefik/http/middlewares/http-rfc1918/ipAllowList/sourceRange: "10.0.0.0/8, 192.168.0.0/16, 172.16.0.0/12"

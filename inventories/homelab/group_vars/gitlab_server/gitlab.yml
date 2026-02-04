@@ -45,6 +45,7 @@ gitlab:
     traefik/http/services/gitlab_prometheus/loadbalancer/servers/0/url: "http://gitlab.0lzi.internal"
     traefik/http/routers/gitlab_prometheus/middlewares/0: "crowdsec@consul"
     traefik/http/routers/gitlab_prometheus/middlewares/1: "http-rfc1918"
+    traefik/http/routers/gitlab_prometheus/middlewares/2: "prometheus-auth"
     traefik/http/middlewares/prometheus-auth/basicauth/users: >
       {{ gitlab_prometheus_auth_user }}:{{ gitlab_prometheus_auth_password | password_hash('md5', salt=inventory_hostname_short) }}
     traefik/http/middlewares/prometheus-auth/basicauth/realm: "gitlab"

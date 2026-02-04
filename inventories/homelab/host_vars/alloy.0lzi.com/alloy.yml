@@ -8,7 +8,7 @@ alloy_scrapers:
     job: traefik
     auth:
       username: "admin"
-      password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/traefik')['secret']['dashboard_password_plain'] }}"
+      password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/traefik')['secret']['metrics_password_plain'] }}"
   # gitlab:
   #   address: gitlab.0lzi.com
   #   port: 443
@@ -24,3 +24,6 @@ alloy_scrapers:
     scheme: https
     path: "/metrics"
     job: openbao
+    auth:
+      username: "admin"
+      password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/traefik')['secret']['metrics_password_plain'] }}"

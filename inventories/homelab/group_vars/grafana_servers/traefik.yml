@@ -9,6 +9,7 @@ grafana:
     traefik/http/routers/grafana/entrypoints: "websecure"
     traefik/http/routers/grafana/tls/certresolver: "cloudflare"
     traefik/http/routers/grafana/tls: "true"
-    traefik/http/routers/grafana/middlewares: "crowdsec@consul"
+    traefik/http/routers/grafana/middlewares/0: "crowdsec@consul"
+    traefik/http/routers/grafana/middlewares/1: "http-rfc1918"
     # grafana service
     traefik/http/services/grafana/loadbalancer/servers/0/url: "http://dockerhost-1.0lzi.com:3000"

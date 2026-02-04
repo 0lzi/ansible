@@ -7,6 +7,8 @@ proxmox:
     traefik/http/routers/proxmox/service: "proxmox"
     traefik/http/routers/proxmox/entrypoints: "websecure"
     traefik/http/routers/proxmox/tls/certresolver: "cloudflare"
+    traefik/http/routers/proxmox/middlewares/0: "crowdsec@consul"
+    traefik/http/routers/proxmox/middlewares/1: "http-rfc1918"
     traefik/http/routers/proxmox/tls: "true"
     # Proxmox Service
     traefik/http/services/proxmox/loadbalancer/sticky/cookie/name: "proxmox"

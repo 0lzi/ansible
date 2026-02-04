@@ -26,26 +26,33 @@ gitlab:
     traefik/http/routers/gitlab/tls/certresolver: "cloudflare"
     traefik/http/routers/gitlab/tls/domains/0/sans/0: "gitlab.0lzi.com"
     traefik/http/routers/gitlab/tls: "true"
-    traefik/http/routers/gitlab/middlewares: "crowdsec@consul"
+    traefik/http/routers/gitlab/middlewares/0: "crowdsec@consul"
+    traefik/http/routers/gitlab/middlewares/1: "http-rfc1918"
     traefik/http/services/gitlab/loadbalancer/servers/0/url: "http://gitlab.0lzi.internal"
-    # GitLa/ reg/stry
+    # GitLab registry
     traefik/http/routers/gitlab_registry/rule: "Host(`registry.gitlab.0lzi.com`)"
     traefik/http/routers/gitlab_registry/service: "gitlab_registry"
     traefik/http/routers/gitlab_registry/entrypoints: "websecure"
+    traefik/http/routers/gitlab_registry/middlewares/0: "crowdsec@consul"
+    traefik/http/routers/gitlab_registry/middlewares/1: "http-rfc1918"
     traefik/http/routers/gitlab_registry/tls/certresolver: "cloudflare"
     traefik/http/services/gitlab_registry/loadbalancer/servers/0/url: "http://registry.gitlab.0lzi.internal:5050"
-    # GitLa/ Pro/etheus metrics endpoint
+    # GitLab Prometheus metrics endpoint
     traefik/http/routers/gitlab_prometheus/rule: "Host(`gitlab.0lzi.com`) && PathPrefix(`/metrics`)"
     traefik/http/routers/gitlab_prometheus/service: "gitlab_prometheus"
     traefik/http/routers/gitlab_prometheus/entrypoints: "websecure"
     traefik/http/routers/gitlab_prometheus/tls/certresolver: "cloudflare"
     traefik/http/services/gitlab_prometheus/loadbalancer/servers/0/url: "http://gitlab.0lzi.internal"
-    traefik/http/routers/gitlab_prometheus/middlewares: "prometheus-auth"
-    traefik/http/middlewares/prometheus-auth/basicauth/users: "{{ gitlab_prometheus_auth_user }}:{{ gitlab_prometheus_auth_password }}"
+    traefik/http/routers/gitlab_prometheus/middlewares/0: "crowdsec@consul"
+    traefik/http/routers/gitlab_prometheus/middlewares/1: "http-rfc1918"
+    traefik/http/middlewares/prometheus-auth/basicauth/users: >
+      {{ gitlab_prometheus_auth_user }}:{{ gitlab_prometheus_auth_password | password_hash('md5', salt=inventory_hostname_short) }}
     traefik/http/middlewares/prometheus-auth/basicauth/realm: "gitlab"
     # Gitlab ssh_port
     traefik/tcp/routers/gitlab_ssh/rule: "HostSNI(`*`)"
     traefik/tcp/routers/gitlab_ssh/service: "gitlab_ssh"
     traefik/tcp/routers/gitlab_ssh/tls/passthrough: "true"
     traefik/tcp/routers/gitlab_ssh/entrypoints: "ssh"
+    traefik/tcp/routers/gitlab_ssh/middlewares/0: "tcp-rfc1918"
     traefik/tcp/services/gitlab_ssh/loadbalancer/servers/0/address: "gitlab.0lzi.internal:2222"
+    traefik/tcp/middlewares/tcp-rfc1918/ipAllowList/sourceRange: "10.0.0.0/8, 192.168.0.0/16, 172.16.0.0/12"

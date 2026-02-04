@@ -6,3 +6,21 @@ alloy_scrapers:
     scheme: https
     path: "/metrics"
     job: traefik
+    auth:
+      username: "admin"
+      password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/traefik')['secret']['dashboard_password_plain'] }}"
+  # gitlab:
+  #   address: gitlab.0lzi.com
+  #   port: 443
+  #   scheme: https
+  #   path: "/metrics"
+  #   job: gitlab
+  #   auth:
+  #     username: "prometheus"
+  #     password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/gitlab')['secret']['prometheus_password'] }}"
+  openbao:
+    address: vault.0lzi.com
+    port: 443
+    scheme: https
+    path: "/metrics"
+    job: openbao

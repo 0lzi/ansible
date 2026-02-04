@@ -7,6 +7,8 @@ consul:
     traefik/http/routers/consul/service: "consul"
     traefik/http/routers/consul/entrypoints: "websecure"
     traefik/http/routers/consul/tls/certresolver: "cloudflare"
+    traefik/http/routers/consul/middlewares/0: "crowdsec@consul"
+    traefik/http/routers/consul/middlewares/1: "http-rfc1918"
     traefik/http/routers/consul/tls: "true"
     # consul Service
     traefik/http/services/consul/loadbalancer/servers/0/url: "http://consul-0.0lzi.com:8500"

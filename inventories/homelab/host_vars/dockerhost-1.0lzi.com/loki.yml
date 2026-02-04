@@ -23,7 +23,8 @@ loki:
     traefik/http/routers/loki/entrypoints: "websecure"
     traefik/http/routers/loki/tls/certresolver: "cloudflare"
     traefik/http/routers/loki/tls/domains/0/sans/0: "loki.0lzi.com"
-    traefik/http/routers/loki/middlewares: "{% if loki_password %}loki_auth{% endif %}"
+    traefik/http/routers/loki/middlewares/0: "crowdsec@consul"
+    traefik/http/routers/loki/middlewares/1: "{% if loki_password %}loki_auth{% endif %}"
     traefik/http/routers/loki/tls: "true"
     traefik/http/services/loki/loadbalancer/servers/0/url: "http://dockerhost-1.0lzi.com:3100"
     traefik/http/middlewares/loki_auth/basicauth/users: >

@@ -9,13 +9,18 @@ logging {
 prometheus.scrape "{{ name }}" {
   targets = [
     {
-      __address__ = "{{ scraper.address }}:{{ scraper.port }}"
-      job         = "{{ scraper.job | default(name) }}"
-     }
+      __address__ = "{{ scraper.address }}:{{ scraper.port }}",
+      job         = "{{ scraper.job | default(name) }}",
+     },
   ]
   scheme          = "{{ scraper.scheme | default('http') }}"
   metrics_path    = "{{ scraper.path | default('') }}"
-
+{% if 'auth' in scraper %}
+  basic_auth  {
+    username = "{{ scraper.auth.username }}"
+    password = "{{ scraper.auth.password }}"
+  }
+{% endif %}
   forward_to = [prometheus.remote_write.mimir_{{ monitoring.mimir.env }}.receiver]
 }
 {% endfor %}

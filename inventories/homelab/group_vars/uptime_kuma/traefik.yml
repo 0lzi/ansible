@@ -7,6 +7,7 @@ uptime-kuma:
     traefik/http/routers/uptime-kuma/service: "uptime-kuma"
     traefik/http/routers/uptime-kuma/entrypoints: "websecure"
     traefik/http/routers/uptime-kuma/tls/certresolver: "cloudflare"
+    traefik/http/routers/uptime-kuma/middlewares/0: "crowdsec@consul"
     traefik/http/routers/uptime-kuma/tls: "true"
     # uptime-kuma Service
     traefik/http/services/uptime-kuma/loadbalancer/servers/0/url: "http://docker-1.0lzi.com:3001"

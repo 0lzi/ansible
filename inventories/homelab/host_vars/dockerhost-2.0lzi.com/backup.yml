@@ -1,4 +1,6 @@
 ---
 backup: true
-service: demo
 backup_schedule: "*-*-* 4:00:00"
+service: demo
+demo:
+  traefik_labels:

@@ -7,6 +7,8 @@ vault:
     traefik/http/routers/vault/service: "vault"
     traefik/http/routers/vault/entrypoints: "websecure"
     traefik/http/routers/vault/tls/certresolver: "cloudflare"
+    traefik/http/routers/vault/middlewares/0: "crowdsec@consul"
+    traefik/http/routers/vault/middlewares/1: "http-rfc1918"
     traefik/http/routers/vault/tls: "true"
     # vault Service
     traefik/http/services/vault/loadbalancer/servers/0/url: "http://vault-0.0lzi.com:8200"

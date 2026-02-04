@@ -12,6 +12,7 @@
         port: 443
         scheme: "https"
         state: present
-      loop: "{{ lookup('vars', service).traefik_labels | dict2items }}"
+      loop: >
+        {{ (service is defined and vars[service].traefik_labels or {}) | dict2items }}
       delegate_to: localhost
       tags: consul

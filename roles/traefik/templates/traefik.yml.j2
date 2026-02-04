@@ -33,6 +33,14 @@ api:
 metrics:
   prometheus:
     entryPoint: websecure
+    manualRouting: true
+    addRoutersLabels: true
+    addServicesLabels: true
+    buckets:
+      - 0.1
+      - 0.3
+      - 1.2
+      - 5.0
 {% endif %}
 
 entryPoints:

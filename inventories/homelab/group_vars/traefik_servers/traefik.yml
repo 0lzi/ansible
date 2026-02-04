@@ -13,8 +13,21 @@ traefik:
       url: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
       version: v1.5.0
   traefik_labels:
+    # Traefik Default
     traefik/http/routers/http/rule: "Host(`traefik.0lzi.com`)"
     traefik/http/routers/http/service: "api@internal"
     traefik/http/routers/http/entrypoints: "http"
     traefik/http/middlewares/dashboard/basicauth/users: >
       {{ traefik_dashboard_user }}:{{ traefik_dashboard_password | password_hash('md5', salt=inventory_hostname_short) }}
+    # Traefik Metrics
+    traefik/http/routers/prometheus/rule: "Host(`traefik.0lzi.com`) && PathPrefix(`/metrics`)"
+    traefik/http/routers/prometheus/entrypoints: websecure
+    traefik/http/routers/prometheus/service: "prometheus@internal"
+    traefik/http/routers/prometheus/middlewares/0: "prometheus"
+    traefik/http/routers/prometheus/middlewares/1: "metrics"
+    traefik/http/middlewares/metrics/basicauth/users: >
+      {{ traefik_dashboard_user }}:{{ traefik_dashboard_password | password_hash('md5', salt=inventory_hostname_short) }}
+    traefik/http/middlewares/prometheus/ipAllowList/sourcerange: "10.18.0.0/16"
+    # Traefik ipAllowList
+    traefik/http/middlewares/http-rfc1918/ipAllowList/sourceRange: "10.0.0.0/8, 192.168.0.0/16, 172.16.0.0/12"
+    traefik/tcp/middlewares/tcp-rfc1918/ipAllowList/sourceRange: "10.0.0.0/8, 192.168.0.0/16, 172.16.0.0/12"

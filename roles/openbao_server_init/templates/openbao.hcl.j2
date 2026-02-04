@@ -1,6 +1,6 @@
 ui            = true
 
-{% if tls.enabled %}
+{% if openbao_tls.enabled %}
 cluster_addr  = "https://{{ inventory_hostname }}:8201"
 api_addr      = "https://{{ inventory_hostname }}:8200"
 {% else %}
@@ -14,7 +14,7 @@ storage "raft" {
   node_id = "{{ inventory_hostname_short }}"
 {% for host in groups[openbao_cluster_name] %}
   retry_join = {
-{% if tls.enabled and tls.letsencrypt %}
+{% if openbao_tls.enabled and openbao_tls.letsencrypt %}
     leader_api_addr     = "https://{{ hostvars[host]['inventory_hostname'] }}:8200"
     leader_ca_cert_file = "{{ openbao_cert_dir}}/fullchain.pem"
 {% else %}
@@ -27,16 +27,16 @@ storage "raft" {
 listener "tcp" {
   address       = "{{ ansible_default_ipv4.address }}:8200"
 {# Disable metrics on default API listener #}
-{% if openbao.metrics | default(false) %}
+{% if openbao_metrics | default(false) %}
   telemetry {
     disallow_metrics = true
   }
 {% endif %}
-{% if tls.enabled and tls.self_signed %}
+{% if openbao_tls.enabled and openbao_tls.self_signed %}
   tls_cert_file = "{{ openbao_self_signed_cert_dir}}/tls.crt"
   tls_key_file  = "{{ openbao_self_signed_cert_dir}}/tls.key"
 {% else %}
-{% if tls.enabled and tls.letsencrypt %}
+{% if openbao_tls.enabled and openbao_tls.letsencrypt %}
   tls_cert_file = "{{ openbao_cert_dir}}/fullchain.pem"
   tls_key_file  = "{{ openbao_cert_dir}}/privkey.key"
 {% else %}
@@ -47,7 +47,7 @@ listener "tcp" {
 
 listener "tcp" {
   address       = "127.0.0.1:8200"
-{% if tls.enabled %}
+{% if openbao_tls.enabled %}
   tls_cert_file = "{{ openbao_self_signed_cert_dir}}/tls.crt"
   tls_key_file  = "{{ openbao_self_signed_cert_dir}}/tls.key"
 {% else %}
@@ -56,14 +56,20 @@ listener "tcp" {
 }
 
 {# Enable metrics on dedicated listener #}
-{% if openbao.metrics | default(false) %}
+{% if openbao_metrics | default(false) %}
 listener "tcp" {
   address     = "0.0.0.0:9101"
+  tls_disable  = 1
   telemetry {
     metrics_only                   = true
 {# Should have basic_auth middleware in traefik #}
     unauthenticated_metrics_access = true
   }
+}
+
+telemetry {
+  prometheus_retention_time = "30s"
+  disable_hostname = true
 }
 {% endif %}
 

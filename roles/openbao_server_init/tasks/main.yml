@@ -102,7 +102,7 @@
   ansible.builtin.shell: /usr/bin/bao status
   environment:
     BAO_SKIP_VERIFY: "1"
-    BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+    BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
   register: bao_status
   delegate_to: "{{ primary_node }}"
   run_once: true
@@ -120,29 +120,34 @@
   ansible.builtin.shell: /usr/bin/bao operator init
   environment:
     BAO_SKIP_VERIFY: "1"
-    BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+    BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
   register: bao_init
   delegate_to: "{{ primary_node }}"
   run_once: true
-  when: not openbao_initialized
+  when:
+    - not openbao_initialized
+    - not ansible_check_mode
 
 - name: Set unseal keys and root token from bao_init output
   ansible.builtin.set_fact:
     unseal_keys: "{{ bao_init.stdout_lines | select('match', '^Unseal Key \\d+:') | map('regex_replace', '^Unseal Key \\d+: ', '') | list }}"
     root_token: "{{ (bao_init.stdout_lines | select('match', '^Initial Root Token:') | list).0.split(': ')[1] }}"
-  when: not openbao_initialized
+  when:
+   - not openbao_initialized
+   - not ansible_check_mode
 
 - name: Unseal vault # noqa no-changed-when command-instead-of-shell
   ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
   environment:
     BAO_SKIP_VERIFY: "1"
-    BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+    BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
   loop: "{{ unseal_keys[0:3] }}"
   register: bao_init
   delegate_to: "{{ primary_node }}"
   run_once: true
   when:
     - not openbao_initialized
+    - not ansible_check_mode
 
 - name: Check vault health
   ansible.builtin.uri:
@@ -160,7 +165,9 @@
 - name: Display root token
   ansible.builtin.debug:
     msg: "You can now login with root_token: {{ root_token }}"
-  when: not openbao_initialized
+  when:
+    - not openbao_initialized
+    - not ansible_check_mode
 
 - name: Write Unseal and Root token to file
   ansible.builtin.copy:
@@ -188,48 +195,56 @@
     mode: '0600'
   delegate_to: localhost
   run_once: true
-  when: not openbao_initialized
+  when:
+    - not openbao_initialized
+    - not ansible_check_mode
 
 - name: Join node to cluster # noqa no-changed-when command-instead-of-shell
   ansible.builtin.shell: |
     /usr/bin/bao operator raft join "http://{{ primary_node }}:8200"
   environment:
     BAO_SKIP_VERIFY: "1"
-    BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+    BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
   delegate_to: "{{ groups[openbao_cluster_name][1] }}"
   run_once: true
   when:
     - not openbao_initialized
-    - not tls.enabled
+    - not openbao_tls.enabled
+    - not ansible_check_mode
 
 - name: Join node to cluster # noqa no-changed-when command-instead-of-shell
   ansible.builtin.shell: |
     /usr/bin/bao operator raft join "http://{{ primary_node }}:8200"
   environment:
     BAO_SKIP_VERIFY: "1"
-    BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+    BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
   delegate_to: "{{ groups[openbao_cluster_name][2] }}"
   run_once: true
   when:
     - not openbao_initialized
-    - not tls.enabled
+    - not openbao_tls.enabled
+    - not ansible_check_mode
 
 - name: Unseal vault {{ groups[openbao_cluster_name][1] }} # noqa no-changed-when command-instead-of-shell
   ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
   environment:
     BAO_SKIP_VERIFY: "1"
-    BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+    BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
   loop: "{{ unseal_keys[0:3] }}"
   delegate_to: "{{ groups[openbao_cluster_name][1] }}"
   run_once: true
-  when: not openbao_initialized
+  when:
+    - not openbao_initialized
+    - not ansible_check_mode
 
 - name: Unseal vault {{ groups[openbao_cluster_name][2] }} # noqa no-changed-when command-instead-of-shell
   ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
   environment:
     BAO_SKIP_VERIFY: "1"
-    BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+    BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
   loop: "{{ unseal_keys[0:3] }}"
   delegate_to: "{{ groups[openbao_cluster_name][2] }}"
   run_once: true
-  when: not openbao_initialized
+  when:
+    - not openbao_initialized
+    - not ansible_check_mode

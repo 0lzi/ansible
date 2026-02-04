@@ -6,7 +6,7 @@ openbao_data_dir: "/opt/openbao/data"
 openbao_cert_dir: "{{ openbao_config_dir }}/certs"
 openbao_log_dir: "/var/log/openbao"
 openbao_self_signed_cert_dir: "/opt/openbao/tls"
-tls:
+openbao_tls:
   enabled: false
   self_signed: false
   letsencrypt: true

@@ -9,7 +9,7 @@
       ansible.builtin.shell: /usr/bin/bao status -format=json
       environment:
         BAO_SKIP_VERIFY: "1"
-        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+        BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
       register: openbao_leader
       changed_when: true
 
@@ -39,7 +39,7 @@
       ansible.builtin.shell: /usr/bin/bao --version
       environment:
         BAO_SKIP_VERIFY: "1"
-        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+        BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
       register: openbao_current_version
       changed_when: true
 
@@ -71,7 +71,7 @@
       ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
       environment:
         BAO_SKIP_VERIFY: "1"
-        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+        BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
       loop: "{{ unseal_keys[0:3] }}"
 
 - name: Step down the old OpenBao leader
@@ -83,7 +83,7 @@
       ansible.builtin.shell: /usr/bin/bao login {{ root_token }}
       environment:
         BAO_SKIP_VERIFY: "1"
-        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+        BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
       register: bao_login
       changed_when: "'Success!' in bao_login.stdout"
 
@@ -91,7 +91,7 @@
       ansible.builtin.shell: /usr/bin/bao operator step-down
       environment:
         BAO_SKIP_VERIFY: "1"
-        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+        BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
 
       register: stepdown_result
       changed_when: "'Leadership lost' in stepdown_result.stdout"
@@ -109,7 +109,7 @@
       ansible.builtin.shell: /usr/bin/bao --version
       environment:
         BAO_SKIP_VERIFY: "1"
-        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+        BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
       register: openbao_current_version
       changed_when: true
 
@@ -138,5 +138,5 @@
       ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
       environment:
         BAO_SKIP_VERIFY: "1"
-        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+        BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
       loop: "{{ unseal_keys[0:3] }}"

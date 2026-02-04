@@ -2,7 +2,7 @@
 service: vault
 vault:
   traefik_labels:
-    # vault main interface
+    # vault Main Interface
     traefik/http/routers/vault/rule: "Host(`vault.0lzi.com`)"
     traefik/http/routers/vault/service: "vault"
     traefik/http/routers/vault/entrypoints: "websecure"
@@ -10,7 +10,22 @@ vault:
     traefik/http/routers/vault/middlewares/0: "crowdsec@consul"
     traefik/http/routers/vault/middlewares/1: "http-rfc1918"
     traefik/http/routers/vault/tls: "true"
-    # vault Service
+    # Vault Service
     traefik/http/services/vault/loadbalancer/servers/0/url: "http://vault-0.0lzi.com:8200"
     traefik/http/services/vault/loadbalancer/servers/1/url: "http://vault-1.0lzi.com:8200"
     traefik/http/services/vault/loadbalancer/servers/2/url: "http://vault-2.0lzi.com:8200"
+    # Vault Metrics
+    traefik/http/routers/vault-metrics/rule: "Host(`vault.0lzi.com`) && PathPrefix(`/metrics`)"
+    traefik/http/routers/vault-metrics/service: "vault-metrics"
+    traefik/http/routers/vault-metrics/entrypoints: "websecure"
+    traefik/http/routers/vault-metrics/tls: "true"
+    traefik/http/routers/vault-metrics/middlewares/0: "crowdsec@consul"
+    traefik/http/routers/vault-metrics/middlewares/1: "http-rfc1918"
+    traefik/http/routers/vault-metrics/middlewares/2: "metrics"
+    traefik/http/routers/vault-metrics/middlewares/3: "vault-metrics-path"
+    # Vault Metrics Service
+    traefik/http/services/vault-metrics/loadbalancer/servers/0/url: "http://vault-0.0lzi.com:9101"
+    traefik/http/services/vault-metrics/loadbalancer/servers/1/url: "http://vault-1.0lzi.com:9101"
+    traefik/http/services/vault-metrics/loadbalancer/servers/2/url: "http://vault-2.0lzi.com:9101"
+    # Vault Metrics Path
+    traefik/http/middlewares/vault-metrics-path/replacePath/path: "/v1/sys/metrics"

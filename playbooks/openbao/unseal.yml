@@ -4,13 +4,13 @@
   become: true
   gather_facts: true
   tasks:
-    # BAO_SKIP_VERIFY: 1 - Is needed because of the TLS certs not able to verify IP in cert
+    # BAO_SKIP_VERIFY: 1 - Is needed because of the openbao_tls certs not able to verify IP in cert
 
     - name: Unseal vault {{ groups[openbao_cluster_name][0] }} # noqa no-changed-when command-instead-of-shell run-once[task]
       ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
       environment:
         BAO_SKIP_VERIFY: "1"
-        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+        BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
       loop: "{{ unseal_keys[0:3] }}"
       delegate_to: "{{ groups[openbao_cluster_name][0] }}"
       run_once: true
@@ -21,7 +21,7 @@
       ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
       environment:
         BAO_SKIP_VERIFY: "1"
-        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+        BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
       loop: "{{ unseal_keys[0:3] }}"
       delegate_to: "{{ groups[openbao_cluster_name][1] }}"
       run_once: true
@@ -32,7 +32,7 @@
       ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
       environment:
         BAO_SKIP_VERIFY: "1"
-        BAO_ADDR: "{{ tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
+        BAO_ADDR: "{{ openbao_tls.enabled | ternary('https', 'http') }}://127.0.0.1:8200"
       loop: "{{ unseal_keys[0:3] }}"
       delegate_to: "{{ groups[openbao_cluster_name][2] }}"
       run_once: true

@@ -6,7 +6,7 @@ services:
     environment:
       COLLECTIONS: crowdsecurity/traefik crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
       CUSTOM_HOSTNAME: crowdsec
-      BOUNCER_KEY_TRAEFIK_DEV: {{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/crowdsec')['secret']['LAPI_KEY'] }}
+      BOUNCER_KEY_crowdsecBouncer: {{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/crowdsec')['secret']['LAPI_KEY'] }}
     volumes:
       - ./acquis.yaml:/etc/crowdsec/acquis.yaml:ro
       - {{ crowdsec.traefiklogs }}/logs:/var/log/traefik:ro

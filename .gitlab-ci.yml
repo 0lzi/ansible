@@ -17,5 +17,6 @@ include:
   - local: .gitlab/ci/default.yml
   # maintenance
   - local: .gitlab/ci/maintenance/dist-upgrade.yml
+  - local: .gitlab/ci/maintenance/gitlab-pull.yml
   # playbooks
   - local: .gitlab/ci/playbooks/unseal.yml

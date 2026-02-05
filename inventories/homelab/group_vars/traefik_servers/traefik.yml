@@ -32,3 +32,22 @@ traefik:
     # Traefik ipAllowList
     traefik/http/middlewares/http-rfc1918/ipAllowList/sourceRange: "10.0.0.0/8, 192.168.0.0/16, 172.16.0.0/12"
     traefik/tcp/middlewares/tcp-rfc1918/ipAllowList/sourceRange: "10.0.0.0/8, 192.168.0.0/16, 172.16.0.0/12"
+    # traefik catch-all-http-router
+    traefik/http/routers/catch-all-http/rule: "Hostregexp(`.*`)"
+    traefik/http/routers/catch-all-http/entrypoints: "http"
+    traefik/http/routers/catch-all-http/middlewares/0: "catch-all"
+    traefik/http/routers/catch-all-http/priority: "-1"
+    traefik/http/routers/catch-all-http/service: "noop@internal"
+    # traefik catch-all-https-router
+    traefik/http/routers/catch-all-https/rule: 'Hostregexp(`^.+\.0lzi\.com$`)'
+    traefik/http/routers/catch-all-https/entrypoints: "websecure"
+    traefik/http/routers/catch-all-https/middlewares/0: "catch-all"
+    traefik/http/routers/catch-all-https/priority: "-1"
+    traefik/http/routers/catch-all-https/service: "noop@internal"
+    traefik/http/routers/catch-all-https/tls: "true"
+    traefik/http/routers/catch-all-https/tls/domains/0/main: "*.0lzi.com"
+    traefik/http/routers/catch-all-https/tls/certresolver: "cloudflare"
+    # Traefik catch-all middlewares
+    traefik/http/middlewares/catch-all/redirectRegex/regex: "^https?://.*"
+    traefik/http/middlewares/catch-all/redirectRegex/replacement: "https://blog.0lzi.com"
+    traefik/http/middlewares/catch-all/redirectRegex/permanent: "true"

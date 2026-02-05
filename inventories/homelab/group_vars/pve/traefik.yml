@@ -2,7 +2,7 @@
 service: proxmox
 proxmox:
   traefik_labels:
-    # proxmox main interface
+    # Proxmox main interface
     traefik/http/routers/proxmox/rule: "Host(`pve.0lzi.com`)"
     traefik/http/routers/proxmox/service: "proxmox"
     traefik/http/routers/proxmox/entrypoints: "websecure"
@@ -15,3 +15,19 @@ proxmox:
     traefik/http/services/proxmox/loadbalancer/servers/0/url: "https://pve1.0lzi.com:8006"
     traefik/http/services/proxmox/loadbalancer/servers/1/url: "https://pve2.0lzi.com:8006"
     traefik/http/services/proxmox/loadbalancer/servers/2/url: "https://pve3.0lzi.com:8006"
+    # Proxmox Prometheus
+    traefik/http/routers/proxmox-prometheus/rule: "Host(`pve.0lzi.com`) && PathPrefix(`/metrics`)"
+    traefik/http/routers/proxmox-prometheus/service: "proxmox-prometheus"
+    traefik/http/routers/proxmox-prometheus/entrypoints: "websecure"
+    traefik/http/routers/proxmox-prometheus/tls/certresolver: "cloudflare"
+    traefik/http/routers/proxmox-prometheus/middlewares/0: "crowdsec@consul"
+    traefik/http/routers/proxmox-prometheus/middlewares/1: "http-rfc1918"
+    traefik/http/routers/proxmox-prometheus/middlewares/2: "metrics"
+    traefik/http/routers/proxmox-prometheus/middlewares/3: "pve-metrics-path"
+    traefik/http/routers/proxmox-prometheus/tls: "true"
+    # Proxmox Prometheus Service
+    traefik/http/services/proxmox-prometheus/loadbalancer/servers/0/url: "https://pve1.0lzi.com:9221"
+    traefik/http/services/proxmox-prometheus/loadbalancer/servers/1/url: "https://pve2.0lzi.com:9221"
+    traefik/http/services/proxmox-prometheus/loadbalancer/servers/2/url: "https://pve3.0lzi.com:9221"
+    # Proxmox Metrics Path
+    traefik/http/middlewares/pve-metrics-path/replacePath/path: "/pve"

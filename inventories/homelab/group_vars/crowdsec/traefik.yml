@@ -6,6 +6,16 @@ crowdsec:
   version: "latest"
   traefiklogs: /srv/traefik
   traefik_labels:
+    # Crowdsec Prometheus
+    traefik/http/routers/crowdsec-metrics/rule: "Host(`crowdsec.0lzi.com`) && PathPrefix(`/metrics`)"
+    traefik/http/routers/crowdsec-metrics/service: "crowdsec-metrics"
+    traefik/http/routers/crowdsec-metrics/entrypoints: "websecure"
+    traefik/http/routers/crowdsec-metrics/tls: "true"
+    traefik/http/routers/crowdsec-metrics/middlewares/0: "http-rfc1918"
+    traefik/http/routers/crowdsec-metrics/middlewares/1: "metrics"
+    # Crowdsec Metrics Service
+    traefik/http/services/crowdsec-metrics/loadbalancer/servers/0/url: "http://crowdsec:6060"
+    # Crowdsec Middlewares/Config
     traefik/http/middlewares/crowdsec/plugin/bouncer/enabled: "true"
     traefik/http/middlewares/crowdsec/plugin/bouncer/logLevel: "INFO"
     traefik/http/middlewares/crowdsec/plugin/bouncer/crowdseclapihost: "crowdsec:8080"

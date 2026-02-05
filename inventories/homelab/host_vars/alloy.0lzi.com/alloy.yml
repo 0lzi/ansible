@@ -36,3 +36,12 @@ alloy_scrapers:
     auth:
       username: "admin"
       password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/traefik')['secret']['metrics_password_plain'] }}"
+  crowdsec:
+    address: crowdsec.0lzi.com
+    port: 443
+    scheme: https
+    path: "/metrics"
+    job: crowdsec
+    auth:
+      username: "admin"
+      password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/traefik')['secret']['metrics_password_plain'] }}"

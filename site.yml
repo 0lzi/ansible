@@ -1,0 +1,4 @@
+---
+# Run all playbooks/roles to keep servers up to date
+- name: Base
+  ansible.builtin.import_playbook: base.yml

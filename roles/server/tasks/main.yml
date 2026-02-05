@@ -4,3 +4,26 @@
   when:
     - inventory_hostname in groups['prod']
     - backup | default(false)
+
+- name: Bash colours
+  when:
+    - ansible_distribution == "Debian"
+  block:
+    - name: Copy root colour change file
+      ansible.builtin.copy:
+        src: bash_colours
+        dest: /root/.bash_colours
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Source colour change file in /root/.bashrc
+      ansible.builtin.blockinfile:
+        path: /root/.bashrc
+        block: |
+          source /root/.bash_colours
+        state: present
+        insertafter: EOF
+
+
+- name: SSH Hardening

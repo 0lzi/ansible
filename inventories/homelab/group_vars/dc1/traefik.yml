@@ -2,7 +2,7 @@
 service: consul
 consul:
   traefik_labels:
-    # consul main interface
+    # Consul main interface
     traefik/http/routers/consul/rule: "Host(`consul.0lzi.com`)"
     traefik/http/routers/consul/service: "consul"
     traefik/http/routers/consul/entrypoints: "websecure"
@@ -10,7 +10,22 @@ consul:
     traefik/http/routers/consul/middlewares/0: "crowdsec@consul"
     traefik/http/routers/consul/middlewares/1: "http-rfc1918"
     traefik/http/routers/consul/tls: "true"
-    # consul Service
+    # Consul Service
     traefik/http/services/consul/loadbalancer/servers/0/url: "http://consul-0.0lzi.com:8500"
     traefik/http/services/consul/loadbalancer/servers/1/url: "http://consul-1.0lzi.com:8500"
     traefik/http/services/consul/loadbalancer/servers/2/url: "http://consul-2.0lzi.com:8500"
+    # Consul Metrics
+    traefik/http/routers/consul-metrics/rule: "Host(`consul.0lzi.com`) && PathPrefix(`/metrics`)"
+    traefik/http/routers/consul-metrics/service: "consul-metrics"
+    traefik/http/routers/consul-metrics/entrypoints: "websecure"
+    traefik/http/routers/consul-metrics/tls: "true"
+    traefik/http/routers/consul-metrics/middlewares/0: "crowdsec@consul"
+    traefik/http/routers/consul-metrics/middlewares/1: "http-rfc1918"
+    traefik/http/routers/consul-metrics/middlewares/2: "metrics"
+    traefik/http/routers/consul-metrics/middlewares/3: "consul-metrics-path"
+    # Consul Metrics Service
+    traefik/http/services/consul-metrics/loadbalancer/servers/0/url: "http://consul-0.0lzi.com:8500"
+    traefik/http/services/consul-metrics/loadbalancer/servers/1/url: "http://consul-1.0lzi.com:8500"
+    traefik/http/services/consul-metrics/loadbalancer/servers/2/url: "http://consul-2.0lzi.com:8500"
+    # Consul Metrics Path
+    traefik/http/middlewares/consul-metrics-path/replacePath/path: "/v1/agent/metrics"

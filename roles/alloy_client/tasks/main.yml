@@ -8,6 +8,9 @@
     name: grafana.grafana.alloy
   vars:
     alloy_config: "{{ alloy_config_template }}"
+    # https://grafana.com/docs/alloy/latest/data-collection/ - Turn off usage statistics
+    alloy_env_file_vars:
+      CUSTOM_ARGS: "--disable-reporting"
 
 - name: Add alloy user to docker group
   ansible.builtin.user:

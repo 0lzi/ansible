@@ -16,3 +16,4 @@
     - users
     - docker
     - uptime_kuma
+    - update_consul

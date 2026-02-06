@@ -17,3 +17,4 @@
     - packages
     - docker
     - gitlab_server
+    - update_consul

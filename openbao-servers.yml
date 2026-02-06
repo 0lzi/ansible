@@ -3,5 +3,7 @@
   become: true
   roles:
     - openbao_server_init
+    - update_consul
   tags:
     - openbao
+

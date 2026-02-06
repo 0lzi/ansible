@@ -16,3 +16,4 @@
     - users
     - docker
     - grafana_server
+    - update_consul

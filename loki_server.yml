@@ -16,3 +16,4 @@
     - users
     - docker
     - loki_server
+    - update_consul

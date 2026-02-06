@@ -16,3 +16,4 @@
     - users
     - docker
     - traefik
+    - update_consul

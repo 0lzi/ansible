@@ -1,7 +1,7 @@
 ---
 # Run with ansible-playbook -i inventory/hosts server.yml
 - name: Setup Server
-  hosts: all
+  hosts: vms
   remote_user: "{{ user }}"
   become: true
   become_method: sudo
@@ -16,3 +16,4 @@
     - users
     - packages
     - server
+    - update_consul

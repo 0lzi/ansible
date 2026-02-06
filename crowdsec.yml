@@ -1,7 +1,7 @@
 ---
 # Run with ansible-playbook -i inventory/hosts crowdsec.yml
 - name: Setup crowdsec
-  hosts: docker_servers
+  hosts: crowdsec
   remote_user: "{{ user }}"
   become: true
   become_method: sudo
@@ -16,3 +16,4 @@
     - users
     - docker
     - crowdsec
+    - update_consul

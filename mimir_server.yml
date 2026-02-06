@@ -16,3 +16,4 @@
     - users
     - docker
     - mimir_server
+    - update_consul

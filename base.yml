@@ -1,7 +1,7 @@
 ---
 # Run with ansible-playbook base.yml
 - name: Setup Base
-  hosts: all
+  hosts: vms
   remote_user: "{{ user }}"
   become: true
   become_method: sudo

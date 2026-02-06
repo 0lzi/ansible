@@ -5,5 +5,6 @@
     - users
     - packages
     - consul_server
+    - update_consul
   tags:
     - consul_server

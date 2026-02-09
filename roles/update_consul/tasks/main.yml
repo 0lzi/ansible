@@ -1,12 +1,17 @@
-- name: Add traefik label to Consul for GitLab
-  community.general.consul_kv:
-    key: "{{ item.key }}"
-    value: "{{ item.value }}"
-    host: consul.0lzi.com
-    port: 443
-    scheme: "https"
-    state: present
-  loop: >
-    {{ (service is defined and vars[service].traefik_labels or {}) | dict2items }}
-  delegate_to: localhost
+---
+- name: Merge services
+  ansible.builtin.set_fact:
+    services: "{{ lookup('community.general.merge_variables', 'services__to_merge', pattern_type='suffix', initial_value=[]) }}"
+
+- name: dbg
+  ansible.builtin.debug:
+    var: services
+
+- name: Add traefik label to Consul
+  ansible.builtin.include_tasks: update_consul.yml
+  loop: "{{ services }}"
+  loop_control:
+    loop_var: service
+    # {{ (services is defined [service].traefik_labels or {}) | dict2items }}
   tags: consul
+  when: '"traefik_labels" in vars[service]'

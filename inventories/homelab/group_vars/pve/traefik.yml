@@ -1,5 +1,6 @@
 ---
-service: proxmox
+proxmox_services__to_merge:
+  - proxmox
 proxmox:
   traefik_labels:
     # proxmox main interface

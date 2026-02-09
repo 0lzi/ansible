@@ -1,5 +1,6 @@
 ---
-service: nextcloud
+nextcloud_services__to_merge:
+  - nextcloud
 nextcloud:
   traefik_labels:
     # nextcloud main interface

@@ -1,4 +1,8 @@
 ---
+- name: Set services
+  ansible.builtin.set_fact:
+    service: "{{ gitlab_services__to_merge | first }}"
+
 - name: Create gitlab data directory
   ansible.builtin.file:
     path: "{{ base_dir }}/gitlab/{{ item }}"
@@ -33,18 +37,6 @@
     group: admins
     mode: '0644'
   register: compose_file
-
-- name: Add traefik label to Consul for GitLab
-  community.general.consul_kv:
-    key: "{{ item.key }}"
-    value: "{{ item.value }}"
-    host: "{{ consul_host }}"
-    port: 443
-    scheme: "https"
-    state: present
-  loop: "{{ gitlab.traefik_labels | dict2items }}"
-  delegate_to: localhost
-  tags: consul
 
 - name: Pull Latest
   community.docker.docker_compose_v2_pull:

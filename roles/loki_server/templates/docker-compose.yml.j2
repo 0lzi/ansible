@@ -2,7 +2,7 @@
 services:
   loki:
     image: {{ loki_image }}
-    container_name: "{{ service }}"
+    container_name: loki
     command: -config.file=/etc/loki/local-config.yml
     user: "10001:10001"
     ports:

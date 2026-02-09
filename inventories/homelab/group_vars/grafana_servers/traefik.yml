@@ -1,10 +1,12 @@
 ---
+grafana_services__to_merge:
+  - grafana
 service: grafana
 grafana_url: "grafana.0lzi.com"
 grafana:
   traefik_labels:
     # grafana main
-    traefik/http/routers/grafana/rule: "Host(`{{ grafana_url }}`)"
+    traefik/http/routers/grafana/rule: "Host(`grafana.0lzi.com`)"
     traefik/http/routers/grafana/service: "grafana"
     traefik/http/routers/grafana/entrypoints: "websecure"
     traefik/http/routers/grafana/tls/certresolver: "cloudflare"

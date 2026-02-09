@@ -1,12 +1,12 @@
 ---
 - name: Restart_container
   community.docker.docker_compose_v2:
-    project_src: "{{ immich_data }}"
+    project_src: "{{ grafana_dir }}"
     state: restarted
     recreate: always
     pull: always
 
 - name: Pull images
   community.docker.docker_compose_v2_pull:
-    project_src: "{{ immich_data }}"
+    project_src: "{{ grafana_dir }}"
   notify: Restart_container

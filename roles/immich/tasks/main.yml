@@ -21,6 +21,7 @@
     mode: '0644'
     owner: immich
     group: admins
+  register: composefile
   notify:
     - Restart_container
     - Pull images
@@ -32,6 +33,7 @@
     mode: '0644'
     owner: immich
     group: admins
+  register: envfile
   notify: Restart_container
 
 - name: Template config file
@@ -41,9 +43,15 @@
     mode: '0644'
     owner: immich
     group: admins
+  register: templatefile
   notify: Restart_container
 
 - name: Start container
   community.docker.docker_compose_v2:
     project_src: "{{ immich_data }}"
     state: present
+    recreate: "{{ composefile.changed or envfile.changed or templatefile.changed | ternary('always','never') }}"
+  when:
+    - composefile.changed
+    - envfile.changed
+    - templatefile.changed

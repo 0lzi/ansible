@@ -7,7 +7,7 @@ grafana_url: "grafana.example.com"
 grafana:
   traefik_labels:
     # grafana main
-    traefik/http/routers/grafana/rule: "Host(`{{ grafana_url }}`)"
+    traefik/http/routers/grafana/rule: "Host(`grafana.example.com`)"
     traefik/http/routers/grafana/service: "grafana"
     traefik/http/routers/grafana/entrypoints: "websecure"
     traefik/http/routers/grafana/tls/certresolver: "cloudflare"

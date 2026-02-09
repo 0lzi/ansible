@@ -1,5 +1,6 @@
 ---
-service: fitness_blog
+fitness_blog_services__to_merge:
+  - fitness_blog
 fitness_blog:
   traefik_labels:
     # blog main interface

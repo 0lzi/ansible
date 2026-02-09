@@ -1,6 +1,7 @@
 ---
+gitlab_services__to_merge:
+  - gitlab
 backup: true
-service: gitlab
 gitlab_prometheus_auth_user: "prometheus"
 gitlab_prometheus_auth_password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/gitlab')['secret']['prometheus_password'] }}"
 gitlab:

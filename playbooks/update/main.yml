@@ -1,6 +1,6 @@
 ---
 - name: Update hosts's
-  hosts: all
+  hosts: vms
   become: true
 
   tasks:

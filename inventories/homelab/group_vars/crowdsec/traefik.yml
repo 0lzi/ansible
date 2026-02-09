@@ -1,5 +1,6 @@
 ---
-service: crowdsec
+crowdsec_services__to_merge:
+  - crowdsec
 crowdsec:
   enabled: true
   version: "latest"

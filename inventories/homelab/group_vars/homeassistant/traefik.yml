@@ -1,5 +1,6 @@
 ---
-service: homeassistant
+homeassistant_services__to_merge:
+  - homeassistant
 homeassistant:
   traefik_labels:
     # proxmox main interface

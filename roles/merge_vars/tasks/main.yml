@@ -1,0 +1,4 @@
+---
+- name: Merge services
+  ansible.builtin.set_fact:
+    service: "{{ lookup('community.general.merge_variables', 'services__to_merge', pattern_type='suffix', initial_value=[]) }}"

@@ -1,5 +1,6 @@
 ---
-service: printables
+printables_services__to_merge:
+  - printables
 printables:
   traefik_labels:
     # blog main interface

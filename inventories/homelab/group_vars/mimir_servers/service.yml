@@ -1,5 +1,6 @@
 ---
-service: mimir
+mimir_services__to_merge:
+  - mimir
 mimir_dir: "{{ base_dir }}/mimir"
 mimir_image: grafana/mimir:latest
 mimir_url: "mimir.0lzi.com"
@@ -18,17 +19,18 @@ mimir:
   org_id: 1
   url: https://mimir.0lzi.com/api/v1/push
   traefik_labels:
-    traefik/http/routers/mimir/rule: "Host(`{{ mimir_url }}`)"
+    traefik/http/routers/mimir/rule: "Host(`mimir.0lzi.com`)"
     traefik/http/routers/mimir/service: "mimir"
     traefik/http/routers/mimir/entrypoints: "websecure"
     traefik/http/routers/mimir/tls/certresolver: "cloudflare"
     traefik/http/routers/mimir/tls/domains/0/sans/0: "mimir.0lzi.com"
     traefik/http/routers/mimir/middlewares/0: "crowdsec@consul"
-    traefik/http/routers/mimir/middlewares/1: "{% if mimir_password %}mimir_auth{% endif %}"
+    traefik/http/routers/mimir/middlewares/1: "http-rfc1918"
+    traefik/http/routers/mimir/middlewares/2: "{% if mimir_password %}mimir_auth{% endif %}"
     traefik/http/routers/mimir/tls: "true"
     traefik/http/services/mimir/loadbalancer/servers/0/url: "http://dockerhost-1.0lzi.com:8080"
     # traefik/http/services/mimir/loadbalancer/servers/1/url: "http://dockerhost-1.0lzi.com:8081"
     # traefik/http/services/mimir/loadbalancer/servers/2/url: "http://dockerhost-1.0lzi.com:8082"
-    traefik/http/middlewares/mimir_auth/basicauth/users: >
+    traefik/http/middlewares/mimir_auth/basicauth/users: >-
       {{ mimir_user }}:{{ mimir_password | password_hash('md5_crypt', salt=mimir_url[:8]) }}
     traefik/http/middlewares/mimir_auth/basicauth/realm: mimir

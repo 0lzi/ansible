@@ -1,5 +1,6 @@
 ---
-service: loki
+loki_services__to_merge:
+  - loki
 loki_dir: "{{ base_dir }}/loki"
 loki_image: grafana/loki:3.5.5
 loki_url: "loki.0lzi.com"
@@ -24,9 +25,10 @@ loki:
     traefik/http/routers/loki/tls/certresolver: "cloudflare"
     traefik/http/routers/loki/tls/domains/0/sans/0: "loki.0lzi.com"
     traefik/http/routers/loki/middlewares/0: "crowdsec@consul"
-    traefik/http/routers/loki/middlewares/1: "{% if loki_password %}loki_auth{% endif %}"
+    traefik/http/routers/loki/middlewares/1: "http-rfc1918"
+    traefik/http/routers/loki/middlewares/2: "{% if loki_password %}loki_auth{% endif %}"
     traefik/http/routers/loki/tls: "true"
     traefik/http/services/loki/loadbalancer/servers/0/url: "http://dockerhost-1.0lzi.com:3100"
-    traefik/http/middlewares/loki_auth/basicauth/users: >
-      {{ loki_user }}:{{ loki_password | password_hash('md5_crypt') }}
+    traefik/http/middlewares/loki_auth/basicauth/users: >-
+      {{ loki_user }}:{{ loki_password | password_hash('md5_crypt', salt=loki_url[:8]) }}
     traefik/http/middlewares/loki_auth/basicauth/realm: loki

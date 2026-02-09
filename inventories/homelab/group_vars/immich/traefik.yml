@@ -1,5 +1,6 @@
 ---
-service: immich
+immich_services__to_merge:
+  - immich
 immich:
   traefik_labels:
     # immich main interface

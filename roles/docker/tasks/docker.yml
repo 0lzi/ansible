@@ -24,6 +24,8 @@
 # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/deb822_repository_module.html
 
 - name: Add sign key avoiding apt_key
+  when:
+    - not ansible_check_mode
   block:
     - name: Add Signing Key
       ansible.builtin.get_url:

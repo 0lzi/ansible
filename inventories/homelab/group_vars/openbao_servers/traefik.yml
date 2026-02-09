@@ -1,5 +1,6 @@
 ---
-service: vault
+vault_services__to_merge:
+  - vault
 vault:
   traefik_labels:
     # vault Main Interface

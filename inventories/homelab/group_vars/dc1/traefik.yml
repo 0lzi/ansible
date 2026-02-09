@@ -1,5 +1,6 @@
 ---
-service: consul
+consul_services__to_merge:
+  - consul
 consul:
   traefik_labels:
     # Consul main interface

@@ -1,4 +1,49 @@
 ---
 # Run all playbooks/roles to keep servers up to date
-- name: Base
+- name: Run Base
   ansible.builtin.import_playbook: base.yml
+
+- name: Run Disks
+  ansible.builtin.import_playbook: disks.yml
+
+# - name: Run Server
+#   ansible.builtin.import_playbook: server.yml
+
+- name: Run Crowdsec
+  ansible.builtin.import_playbook: crowdsec.yml
+
+- name: Run Consul Servers
+  ansible.builtin.import_playbook: consul-servers.yml
+
+- name: Run Openbao Servers
+  ansible.builtin.import_playbook: openbao-servers.yml
+
+- name: Run Diun
+  ansible.builtin.import_playbook: diun.yml
+
+- name: Run Gitlab Server
+  ansible.builtin.import_playbook: gitlab-server.yml
+
+- name: Run Gitlab Runner
+  ansible.builtin.import_playbook: gitlab-runner.yml
+
+- name: Run Grafana
+  ansible.builtin.import_playbook: grafana_server.yml
+
+- name: Run Immich
+  ansible.builtin.import_playbook: immich.yml
+
+- name: Run Lancache
+  ansible.builtin.import_playbook: lancache.yml
+
+- name: Run Loki
+  ansible.builtin.import_playbook: loki_server.yml
+
+- name: Run Mimir
+  ansible.builtin.import_playbook: mimir_server.yml
+
+- name: Run Traefik
+  ansible.builtin.import_playbook: traefik.yml
+
+- name: Run Uptime Kuma
+  ansible.builtin.import_playbook: uptime_kuma.yml

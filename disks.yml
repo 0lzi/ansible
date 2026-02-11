@@ -7,10 +7,5 @@
   become_method: sudo
   gather_facts: true
 
-  pre_tasks:
-    - name: Update Apt Cache
-      ansible.builtin.apt:
-        update_cache: true
-        cache_valid_time: 3600
   roles:
     - disks

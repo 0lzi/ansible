@@ -1,11 +1,15 @@
-- name: Add traefik label to Consul {{ service }}
+- name: Render labels
+  ansible.builtin.set_fact:
+    labels: "{{ hostvars[inventory_hostname][service].traefik_labels }}"
+
+- name: Add traefik label to Consul for {{ service }}
   community.general.consul_kv:
     key: "{{ item }}"
-    value: "{{ vars[service].traefik_labels[item] }}"
+    value: "{{ labels[item] }}"
     host: consul.0lzi.com
     port: 443
     scheme: "https"
     state: present
   delegate_to: localhost
   loop: >
-    {{ (service is defined and vars[service].traefik_labels.keys() or {}) }}
+    {{ labels.keys() }}

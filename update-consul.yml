@@ -1,22 +1,8 @@
 ---
 - name: Update Conul KV
   hosts: all
-  gather_facts: true
+  gather_facts: false
   become: true
-  #
-  # tasks:
-  #   - name: Add traefik label to Consul for GitLab
-  #     community.general.consul_kv:
-  #       key: "{{ item.key }}"
-  #       value: "{{ item.value }}"
-  #       host: consul-0.0lzi.com
-  #       port: 8500
-  #       scheme: "http"
-  #       state: present
-  #     loop: >
-  #       {{ (service is defined and vars[service].traefik_labels or {}) | dict2items }}
-  #     delegate_to: localhost
-  #     tags: consul
 
   roles:
    - update_consul

@@ -53,7 +53,6 @@ gitlab:
     # Gitlab ssh_port
     traefik/tcp/routers/gitlab_ssh/rule: "HostSNI(`*`)"
     traefik/tcp/routers/gitlab_ssh/service: "gitlab_ssh"
-    traefik/tcp/routers/gitlab_ssh/tls/passthrough: "true"
     traefik/tcp/routers/gitlab_ssh/entrypoints: "ssh"
     traefik/tcp/routers/gitlab_ssh/middlewares/0: "tcp-rfc1918"
     traefik/tcp/services/gitlab_ssh/loadbalancer/servers/0/address: "gitlab.0lzi.internal:2222"

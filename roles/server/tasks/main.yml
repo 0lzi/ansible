@@ -1,6 +1,13 @@
 ---
+- name: Set services to backup
+  ansible.builtin.set_fact:
+    services: "{{ lookup('community.general.merge_variables', 'services__to_merge', pattern_type='suffix', initial_value=[]) }}"
+
 - name: Configure rclone for backups
   ansible.builtin.include_tasks: ./rclone.yml
+  loop: "{{ services }}"
+  loop_control:
+    loop_var: service
   when:
     - inventory_hostname in groups['prod']
     - backup | default(false)

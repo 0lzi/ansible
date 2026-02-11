@@ -1,7 +1,3 @@
-- name: dbg
-  debug:
-    var: service
-
 - name: Add traefik label to Consul {{ service }}
   community.general.consul_kv:
     key: "{{ item }}"
@@ -12,4 +8,4 @@
     state: present
   delegate_to: localhost
   loop: >
-    {{ (service is defined and vars[service].traefik_labels.keys() or {})}}
+    {{ (service is defined and vars[service].traefik_labels.keys() or {}) }}

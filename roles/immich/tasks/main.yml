@@ -50,7 +50,7 @@
   community.docker.docker_compose_v2:
     project_src: "{{ immich_data }}"
     state: present
-    recreate: "{{ composefile.changed or envfile.changed or templatefile.changed | ternary('always','never') }}"
+    recreate: "{{ composefile.changed or envfile.changed or templatefile.changed | ternary('always', 'never') }}"
   when:
     - composefile.changed
     - envfile.changed

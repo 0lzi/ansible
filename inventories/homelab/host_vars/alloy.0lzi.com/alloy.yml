@@ -1,14 +1,17 @@
 ---
+a: &auth_attrib
+  port: 443
+  scheme: https
+  path: "/metrics"
+  auth:
+    username: "admin"
+    password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/traefik')['secret']['metrics_password_plain'] }}"
+
 alloy_scrapers:
   traefik:
     address: traefik.0lzi.com
-    port: 443
-    scheme: https
-    path: "/metrics"
     job: traefik
-    auth:
-      username: "admin"
-      password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/traefik')['secret']['metrics_password_plain'] }}"
+    <<: *auth_attrib
   # gitlab:
   #   address: gitlab.0lzi.com
   #   port: 443
@@ -20,28 +23,13 @@ alloy_scrapers:
   #     password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/gitlab')['secret']['prometheus_password'] }}"
   openbao:
     address: vault.0lzi.com
-    port: 443
-    scheme: https
-    path: "/metrics"
     job: openbao
-    auth:
-      username: "admin"
-      password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/traefik')['secret']['metrics_password_plain'] }}"
-  consul:
-    address: consul.0lzi.com
-    port: 443
-    scheme: https
-    path: "/metrics"
-    job: consul
-    auth:
-      username: "admin"
-      password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/traefik')['secret']['metrics_password_plain'] }}"
+    <<: *auth_attrib
   crowdsec:
     address: crowdsec.0lzi.com
-    port: 443
-    scheme: https
-    path: "/metrics"
     job: crowdsec
-    auth:
-      username: "admin"
-      password: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/traefik')['secret']['metrics_password_plain'] }}"
+    <<: *auth_attrib
+  consul:
+    address: consul.0lzi.com
+    job: consul
+    <<: *auth_attrib

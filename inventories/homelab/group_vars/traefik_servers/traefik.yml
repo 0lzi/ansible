@@ -18,6 +18,8 @@ traefik:
     # Traefik Default
     traefik/http/routers/http/rule: "Host(`traefik.0lzi.com`)"
     traefik/http/routers/http/service: "api@internal"
+    traefik/http/routers/http/middlewares/0: "http-rfc1918"
+    traefik/http/routers/http/middlewares/1: "dashboard"
     traefik/http/routers/http/entryPoints: "websecure"
     traefik/http/middlewares/dashboard/basicauth/users: >-
       {{ traefik_dashboard_user }}:{{ traefik_dashboard_password | password_hash('md5', salt=inventory_hostname_short) }}
@@ -40,14 +42,14 @@ traefik:
     traefik/http/routers/catch-all-http/priority: "-1"
     traefik/http/routers/catch-all-http/service: "noop@internal"
     # traefik catch-all-https-router
-    traefik/http/routers/catch-all-https/rule: 'Hostregexp(`^.+\.0lzi\.com$`)'
+    traefik/http/routers/catch-all-https/rule: 'Host(`0lzi.com`) || Hostregexp(`^.+\.0lzi\.com$`)'
     traefik/http/routers/catch-all-https/entrypoints: "websecure"
     traefik/http/routers/catch-all-https/middlewares/0: "catch-all"
     traefik/http/routers/catch-all-https/priority: "-1"
     traefik/http/routers/catch-all-https/service: "noop@internal"
     traefik/http/routers/catch-all-https/tls: "true"
     traefik/http/routers/catch-all-https/tls/domains/0/main: "*.0lzi.com"
-    traefik/http/routers/catch-all-https/tls/certresolver: "cloudflare"
+    traefik/http/routers/catch-all-https/tls/certresolver: "tlsresolver"
     # Traefik catch-all middlewares
     traefik/http/middlewares/catch-all/redirectRegex/regex: "^https?://.*"
     traefik/http/middlewares/catch-all/redirectRegex/replacement: "https://blog.0lzi.com"

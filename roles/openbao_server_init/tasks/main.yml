@@ -45,6 +45,7 @@
     owner: openbao
     group: openbao
     mode: '0640'
+  register: openbao_config_file
   notify:
     - Restart_openbao
 
@@ -55,6 +56,7 @@
     owner: openbao
     group: openbao
     mode: '0640'
+  register: openbao_service_file
   notify:
     - Systemd
     - Restart_openbao
@@ -221,8 +223,7 @@
   delegate_to: "{{ groups[openbao_cluster_name][2] }}"
   run_once: true
   when:
-    - not openbao_initialized
-    - not openbao_tls.enabled
+    - openbao_config_file.changed or openbao_service_file.changed
     - not ansible_check_mode
 
 - name: Unseal vault {{ groups[openbao_cluster_name][1] }} # noqa no-changed-when command-instead-of-shell
@@ -234,7 +235,7 @@
   delegate_to: "{{ groups[openbao_cluster_name][1] }}"
   run_once: true
   when:
-    - not openbao_initialized
+    - openbao_config_file.changed or openbao_service_file.changed
     - not ansible_check_mode
 
 - name: Unseal vault {{ groups[openbao_cluster_name][2] }} # noqa no-changed-when command-instead-of-shell
@@ -246,5 +247,5 @@
   delegate_to: "{{ groups[openbao_cluster_name][2] }}"
   run_once: true
   when:
-    - not openbao_initialized
+    - openbao_config_file.changed or openbao_service_file.changed
     - not ansible_check_mode

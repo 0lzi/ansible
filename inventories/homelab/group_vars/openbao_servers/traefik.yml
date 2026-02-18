@@ -17,7 +17,7 @@ vault:
     traefik/http/services/vault/loadbalancer/servers/2/url: "http://vault-2.0lzi.com:8200"
     traefik/http/services/vault/loadbalancer/healthcheck/path: "/v1/sys/health"
     traefik/http/services/vault/loadbalancer/healthcheck/scheme: "http"
-    traefik/http/services/vault/loadbalancer/healthcheck/interval: "10"
+    traefik/http/services/vault/loadbalancer/healthcheck/interval: "30s"
     traefik/http/services/vault/loadbalancer/healthcheck/timeout: "3s"
     # Vault Metrics
     traefik/http/routers/vault-metrics/rule: "Host(`vault.0lzi.com`) && PathPrefix(`/metrics`)"

@@ -49,6 +49,9 @@ gitaly['configuration'] = {
 }
 {% endif %}
 
+# IP Allowlist for monitoring
+gitlab_rails['monitoring_whitelist'] = ['10.18.0.0/16']
+
 # Performance optimizations for homelab/low-resource environments
 # NOTE: These settings reduce resource usage but may impact performance under high load
 postgresql['shared_buffers'] = "256MB"

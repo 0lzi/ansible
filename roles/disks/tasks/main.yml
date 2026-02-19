@@ -3,38 +3,38 @@
 - name: Setup disks
   when: lvm is defined
   block:
-  - name: Install required packages
-    ansible.builtin.package:
-      name:
-        - lvm2
-      state: present
+    - name: Install required packages
+      ansible.builtin.package:
+        name:
+          - lvm2
+        state: present
 
-  - name: Create Volume Groups
-    community.general.lvg:
-      vg: "{{ item.vg_name }}"
-      pvs: "{{ item.pvs | join(' ') }}"
-      state: present
-    loop: "{{ lvm }}"
+    - name: Create Volume Groups
+      community.general.lvg:
+        vg: "{{ item.vg_name }}"
+        pvs: "{{ item.pvs | join(' ') }}"
+        state: present
+      loop: "{{ lvm }}"
 
-  - name: Create Logical Volumes
-    community.general.lvol:
-      vg: "{{ item.vg_name }}"
-      lv: "{{ item.lv_name }}"
-      size: "{{ item.size }}"
-      state: present
-    loop: "{{ lvm }}"
+    - name: Create Logical Volumes
+      community.general.lvol:
+        vg: "{{ item.vg_name }}"
+        lv: "{{ item.lv_name }}"
+        size: "{{ item.size }}"
+        state: present
+      loop: "{{ lvm }}"
 
-  - name: Create filesystem on Logical Volumes
-    community.general.filesystem:
-      fstype: ext4
-      dev: "/dev/{{ item.vg_name }}/{{ item.lv_name }}"
-    loop: "{{ lvm }}"
+    - name: Create filesystem on Logical Volumes
+      community.general.filesystem:
+        fstype: ext4
+        dev: "/dev/{{ item.vg_name }}/{{ item.lv_name }}"
+      loop: "{{ lvm }}"
 
-  - name: Mount Logical Volumes
-    ansible.posix.mount:
-      path: "{{ item.mount_point }}"
-      src: "/dev/{{ item.vg_name }}/{{ item.lv_name }}"
-      fstype: ext4
-      state: mounted
-      opts: defaults
-    loop: "{{ lvm }}"
+    - name: Mount Logical Volumes
+      ansible.posix.mount:
+        path: "{{ item.mount_point }}"
+        src: "/dev/{{ item.vg_name }}/{{ item.lv_name }}"
+        fstype: ext4
+        state: mounted
+        opts: defaults
+      loop: "{{ lvm }}"

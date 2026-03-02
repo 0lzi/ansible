@@ -32,7 +32,7 @@ gitlab:
     traefik/http/services/gitlab/loadbalancer/servers/0/url: "http://gitlab.0lzi.internal"
     traefik/http/services/gitlab/loadbalancer/healthcheck/path: "/health_check"
     traefik/http/services/gitlab/loadbalancer/healthcheck/scheme: "http"
-    traefik/http/services/gitlab/loadbalancer/healthcheck/interval: "30"
+    traefik/http/services/gitlab/loadbalancer/healthcheck/interval: "10"
     traefik/http/services/gitlab/loadbalancer/healthcheck/timeout: "3s"
     # GitLab registry
     traefik/http/routers/gitlab_registry/rule: "Host(`registry.gitlab.0lzi.com`)"

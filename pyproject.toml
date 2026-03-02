@@ -1,10 +1,10 @@
 [project]
 name = "ansible-lab"
 version = "0.0.1"
-requires-python = "~=3.13"
+requires-python = "==3.12"
 dependencies = [
-    "ansible==11.*",
-    "ansible-lint==24.2.*",
+    "ansible==12.*",
+    "ansible-lint==25.*",
     "ansible-pylibssh==1.2*",
     "hvac==2.3.*",
     "python-consul2",

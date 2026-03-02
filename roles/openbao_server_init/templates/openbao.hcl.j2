@@ -40,6 +40,9 @@ listener "tcp" {
   tls_cert_file = "{{ openbao_cert_dir}}/fullchain.pem"
   tls_key_file  = "{{ openbao_cert_dir}}/privkey.key"
 {% else %}
+  telemetry {
+    disallow_metrics = true
+  }
   tls_disable   = 1
 {% endif %}
 {% endif %}
@@ -64,6 +67,11 @@ listener "tcp" {
     metrics_only                   = true
 {# Should have basic_auth middleware in traefik #}
     unauthenticated_metrics_access = true
+{% if openbao_version is version('2.5.0', '>=') %}
+{% if openbao_metrics_path is defined %}
+    metrics_path = "{{ openbao_metrics_path }}"
+{% endif %}
+{% endif %}
   }
 }
 

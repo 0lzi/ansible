@@ -33,4 +33,4 @@ vault:
     traefik/http/services/vault-metrics/loadbalancer/servers/1/url: "http://vault-1.0lzi.com:9101"
     traefik/http/services/vault-metrics/loadbalancer/servers/2/url: "http://vault-2.0lzi.com:9101"
     # Vault Metrics Path
-    traefik/http/middlewares/vault-metrics-path/replacePath/path: "/v1/sys/metrics"
+    traefik/http/middlewares/vault-metrics-path/replacePath/path: "/metrics"

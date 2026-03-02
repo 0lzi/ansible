@@ -58,6 +58,7 @@
     - name: Download openbao deb for {{ openbao_version }}
       ansible.builtin.apt:
         deb: "{{ openbao_url }}"
+        force: true
       when:
         - not openbao_installed.stat.exists
           or current_version != 'v' ~ openbao_version
@@ -125,6 +126,7 @@
     - name: Download openbao deb for {{ openbao_version }}
       ansible.builtin.apt:
         deb: "{{ openbao_url }}"
+        force: true
       when:
         - not openbao_installed.stat.exists
           or current_version != 'v' ~ openbao_version

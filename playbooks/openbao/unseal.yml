@@ -15,7 +15,7 @@
       delegate_to: "{{ groups[openbao_cluster_name][0] }}"
       run_once: true
       tags: node1
-      when: " 'node1' in ansible_run_tags"
+      when: " 'node1' in ansible_run_tags or 'all' in ansible_run_tags"
 
     - name: Unseal vault {{ groups[openbao_cluster_name][1] }} # noqa no-changed-when command-instead-of-shell run-once[task]
       ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
@@ -26,7 +26,7 @@
       delegate_to: "{{ groups[openbao_cluster_name][1] }}"
       run_once: true
       tags: node2
-      when: " 'node2' in ansible_run_tags"
+      when: " 'node2' in ansible_run_tags or 'all' in ansible_run_tags"
 
     - name: Unseal vault {{ groups[openbao_cluster_name][2] }} # noqa no-changed-when command-instead-of-shell run-once[task]
       ansible.builtin.shell: /usr/bin/bao operator unseal {{ item }}
@@ -37,4 +37,4 @@
       delegate_to: "{{ groups[openbao_cluster_name][2] }}"
       run_once: true
       tags: node3
-      when: " 'node3' in ansible_run_tags"
+      when: " 'node3' in ansible_run_tags or 'all' in ansible_run_tags"

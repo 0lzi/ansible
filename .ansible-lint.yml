@@ -1,7 +1,9 @@
 ---
+profile: production
+
 skip_list:
   - name[template]
-  - schema[playbook]
   - var-naming[no-role-prefix]
+
 exclude_paths:
   - .gitlab

@@ -30,6 +30,22 @@ prometheus.scrape "{{ name }}" {
 {% endfor %}
 {% endif %}
 
+{% if inventory_hostname in groups['docker_servers'] %}
+// ** DOCKER METRICS CADVISOR **
+prometheus.exporter.cadvisor "docker_cadvisor" {
+  docker_host = "unix:///var/run/docker.sock"
+
+  storage_duration = "5m"
+}
+
+prometheus.scrape "docker_metrics_scrape" {
+  targets    = prometheus.exporter.cadvisor.docker_cadvisor.targets
+  forward_to = [ prometheus.remote_write.mimir_{{ monitoring.mimir.env }}.receiver ]
+
+  scrape_interval = "10s"
+}
+
+{% endif %}
 prometheus.exporter.unix "node_exporter" {
     procfs_path  = "/proc"
     rootfs_path  = "/"

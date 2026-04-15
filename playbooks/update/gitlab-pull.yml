@@ -4,8 +4,11 @@
   gather_facts: true
   become: true
   tasks:
+    - name: Merge services
+      ansible.builtin.set_fact:
+        services: "{{ lookup('community.general.merge_variables', 'services__to_merge', pattern_type='suffix', initial_value=[]) }}"
 
     - name: Pull Latest
       community.docker.docker_compose_v2_pull:
-        project_src: "{{ base_dir }}/{{ service }}"
+        project_src: "{{ base_dir }}/{{ services | first }}"
       register: gitlab_pull

@@ -1,6 +1,6 @@
 [Unit]
 Description=BattleNetPrefill run daily
-Requires=epicprefill.service
+Requires=battlenetprefill.service
 
 [Timer]
 # Runs every day at 2am (local time)

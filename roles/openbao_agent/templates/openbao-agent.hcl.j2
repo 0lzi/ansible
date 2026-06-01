@@ -11,16 +11,21 @@ auto_auth {
         config = {
             role_id_file_path = "{{ openbao_agent_config_dir }}/role_id"
             secret_id_file_path = "{{ openbao_agent_config_dir }}/secret_id"
-            remove_secret_id_file_after_reading = true
+            remove_secret_id_file_after_reading = false
+# Playing around with response wrapping
+#            secret_id_response_wrapping_path = "auth/approle/role/approle-auth/secret-id"
+#            remove_secret_id_file_after_reading = true
         }
     }
 
     sink "file" {
       config = {
         path = "{{ openbao_agent_config_dir }}/.vault-token"
+        mode = 0400
       }
     }
 }
+
 # Template for SSL certs
 template {
   source = "{{ openbao_agent_config_dir }}/certs.ctmpl"

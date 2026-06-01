@@ -119,13 +119,21 @@
     owner: openbao
     group: openbao
 
+# - name: Template agent-restart script
+#   ansible.builtin.template:
+#     src: agent-restart.sh.j2
+#     dest: "{{ openbao_agent_config_dir }}/restart-agent.sh"
+#     mode: 0644
+#     owner: openbao
+#     group: openbao
+#
 # - name: Template all .tmpl files in vault-agent role
 #   ansible.builtin.template:
 #     src: "{{ item }}"
 #     dest: "{{ openbao_config_dir }}/{{ item | basename | regex_replace('\\.ctmpl$', '') }}"
 #     mode: "0644"
 #   loop: "{{ lookup('ansible.builtin.fileglob', role_path + '/templates/*.ctmpl', wantlist=True) }}"
-#
+# #
 - name: Check if Approle files exist
   ansible.builtin.stat:
     path: "{{ openbao_agent_config_dir }}/role_id"
@@ -136,6 +144,81 @@
     path: "{{ openbao_agent_config_dir }}/secret_id"
   register: secret_id_file
 
+# Messing around with wrapped token response,
+# there is some extra messing around to get this to work
+# https://github.com/samgabrail/vault-agent-proxy for more info
+#
+#
+# - name: Check if Agent restart files exist
+#   ansible.builtin.stat:
+#     path: "{{ openbao_agent_config_dir }}/restart_role_id"
+#   register: role_id_file
+#
+# - name: Check if Agent secret file exist
+#   ansible.builtin.stat:
+#     path: "{{ openbao_agent_config_dir }}/restart_secret_id"
+#   register: secret_id_file
+#
+# - name: Write Agent restart role files
+#   when: not role_id_file.stat.exists or not secret_id_file.stat.exists
+#   block:
+#     - name: Get Agent role_id
+#       ansible.builtin.uri:
+#         url: "{{ openbao_url }}/v1/auth/approle/role/{{ openbao_agent_approle_name }}/role-id"
+#         method: GET
+#         headers:
+#           X-Vault-Token: "{{ lookup('ansible.builtin.file', '~/.vault-token') }}"
+#         validate_certs: true
+#         return_content: true
+#       register: role_id_response
+#       delegate_to: localhost
+#       become: false
+#
+#     - name: Set role_id fact
+#       ansible.builtin.set_fact:
+#         openbao_role_id: "{{ role_id_response.json.data.role_id }}"
+#
+#     - name: Generate secret_id
+#       ansible.builtin.uri:
+#         url: "{{ openbao_url }}/v1/auth/approle/role/{{ openbao_agent_approle_name }}/secret-id"
+#         method: POST
+#         headers:
+#           X-Vault-Token: "{{ lookup('ansible.builtin.file', '~/.vault-token') }}"
+#           X-Vault-Wrap-TTL: "300s"
+#         validate_certs: true
+#         return_content: true
+#         body_format: json
+#         body: {}
+#       register: secret_id_response
+#       delegate_to: localhost
+#       become: false
+#
+#     - name: debug secret_id
+#       ansible.builtin.debug:
+#         var: secret_id_response
+#
+#     - name: Set role_id fact
+#       ansible.builtin.set_fact:
+#         openbao_secret_id: "{{ secret_id_response.json.wrap_info.token }}"
+#
+#     - name: Write role_id file
+#       ansible.builtin.copy:
+#         dest: "{{ openbao_agent_config_dir }}/restart_role_id"
+#         content: "{{ openbao_role_id }}"
+#         owner: root
+#         group: openbao
+#         mode: '0640'
+#
+#     - name: Write secret_id file
+#       ansible.builtin.copy:
+#         dest: "{{ openbao_agent_config_dir }}/restart_secret_id"
+#         content: "{{ openbao_secret_id }}"
+#         owner: root
+#         group: openbao
+#         mode: '0640'
+#       no_log: true
+#
+#
 - name: Write Approle files
   when: not role_id_file.stat.exists or not secret_id_file.stat.exists
   block:
@@ -168,6 +251,10 @@
       register: secret_id_response
       delegate_to: localhost
       become: false
+
+    - name: debug secret_id
+      ansible.builtin.debug:
+        var: secret_id_response
 
     - name: Set role_id fact
       ansible.builtin.set_fact:

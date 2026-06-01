@@ -21,7 +21,7 @@
 {{- $cert | writeToFile "{% endraw %}{{ openbao_agent_cert_dir }}/fullchain.pem{% raw %}" "openbao" "ssl-cert" "0644" -}}
 
 {{- range .Data.ca_chain }}
-{{ . | writeToFile "{% endraw %}{{ openbao_agent_cert_dir }}/fullchain.pem{% raw %}" "openbao" "ssl-cert" "0644" "append" }}
+{{ printf "\n%s\n" . | writeToFile "{% endraw %}{{ openbao_agent_cert_dir }}/fullchain.pem{% raw %}" "openbao" "ssl-cert" "0644" "append" }}
 {{- end }}
 
 {{- end }}

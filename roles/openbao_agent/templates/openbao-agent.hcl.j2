@@ -1,0 +1,28 @@
+vault {
+  address = "{{ openbao_url }}"
+  retry {
+    num_retries = 5
+  }
+}
+
+auto_auth {
+    method {
+        type = "approle"
+        config = {
+            role_id_file_path = "{{ openbao_agent_config_dir }}/role_id"
+            secret_id_file_path = "{{ openbao_agent_config_dir }}/secret_id"
+            remove_secret_id_file_after_reading = true
+        }
+    }
+
+    sink "file" {
+      config = {
+        path = "/tmp/bao-agent"
+      }
+    }
+}
+# Template for SSL certs
+template {
+  source = "{{ openbao_agent_config_dir }}/certs.ctmpl"
+  destination = "{{ openbao_agent_cert_dir }}/certs.env"
+}

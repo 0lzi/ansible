@@ -1,0 +1,10 @@
+---
+- name: Systemd-reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Restart_openbao
+  ansible.builtin.systemd:
+    service: openbao-agent
+    state: restarted
+    enabled: true

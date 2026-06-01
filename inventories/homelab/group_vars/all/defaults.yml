@@ -5,3 +5,5 @@ ansible_hashi_vault_engine_mount_point: "kv"
 
 # Consul
 consul_host: "consul.0lzi.com"
+# Openbao
+openbao_url: "https://vault.0lzi.com"

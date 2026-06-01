@@ -1,6 +1,6 @@
 {% raw %}
 {{- with secret "pki_int/issue/0lzi-dot-internal-com" "common_name={% endraw %}{{ inventory_hostname }}{% raw %}"
-"ip_sans={% endraw %}{{ ansible_default_ipv4.address }}{% raw %}"
+"ip_sans={% endraw %}{{ ansible_facts['eth0']['ipv4']['address'] }}{% raw %}"
 {% endraw %}
 {% if cert_alt_names is defined %}
 {% raw %}"alt_names={% endraw %}{{ cert_alt_names }}{% raw %}" -}}

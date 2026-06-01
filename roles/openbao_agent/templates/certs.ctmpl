@@ -1,0 +1,28 @@
+{% raw %}
+{{- with secret "pki_int/issue/0lzi-dot-internal-com" "common_name={% endraw %}{{ inventory_hostname }}{% raw %}"
+"ip_sans={% endraw %}{{ ansible_facts['eth0']['ipv4']['address'] }}{% raw %}"
+{% endraw %}
+{% if cert_alt_names is defined %}
+{% raw %}"alt_names={% endraw %}{{ cert_alt_names }}{% raw %}" -}}
+{% endraw %}
+{% else %}
+{% raw %}
+ -}}
+{% endraw %}
+{% endif %}
+{% raw %}
+{{- $cert := .Data.certificate -}}
+{{- $key := .Data.private_key -}}
+
+{{- $key | writeToFile "{% endraw %}{{ openbao_agent_cert_dir }}/{{ inventory_hostname }}.key{% raw %}" "openbao" "ssl-cert" "0600" -}}
+
+{{- $cert | writeToFile "{% endraw %}{{ openbao_agent_cert_dir }}/{{ inventory_hostname }}.pem{% raw %}" "openbao" "ssl-cert" "0644" -}}
+
+{{- $cert | writeToFile "{% endraw %}{{ openbao_agent_cert_dir }}/fullchain.pem{% raw %}" "openbao" "ssl-cert" "0644" -}}
+
+{{- range .Data.ca_chain }}
+{{ printf "\n%s\n" . | writeToFile "{% endraw %}{{ openbao_agent_cert_dir }}/fullchain.pem{% raw %}" "openbao" "ssl-cert" "0644" "append" }}
+{{- end }}
+
+{{- end }}
+{% endraw %}

@@ -1,3 +1,4 @@
+---
 - name: Update apt and install usefull packages
   ansible.builtin.apt:
     name:

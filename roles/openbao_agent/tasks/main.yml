@@ -1,0 +1,278 @@
+---
+- name: Pre-checks
+  block:
+    - name: Check if bao is available in PATH
+      ansible.builtin.command: which bao
+      register: bao_which
+      changed_when: false
+      failed_when: false
+      delegate_to: localhost
+      become: false
+
+    - name: Fail if bao CLI is not installed
+      ansible.builtin.fail:
+        msg: >
+          'bao' CLI is not installed or not in PATH on the Ansible controller.
+          Install OpenBao CLI and ensure it is available via `which bao`.
+      when: bao_which.rc != 0
+
+    - name: Check if currently logged in to openbao
+      ansible.builtin.command: bao token lookup
+      register: bao_login
+      changed_when: false
+      failed_when: false
+      delegate_to: localhost
+      become: false
+
+    - name: Fail if not logged in or vault-token has expired
+      ansible.builtin.fail:
+        msg: >
+          'You are not currently logged into Openbao, ensure you login
+          with `bao login`.
+      when: bao_login.rc != 0
+
+- name: Update apt and install usefull packages
+  ansible.builtin.apt:
+    name:
+      - unzip
+      - jq # Helpful for viewing logs
+    update_cache: true
+
+- name: Check if openbao installed
+  ansible.builtin.stat:
+    path: "/usr/bin/bao"
+  register: openbao_installed
+
+- name: Download openbao deb for {{ openbao_version }}
+  ansible.builtin.apt:
+    deb: "{{ openbao_download_url }}"
+  when:
+    - not openbao_installed.stat.exists
+
+- name: Create ssl-cert user group
+  ansible.builtin.group:
+    name: ssl-cert
+    state: present
+    system: true
+
+- name: Create non-priv openbao user
+  ansible.builtin.user:
+    name: openbao
+    state: present
+    home: "{{ openbao_agent_config_dir }}"
+    shell: /bin/bash
+    groups:
+      - openbao
+      - ssl-cert
+    append: true
+
+- name: Create openbao directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: openbao
+    group: openbao
+    mode: "0750"
+  with_items:
+    - "{{ openbao_agent_config_dir }}"
+    - "{{ openbao_agent_cert_dir }}"
+    - "{{ openbao_agent_log_dir }}"
+
+- name: Copy openbao.hcl
+  ansible.builtin.template:
+    src: openbao-agent.hcl.j2
+    dest: "{{ openbao_agent_config_dir }}/openbao-agent.hcl"
+    owner: openbao
+    group: openbao
+    mode: '0640'
+  register: openbao_config_file
+  notify:
+    - Restart_openbao
+
+- name: Copy service file
+  ansible.builtin.template:
+    src: openbao-agent.service.j2
+    dest: /etc/systemd/system/openbao-agent.service
+    owner: openbao
+    group: openbao
+    mode: '0640'
+  register: openbao_service_file
+  notify:
+    - Systemd-reload
+    - Restart_openbao
+
+- name: Build SAN list from service map
+  set_fact:
+    cert_alt_names: >-
+      {{
+        service_alt_names | dict2items | map(attribute='value.url') | join(',')
+      }}
+  when:
+    - service_alt_names is defined
+    - (service_alt_names | length) > 0
+
+- name: Template all .tmpl files in vault-agent role
+  ansible.builtin.template:
+    src: certs.ctmpl
+    dest: "{{ openbao_agent_config_dir }}/certs.ctmpl"
+    mode: "0644"
+    owner: openbao
+    group: openbao
+
+# - name: Template agent-restart script
+#   ansible.builtin.template:
+#     src: agent-restart.sh.j2
+#     dest: "{{ openbao_agent_config_dir }}/restart-agent.sh"
+#     mode: 0644
+#     owner: openbao
+#     group: openbao
+#
+# - name: Template all .tmpl files in vault-agent role
+#   ansible.builtin.template:
+#     src: "{{ item }}"
+#     dest: "{{ openbao_config_dir }}/{{ item | basename | regex_replace('\\.ctmpl$', '') }}"
+#     mode: "0644"
+#   loop: "{{ lookup('ansible.builtin.fileglob', role_path + '/templates/*.ctmpl', wantlist=True) }}"
+# #
+- name: Check if Approle files exist
+  ansible.builtin.stat:
+    path: "{{ openbao_agent_config_dir }}/role_id"
+  register: role_id_file
+
+- name: Check if Approle secret file exist
+  ansible.builtin.stat:
+    path: "{{ openbao_agent_config_dir }}/secret_id"
+  register: secret_id_file
+
+# Messing around with wrapped token response,
+# there is some extra messing around to get this to work
+# https://github.com/samgabrail/vault-agent-proxy for more info
+#
+#
+# - name: Check if Agent restart files exist
+#   ansible.builtin.stat:
+#     path: "{{ openbao_agent_config_dir }}/restart_role_id"
+#   register: role_id_file
+#
+# - name: Check if Agent secret file exist
+#   ansible.builtin.stat:
+#     path: "{{ openbao_agent_config_dir }}/restart_secret_id"
+#   register: secret_id_file
+#
+# - name: Write Agent restart role files
+#   when: not role_id_file.stat.exists or not secret_id_file.stat.exists
+#   block:
+#     - name: Get Agent role_id
+#       ansible.builtin.uri:
+#         url: "{{ openbao_url }}/v1/auth/approle/role/{{ openbao_agent_approle_name }}/role-id"
+#         method: GET
+#         headers:
+#           X-Vault-Token: "{{ lookup('ansible.builtin.file', '~/.vault-token') }}"
+#         validate_certs: true
+#         return_content: true
+#       register: role_id_response
+#       delegate_to: localhost
+#       become: false
+#
+#     - name: Set role_id fact
+#       ansible.builtin.set_fact:
+#         openbao_role_id: "{{ role_id_response.json.data.role_id }}"
+#
+#     - name: Generate secret_id
+#       ansible.builtin.uri:
+#         url: "{{ openbao_url }}/v1/auth/approle/role/{{ openbao_agent_approle_name }}/secret-id"
+#         method: POST
+#         headers:
+#           X-Vault-Token: "{{ lookup('ansible.builtin.file', '~/.vault-token') }}"
+#           X-Vault-Wrap-TTL: "300s"
+#         validate_certs: true
+#         return_content: true
+#         body_format: json
+#         body: {}
+#       register: secret_id_response
+#       delegate_to: localhost
+#       become: false
+#
+#     - name: debug secret_id
+#       ansible.builtin.debug:
+#         var: secret_id_response
+#
+#     - name: Set role_id fact
+#       ansible.builtin.set_fact:
+#         openbao_secret_id: "{{ secret_id_response.json.wrap_info.token }}"
+#
+#     - name: Write role_id file
+#       ansible.builtin.copy:
+#         dest: "{{ openbao_agent_config_dir }}/restart_role_id"
+#         content: "{{ openbao_role_id }}"
+#         owner: root
+#         group: openbao
+#         mode: '0640'
+#
+#     - name: Write secret_id file
+#       ansible.builtin.copy:
+#         dest: "{{ openbao_agent_config_dir }}/restart_secret_id"
+#         content: "{{ openbao_secret_id }}"
+#         owner: root
+#         group: openbao
+#         mode: '0640'
+#       no_log: true
+#
+#
+- name: Write Approle files
+  when: not role_id_file.stat.exists or not secret_id_file.stat.exists
+  block:
+    - name: Get AppRole role_id
+      ansible.builtin.uri:
+        url: "{{ openbao_url }}/v1/auth/approle/role/{{ openbao_agent_approle_name }}/role-id"
+        method: GET
+        headers:
+          X-Vault-Token: "{{ lookup('ansible.builtin.file', '~/.vault-token') }}"
+        validate_certs: true
+        return_content: true
+      register: role_id_response
+      delegate_to: localhost
+      become: false
+
+    - name: Set role_id fact
+      ansible.builtin.set_fact:
+        openbao_role_id: "{{ role_id_response.json.data.role_id }}"
+
+    - name: Generate secret_id
+      ansible.builtin.uri:
+        url: "{{ openbao_url }}/v1/auth/approle/role/{{ openbao_agent_approle_name }}/secret-id"
+        method: POST
+        headers:
+          X-Vault-Token: "{{ lookup('ansible.builtin.file', '~/.vault-token') }}"
+        validate_certs: true
+        return_content: true
+        body_format: json
+        body: {}
+      register: secret_id_response
+      delegate_to: localhost
+      become: false
+
+    - name: debug secret_id
+      ansible.builtin.debug:
+        var: secret_id_response
+
+    - name: Set role_id fact
+      ansible.builtin.set_fact:
+        openbao_secret_id: "{{ secret_id_response.json.data.secret_id }}"
+
+    - name: Write role_id file
+      ansible.builtin.copy:
+        dest: "{{ openbao_agent_config_dir }}/role_id"
+        content: "{{ openbao_role_id }}"
+        owner: root
+        group: openbao
+        mode: '0640'
+
+    - name: Write secret_id file
+      ansible.builtin.copy:
+        dest: "{{ openbao_agent_config_dir }}/secret_id"
+        content: "{{ openbao_secret_id }}"
+        owner: root
+        group: openbao
+        mode: '0640'
+      no_log: true

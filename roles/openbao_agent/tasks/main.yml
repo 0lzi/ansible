@@ -131,8 +131,13 @@
     path: "{{ openbao_agent_config_dir }}/role_id"
   register: role_id_file
 
+- name: Check if Approle secret file exist
+  ansible.builtin.stat:
+    path: "{{ openbao_agent_config_dir }}/secret_id"
+  register: secret_id_file
+
 - name: Write Approle files
-  when: not role_id_file.stat.exists
+  when: not role_id_file.stat.exists or not secret_id_file.stat.exists
   block:
     - name: Get AppRole role_id
       ansible.builtin.uri:

@@ -17,7 +17,7 @@ auto_auth {
 
     sink "file" {
       config = {
-        path = "/tmp/bao-agent"
+        path = "{{ openbao_agent_config_dir }}/.vault-token"
       }
     }
 }

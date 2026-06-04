@@ -12,4 +12,4 @@ homeassistant:
     traefik/http/routers/homeassistant/middlewares/1: "http-rfc1918"
     traefik/http/routers/homeassistant/tls: "true"
     # Proxmox Service
-    traefik/http/services/homeassistant/loadbalancer/servers/0/url: "http://home-assistant.0lzi.internal:8123"
+    traefik/http/services/homeassistant/loadbalancer/servers/0/url: "http://home-assistant.iot.0lzi.com:8123"

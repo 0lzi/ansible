@@ -4,7 +4,6 @@
   hosts: grafana_servers
   remote_user: "{{ user }}"
   become: true
-  become_method: sudo
   gather_facts: true
 
   roles:

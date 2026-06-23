@@ -1,2 +1,3 @@
 ---
 uptime_kuma_dir: "{{ base_dir }}/uptime-kuma"
+uptime_kuma_version: 2

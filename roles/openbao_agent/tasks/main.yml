@@ -102,7 +102,7 @@
     - Restart_openbao
 
 - name: Build SAN list from service map
-  set_fact:
+  ansible.builtin.set_fact:
     cert_alt_names: >-
       {{
         service_alt_names | dict2items | map(attribute='value.url') | join(',')
@@ -252,7 +252,7 @@
       delegate_to: localhost
       become: false
 
-    - name: debug secret_id
+    - name: Debug secret_id
       ansible.builtin.debug:
         var: secret_id_response
 

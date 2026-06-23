@@ -1,3 +1,8 @@
+---
+- name: Set services
+  ansible.builtin.set_fact:
+    service: "{{ uptimekuma_services__to_merge | first }}"
+
 - name: Create Data directory
   ansible.builtin.file:
     state: directory
@@ -13,6 +18,12 @@
     mode: "0664"
     owner: root
     group: admins
+  register: compose_file
+
+- name: Pull Latest
+  community.docker.docker_compose_v2_pull:
+    project_src: "{{ uptime_kuma_dir }}"
+  register: uptime_pull
 
 - name: Start container
   community.docker.docker_compose_v2:
@@ -20,3 +31,4 @@
     state: present
     pull: always
     remove_orphans: true
+  when: compose_file.changed or uptime_pull.changed

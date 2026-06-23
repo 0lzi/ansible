@@ -1,6 +1,6 @@
 ---
 # Run with ansible-playbook -i inventory/hosts uptime-kuma.yml
-- name: Setup Diun
+- name: Setup Uptime Kuma
   hosts: docker_servers
   remote_user: "{{ user }}"
   become: true

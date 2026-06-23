@@ -105,6 +105,7 @@ traefik.0lzi.com
 home-assistant.0lzi.com
 
 [uptime_kuma]
+docker-1.0lzi.com
 uptime.0lzi.com
 
 [nextcloud]

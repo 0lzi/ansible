@@ -1,1 +1,4 @@
+---
+uptimekuma_services__to_merge:
+  - uptimekuma
 uptime_kuma_dir: "{{ base_dir }}/uptime-kuma"

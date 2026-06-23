@@ -1,6 +1,5 @@
 ---
-uptimekuma_services__to_merge:
-  - uptimekuma
+
 uptimekuma:
   traefik_labels:
     # uptime-kuma main interface

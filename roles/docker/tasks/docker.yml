@@ -37,7 +37,7 @@
     - name: Docker apt source
       ansible.builtin.apt_repository:
         repo: >
-          deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker.asc]
+          deb [arch={{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }} signed-by=/etc/apt/trusted.gpg.d/docker.asc]
           https://download.docker.com/{{ ansible_system | lower }}/{{ ansible_distribution | lower }}
           {{ ansible_distribution_release }} stable
         state: present

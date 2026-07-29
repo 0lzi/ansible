@@ -49,6 +49,7 @@ immich.0lzi.com
 gitlab.0lzi.internal
 gitlab-runner-1.0lzi.com
 traefik.0lzi.com
+nutserver.0lzi.internal
 
 [alloy_clients:children]
 prod

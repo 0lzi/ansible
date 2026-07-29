@@ -5,7 +5,7 @@ After=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/rsync -a {{ base_dir }}/{{ service }} {{ base_dir }}/{{ backup_dir }}
+ExecStart=/usr/bin/rsync -a {{ base_dir }}/{{ service }} {{ base_dir }}/{{ backup_dir }} --delete
 
 User=root
 Group=root

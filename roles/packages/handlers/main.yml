@@ -11,3 +11,4 @@
     state: started
     enabled: true
   listen: "start qemu-guest-agent"
+  when: "'vms' in group_names"

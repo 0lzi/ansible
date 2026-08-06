@@ -1,0 +1,48 @@
+---
+- name: Install nut-server
+  ansible.builtin.apt:
+    name: nut-server
+    state: present
+  notify:
+    - restart upsdrvctl
+    - restart upsd
+
+- name: Set ups configuration
+  ansible.builtin.template:
+    src: ups.conf
+    dest: /etc/nut/
+    mode: "0700"
+    owner: nut
+    group: nut
+  notify:
+    - restart upsdrvctl
+
+- name: Set nut configuration
+  ansible.builtin.copy:
+    content: "MODE=netserver"
+    dest: /etc/nut/nut.conf
+    mode: "0700"
+    owner: nut
+    group: nut
+  notify:
+    - restart upsmon
+
+- name: Set upsd configuration
+  ansible.builtin.copy:
+    content: "LISTEN 0.0.0.0."
+    dest: /etc/nut/upsd.conf
+    mode: "0700"
+    owner: nut
+    group: nut
+  notify:
+    - restart upsd
+
+- name: Set upsd users configuration
+  ansible.builtin.template:
+    src: upsd.users
+    dest: /etc/nut/
+    mode: "0700"
+    owner: nut
+    group: nut
+  notify:
+    - restart upsd

@@ -1,0 +1,8 @@
+---
+- name: Include Nut server playbook
+  ansible.builtin.include_tasks: nut-server.yml
+  when: "'nut_servers' in group_names"
+
+- name: Include Nut Client playbook
+  ansible.builtin.include_tasks: nut-client.yml
+  when: "'nut_servers' in group_names"

@@ -1,0 +1,27 @@
+---
+- name: Install nut-client
+  ansible.builtin.apt:
+    name: nut-client
+    state: present
+  notify: restart upsmonitor
+
+- name: Add nut user
+  ansible.builtin.user:
+    name: nut
+    system: true
+  notify: restart upsmonitor
+
+- name: Setup upsmon config
+  ansible.builtin.template:
+    src: upsmon.conf
+    dest: /etc/nut/
+    owner: nut
+    mode: "0400"
+  notify: restart upsmonitor
+
+- name: Set nut config
+  ansible.builtin.copy:
+    content: "MODE=netclient"
+    dest: /etc/nut/nut.conf
+    mode: preserve
+  notify: restart upsmonitor

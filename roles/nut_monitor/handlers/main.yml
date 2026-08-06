@@ -1,0 +1,15 @@
+---
+- name: Restart upsd
+  ansible.builtin.service:
+    name: nut-server
+    state: restarted
+
+- name: Restart upsdrvctl
+  ansible.builtin.service:
+    name: nut-driver
+    state: restarted
+
+- name: Restart upsmon
+  ansible.builtin.service:
+    name: nut-client
+    state: restarted

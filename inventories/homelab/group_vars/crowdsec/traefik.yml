@@ -2,9 +2,9 @@
 crowdsec_services__to_merge:
   - crowdsec
 crowdsec:
-  enabled: true
-  version: "latest"
+  version: v1.7.8
   traefiklogs: /srv/traefik
+  enabled: true
   traefik_labels:
     # Crowdsec Prometheus
     traefik/http/routers/crowdsec-metrics/rule: "Host(`crowdsec.0lzi.com`) && PathPrefix(`/metrics`)"

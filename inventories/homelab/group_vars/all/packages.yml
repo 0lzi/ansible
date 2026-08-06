@@ -21,7 +21,7 @@ aptpackages:
   - build-essential
   - ripgrep
   - yubikey-manager
-  - qemu-guest-agent
+  - "{{ 'qemu-guest-agent' if 'vms' in group_names else omit }}"
   - open-iscsi
   - lvm2
   - rsync

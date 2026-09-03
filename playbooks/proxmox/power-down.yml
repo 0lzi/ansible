@@ -1,0 +1,176 @@
+---
+- name: Power down from NUT
+  hosts: pve
+  gather_facts: false
+
+  tasks:
+    - name: Install required depenancies
+      ansible.builtin.apt:
+        name: python3-proxmoxer
+# Notes
+    - name: Get HA status
+      ansible.builtin.uri:
+        url: "{{ pve_api_base }}/cluster/ha/status/current"
+        method: GET
+        headers:
+          Authorization: "PVEAPIToken=root@pam!API={{ pve_api_token }}"
+        validate_certs: true
+        return_content: true
+        status_code: 200
+      register: ha_status
+      # failed_when: false
+      delegate_to: localhost
+
+    - name: Set Armed status
+      ansible.builtin.set_fact:
+        armed_status: >-
+          {{
+          ha_status.json.data
+          | selectattr('type', 'equalto', 'fencing')
+          | map(attribute='armed-state')
+          | first
+          }}
+
+    - name: HA status
+      ansible.builtin.debug:
+        var: armed_status
+
+# 1. Disarm HA on pve nodes
+
+    - name: Disarm HA status
+      ansible.builtin.uri:
+        url: "{{ pve_api_base }}/cluster/ha/status/disarm-ha"
+        method: POST
+        headers:
+          Authorization: "PVEAPIToken=root@pam!API={{ pve_api_token }}"
+        body_format: form-urlencoded
+        body:
+          resource-mode: "ignore"
+        validate_certs: true
+        return_content: true
+        status_code: 200
+      register: disarmed_ha_status
+      when: armed_status == "armed"
+      delegate_to: localhost
+
+    - name: Get HA status
+      ansible.builtin.uri:
+        url: "{{ pve_api_base }}/cluster/ha/status/current"
+        method: GET
+        headers:
+          Authorization: "PVEAPIToken=root@pam!API={{ pve_api_token }}"
+        validate_certs: true
+        return_content: true
+        status_code: 200
+      register: ha_status_after
+      failed_when: false
+      delegate_to: localhost
+
+    - name: Set Armed status
+      ansible.builtin.set_fact:
+        disarmed_status: >-
+          {{
+          ha_status_after.json.data
+          | selectattr('type', 'equalto', 'fencing')
+          | map(attribute='armed-state')
+          | first
+          }}
+
+    - name: HA status
+      ansible.builtin.debug:
+        var: disarmed_status
+
+# 2. List & Shutdown all VM's & LXC Containers
+
+    - name: List all VMs and containers in cluster
+      ansible.builtin.uri:
+        url: "{{ pve_api_base }}/cluster/resources?type=vm"
+        method: GET
+        headers:
+          Authorization: "PVEAPIToken=root@pam!API={{ pve_api_token }}"
+        validate_certs: true
+        return_content: true
+        status_code: 200
+      register: cluster_resources
+      delegate_to: localhost
+
+    - name: Get running VMs and containers
+      ansible.builtin.set_fact:
+        running_guests: >-
+          {{
+            cluster_resources.json.data
+            | selectattr('type', 'in', ['qemu', 'lxc'])
+            | selectattr('status', 'equalto', 'running')
+            | list
+          }}
+
+    - name: Show guests to be shutdown
+      ansible.builtin.debug:
+        msg: >-
+          Shutting down {{ item.type }} {{ item.vmid }}
+          ({{ item.name }}) on {{ item.node }}
+      loop: "{{ running_guests }}"
+
+    - name: Shutdown all running VMs and containers
+      ansible.builtin.uri:
+        url: "{{ pve_api_base }}/nodes/{{ item.node }}/{{ item.type }}/{{ item.vmid }}/status/shutdown"
+        method: POST
+        headers:
+          Authorization: "PVEAPIToken=root@pam!API={{ pve_api_token }}"
+        validate_certs: true
+        return_content: true
+        status_code: 200
+      loop: "{{ running_guests }}"
+      loop_control:
+        label: "{{ item.type }}/{{ item.vmid }} ({{ item.name }}) on {{ item.node }}"
+      register: guest_shutdown_results
+      delegate_to: "{{ item.node }}.0lzi.com"
+      run_once: true
+      failed_when: false
+
+    - name: Wait for all VMs and containers to shut down
+      ansible.builtin.uri:
+        url: "{{ pve_api_base }}/cluster/resources?type=vm"
+        method: GET
+        headers:
+          Authorization: "PVEAPIToken=root@pam!API={{ pve_api_token }}"
+        validate_certs: true
+        return_content: true
+        status_code: 200
+      register: shutdown_check
+      delegate_to: localhost
+      until: >-
+        (
+          shutdown_check.json.data
+          | selectattr('type', 'in', ['qemu', 'lxc'])
+          | selectattr('status', 'equalto', 'running')
+          | list
+          | length
+        ) == 0
+      retries: 30
+      delay: 10
+
+# 3. Set ceph maintenance `noout` , `norebalance`, `norecover`
+    - name: Set Ceph maintenance flags
+      ansible.builtin.uri:
+        url: "{{ pve_api_base }}/cluster/ceph/flags"
+        method: PUT
+        headers:
+          Authorization: "PVEAPIToken=root@pam!API={{ pve_api_token }}"
+        body_format: form-urlencoded
+        body:
+          noout: 1
+          norecover: 1
+          norebalance: 1
+        validate_certs: true
+        return_content: true
+        status_code: 200
+      register: disarmed_ha_status
+      delegate_to: localhost
+
+# 4. Update PVEV nodes before shutting down
+
+# 5. Shutdown nodes
+
+    - name: Shutting PVE nodes
+      community.general.shutdown:

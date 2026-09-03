@@ -1,0 +1,44 @@
+---
+- name: Power UP from NUT
+  hosts: pve
+  gather_facts: false
+
+  tasks:
+    - name: Make sure nodes are up
+      ansible.builtin.ping:
+
+    - name: Unset Ceph maintenance flags
+      ansible.builtin.uri:
+        url: "{{ pve_api_base }}/cluster/ceph/flags"
+        method: PUT
+        headers:
+          Authorization: "PVEAPIToken=root@pam!API={{ pve_api_token }}"
+        body_format: form-urlencoded
+        body:
+          noout: 0
+          norecover: 0
+          norebalance: 0
+        validate_certs: true
+        return_content: true
+        status_code: 200
+      register: disarmed_ha_status
+      delegate_to: localhost
+
+    - name: Re-arm HA status
+      ansible.builtin.uri:
+        url: "{{ pve_api_base }}/cluster/ha/status/arm-ha"
+        method: POST
+        headers:
+          Authorization: "PVEAPIToken=root@pam!API={{ pve_api_token }}"
+        validate_certs: true
+        return_content: true
+        status_code: 200
+      register: disarmed_ha_status
+      delegate_to: localhost
+
+- name: Make sure Openbao nodes are up
+  hosts: openbao_servers
+  gather_facts: true
+
+- name: Unseal Openbao
+  ansible.builtin.import_playbook: ../openbao/unseal.yml

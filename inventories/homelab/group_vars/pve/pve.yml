@@ -1,0 +1,12 @@
+---
+pve_url: pve1.0lzi.com:8006
+pve_api_base: "https://{{ pve_url }}/api2/json"
+
+pve_nodes:
+  pve1: pve1.0lzi.com:8006
+  pve2: pve2.0lzi.com:8006
+  pve3: pve3.0lzi.com:8006
+
+# pve_api_token: "{{ lookup('community.hashi_vault.vault_kv2_get', 'ansible/proxmox')['secret']['api_secret'] }}"
+
+pve_api_token: "{{ lookup('ansible.builtin.env', 'PVE_API_TOKEN', default='pa55word') }}"

@@ -38,7 +38,22 @@
 
 - name: Make sure Openbao nodes are up
   hosts: openbao_servers
-  gather_facts: true
+  gather_facts: false
+
+  tasks:
+    - name: Wait until Openbao is up
+      ansible.builtin.uri:
+        url: "{{ openbao_url }}/v1/sys/health"
+        method: GET
+        return_content: true
+        status_code:
+          - 200
+          - 503
+      register: bao_status
+      until: bao_status.json.standby == true
+      delay: 10
+      retries: 30
 
 - name: Unseal Openbao
   ansible.builtin.import_playbook: ../openbao/unseal.yml
+  when: bao_status.json.standby == true

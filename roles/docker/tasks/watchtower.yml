@@ -1,0 +1,13 @@
+---
+
+- name: Start watchtower container
+  community.docker.docker_container:
+    name: watchtower
+    image: "{{ watchtower.image }}"
+    state: started
+    restart_policy: unless-stopped
+    env: "{{ lookup('template', 'watchtower.env.j2') | from_yaml }}"
+    volumes: /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      com.centurylinklabs.watchtower.scope: "{{ watchtower.scope | default('default') }}"

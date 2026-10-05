@@ -1,0 +1,8 @@
+---
+watchtower:
+  enabled: true
+  image: nickfedor/watchtower:1
+  schedule: "0 0 2 * * *"
+  scope: default
+  label: true
+  disk_max: 1

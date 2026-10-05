@@ -1,3 +1,7 @@
 ---
 - name: Include docker tasks
   ansible.builtin.include_tasks: docker.yml
+
+- name: Include Watch tower
+  ansible.builtin.include_tasks: watchtower.yml
+  when: watchtower.enabled

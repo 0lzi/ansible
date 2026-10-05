@@ -7,6 +7,33 @@
     - name: Make sure nodes are up
       ansible.builtin.ping:
 
+    - name: Get HA status
+      ansible.builtin.uri:
+        url: "{{ pve_api_base }}/cluster/ha/status/current"
+        method: GET
+        headers:
+          Authorization: "PVEAPIToken=root@pam!API={{ pve_api_token }}"
+        validate_certs: true
+        return_content: true
+        status_code: 200
+      register: ha_status
+      # failed_when: false
+      delegate_to: localhost
+
+    - name: Set Armed status
+      ansible.builtin.set_fact:
+        armed_status: >-
+          {{
+          ha_status.json.data
+          | selectattr('type', 'equalto', 'fencing')
+          | map(attribute='armed-state')
+          | first
+          }}
+
+    - name: HA status
+      ansible.builtin.debug:
+        var: armed_status
+
     - name: Unset Ceph maintenance flags
       ansible.builtin.uri:
         url: "{{ pve_api_base }}/cluster/ceph/flags"
@@ -21,8 +48,9 @@
         validate_certs: true
         return_content: true
         status_code: 200
-      register: disarmed_ha_status
+      # register: disarmed_ha_status
       delegate_to: localhost
+      when: armed_status == "disarmed"
 
     - name: Re-arm HA status
       ansible.builtin.uri:
@@ -35,6 +63,7 @@
         status_code: 200
       register: disarmed_ha_status
       delegate_to: localhost
+      when: armed_status == "disarmed"
 
 - name: Make sure Openbao nodes are up
   hosts: openbao_servers
@@ -46,14 +75,20 @@
         url: "{{ openbao_url }}/v1/sys/health"
         method: GET
         return_content: true
+        follow_redirects: true
         status_code:
           - 200
           - 503
       register: bao_status
-      until: bao_status.json.standby == true
       delay: 10
       retries: 30
+      delegate_to: localhost
+      connection: local
+
+    - name: bao_status
+      ansible.builtin.debug:
+        var: bao_status.content
 
 - name: Unseal Openbao
   ansible.builtin.import_playbook: ../openbao/unseal.yml
-  when: bao_status.json.standby == true
+  when: bao_status.content == "no available server\n"

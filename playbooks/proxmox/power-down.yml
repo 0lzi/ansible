@@ -127,6 +127,7 @@
       delegate_to: "{{ item.node }}.0lzi.com"
       run_once: true
       failed_when: false
+      when: running_guests is defined and running_guests is not none
 
     - name: Wait for all VMs and containers to shut down
       ansible.builtin.uri:
